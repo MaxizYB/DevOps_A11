@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-DRAFT-001",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "DRAFT",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "retry_of_job_id": null,
+    "queued_at": "2026-09-20T10:00:00+08:00",
+    "started_at": "2026-09-20T10:00:05+08:00",
+    "finished_at": "2026-09-20T10:03:05+08:00",
+    "duration_ms": 180000,
+    "timeout_seconds": 1800
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "build_command": "make",
+    "verify_command": "make test",
+    "max_iterations": 20,
+    "timeout_seconds": 1800
+  },
+  "output": {
+    "artifacts": [
+      {
+        "artifact_id": "dockerfile-001",
+        "type": "DOCKERFILE",
+        "uri": "artifact://job-DRAFT-001/dockerfile-001/Dockerfile",
+        "media_type": "text/plain",
+        "producer_job_id": "job-DRAFT-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "image-001",
+        "type": "DOCKER_IMAGE",
+        "uri": "artifact://job-DRAFT-001/image-001/image.tar",
+        "media_type": "application/vnd.oci.image.tar",
+        "producer_job_id": "job-DRAFT-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "build-log-001",
+        "type": "BUILD_LOG",
+        "uri": "artifact://job-DRAFT-001/log-001/build.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-DRAFT-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      }
+    ],
+    "build_result": "SUCCEEDED",
+    "verify_result": "SUCCEEDED"
+  },
+  "error": null
+}

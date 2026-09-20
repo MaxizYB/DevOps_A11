@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "DRAFT",
+  "idempotency_key": "e2-draft-c1",
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "build_command": "make",
+    "verify_command": "make test",
+    "timeout_seconds": 1800
+  }
+}

@@ -1,0 +1,570 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MaxizYB/DevOps_A11/contracts/schemas/e2-job-response.schema.json",
+  "title": "E2 job response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "trace_id",
+    "job_type",
+    "status",
+    "execution",
+    "input",
+    "output",
+    "error"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "job_id": {
+      "type": "string",
+      "pattern": "^job-(DRAFT|FULL_CHECK|INCREMENTAL_CHECK|REPAIR)-.+"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^trace-.+"
+    },
+    "job_type": {
+      "enum": [
+        "DRAFT",
+        "FULL_CHECK",
+        "INCREMENTAL_CHECK",
+        "REPAIR"
+      ]
+    },
+    "status": {
+      "enum": [
+        "QUEUED",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "TIMED_OUT",
+        "CANCELLED"
+      ]
+    },
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+    "input": {
+      "type": "object"
+    },
+    "output": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/output"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "error": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/error"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "DRAFT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/draftInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "FULL_CHECK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/fullCheckInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "INCREMENTAL_CHECK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/incrementalCheckInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "REPAIR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/repairInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SUCCEEDED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "allOf": [
+              {
+                "required": [
+                  "attempt",
+                  "queued_at",
+                  "started_at",
+                  "finished_at",
+                  "duration_ms",
+                  "timeout_seconds"
+                ]
+              }
+            ]
+          },
+          "output": {
+            "$ref": "#/$defs/output"
+          },
+          "error": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "FAILED",
+              "TIMED_OUT",
+              "CANCELLED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "output": {
+            "type": "null"
+          },
+          "error": {
+            "$ref": "#/$defs/error"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{40}$"
+    },
+    "artifactUri": {
+      "type": "string",
+      "pattern": "^artifact://[^/]+/.+$"
+    },
+    "configurationId": {
+      "type": "string",
+      "pattern": "^cfg-[a-z0-9][a-z0-9-]*$"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "commit"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "commit": {
+          "$ref": "#/$defs/commit"
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_uri",
+        "configuration_id"
+      ],
+      "properties": {
+        "image_uri": {
+          "$ref": "#/$defs/artifactUri"
+        },
+        "configuration_id": {
+          "$ref": "#/$defs/configurationId"
+        }
+      }
+    },
+    "timeout": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "type",
+        "uri",
+        "media_type",
+        "producer_job_id",
+        "commit",
+        "configuration_id"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "DOCKERFILE",
+            "DOCKER_IMAGE",
+            "BUILD_LOG",
+            "ACTUAL_GRAPH",
+            "DECLARED_GRAPH",
+            "ERROR_REPORT",
+            "PATCH",
+            "TEST_RESULT"
+          ]
+        },
+        "uri": {
+          "$ref": "#/$defs/artifactUri"
+        },
+        "media_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "producer_job_id": {
+          "type": "string",
+          "pattern": "^job-(DRAFT|FULL_CHECK|INCREMENTAL_CHECK|REPAIR)-.+"
+        },
+        "commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "configuration_id": {
+          "$ref": "#/$defs/configurationId"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "artifacts"
+      ],
+      "properties": {
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "retryable",
+        "details",
+        "log_uri"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z]+_[0-9]{4}$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": "object"
+        },
+        "log_uri": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/artifactUri"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt",
+        "retry_of_job_id",
+        "queued_at",
+        "started_at",
+        "finished_at",
+        "duration_ms",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retry_of_job_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^job-(DRAFT|FULL_CHECK|INCREMENTAL_CHECK|REPAIR)-.+"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "queued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "finished_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "duration_ms": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "draftInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "build_command",
+        "verify_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verify_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "fullCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "environment",
+        "clean_build_command",
+        "project_root",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "clean_build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "incrementalCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_commit",
+        "repository",
+        "baseline",
+        "environment",
+        "build_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "base_commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actual_graph_uri",
+            "commit",
+            "configuration_id"
+          ],
+          "properties": {
+            "actual_graph_uri": {
+              "$ref": "#/$defs/artifactUri"
+            },
+            "commit": {
+              "$ref": "#/$defs/commit"
+            },
+            "configuration_id": {
+              "$ref": "#/$defs/configurationId"
+            }
+          }
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "repairInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "md_report_uri",
+        "makefile_path",
+        "environment",
+        "build_command",
+        "verify_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "md_report_uri": {
+          "$ref": "#/$defs/artifactUri"
+        },
+        "makefile_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verify_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    }
+  }
+}

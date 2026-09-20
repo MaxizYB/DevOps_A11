@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-e2-a11-invalid",
+  "job_type": "UNKNOWN",
+  "idempotency_key": "e2-invalid-job-type",
+  "input": {}
+}

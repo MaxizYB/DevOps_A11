@@ -11,3 +11,13 @@
 - 人工采纳与限制：采纳目录与协作流程；明确排除 Schema、JSON 契约、接口样例和业务实现，契约由组长在后续独立 Issue 中决定。
 - 关联文件：`README.md`、`docs/A11组协作规范.md`、`.github/`、`contracts/`、`services/`、`docs/adr/`、`docs/evidence/`。
 - 验证：检查目录边界与模板内容，并运行 `git diff --check`；尚未运行服务测试，因为本次没有可执行实现。
+
+## 2026-09-21：E2 契约落库与样例校验
+
+- 工具/模型：Codex。
+- 任务：将组长提供的 E2 接口契约草稿整理为版本化仓库文件，并补齐 Schema、示例、ADR、Backlog、交接检查记录和校验脚本。
+- 提示摘要：以用户提供的草稿为准完成 #1，推送并合并；不改写已确定的字段语义或实现服务。
+- AI 建议：用机器可读 Schema 和无外部依赖的校验脚本验证四类任务、未知 `job_type`、缺少 baseline 和 baseline 不匹配；将 B11 尚未确认的互读状态如实记录。
+- 人工采纳与限制：契约字段、错误码、状态和 URI 规则来自用户草稿；新增文件只为使 E2 交付物可验证和可追溯。未声称 B11 已完成互读验收。
+- 关联文件：`contracts/`、`docs/adr/0001-e2-async-job-artifact-contract.md`、`docs/backlog/e2-backlog.md`、`docs/evidence/e2-pair-review.md`。
+- 验证：运行 `python3 scripts/validate_contract.py`，并将结果写入 E2 验证记录。

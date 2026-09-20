@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MaxizYB/DevOps_A11/contracts/schemas/e2-create-request.schema.json",
+  "title": "E2 job creation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "trace_id",
+    "job_type",
+    "idempotency_key",
+    "input"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^trace-.+"
+    },
+    "job_type": {
+      "enum": [
+        "DRAFT",
+        "FULL_CHECK",
+        "INCREMENTAL_CHECK",
+        "REPAIR"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "DRAFT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/draftInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "FULL_CHECK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/fullCheckInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "INCREMENTAL_CHECK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/incrementalCheckInput"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job_type": {
+            "const": "REPAIR"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "input": {
+            "$ref": "#/$defs/repairInput"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{40}$"
+    },
+    "artifactUri": {
+      "type": "string",
+      "pattern": "^artifact://[^/]+/.+$"
+    },
+    "configurationId": {
+      "type": "string",
+      "pattern": "^cfg-[a-z0-9][a-z0-9-]*$"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "commit"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "commit": {
+          "$ref": "#/$defs/commit"
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_uri",
+        "configuration_id"
+      ],
+      "properties": {
+        "image_uri": {
+          "$ref": "#/$defs/artifactUri"
+        },
+        "configuration_id": {
+          "$ref": "#/$defs/configurationId"
+        }
+      }
+    },
+    "timeout": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "draftInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "build_command",
+        "verify_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verify_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "max_iterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "fullCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "environment",
+        "clean_build_command",
+        "project_root",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "clean_build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "incrementalCheckInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_commit",
+        "repository",
+        "baseline",
+        "environment",
+        "build_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "base_commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "actual_graph_uri",
+            "commit",
+            "configuration_id"
+          ],
+          "properties": {
+            "actual_graph_uri": {
+              "$ref": "#/$defs/artifactUri"
+            },
+            "commit": {
+              "$ref": "#/$defs/commit"
+            },
+            "configuration_id": {
+              "$ref": "#/$defs/configurationId"
+            }
+          }
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    },
+    "repairInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "md_report_uri",
+        "makefile_path",
+        "environment",
+        "build_command",
+        "verify_command",
+        "timeout_seconds"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/repository"
+        },
+        "md_report_uri": {
+          "$ref": "#/$defs/artifactUri"
+        },
+        "makefile_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environment": {
+          "$ref": "#/$defs/environment"
+        },
+        "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verify_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timeout_seconds": {
+          "$ref": "#/$defs/timeout"
+        }
+      }
+    }
+  }
+}
