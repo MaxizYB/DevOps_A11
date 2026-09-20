@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-REPAIR-001",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "REPAIR",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "retry_of_job_id": null,
+    "queued_at": "2026-09-20T10:12:00+08:00",
+    "started_at": "2026-09-20T10:12:05+08:00",
+    "finished_at": "2026-09-20T10:15:05+08:00",
+    "duration_ms": 180000,
+    "timeout_seconds": 1800
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "md_report_uri": "artifact://job-FULL_CHECK-001/report-001/error-report.json",
+    "makefile_path": "Makefile",
+    "environment": {
+      "image_uri": "artifact://job-DRAFT-001/image-001/image.tar",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "build_command": "make",
+    "verify_command": "make test",
+    "timeout_seconds": 1800
+  },
+  "output": {
+    "artifacts": [
+      {
+        "artifact_id": "patch-001",
+        "type": "PATCH",
+        "uri": "artifact://job-REPAIR-001/patch-001/fix.patch",
+        "media_type": "text/x-diff",
+        "producer_job_id": "job-REPAIR-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "build-log-002",
+        "type": "BUILD_LOG",
+        "uri": "artifact://job-REPAIR-001/log-002/build.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-REPAIR-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "test-result-001",
+        "type": "TEST_RESULT",
+        "uri": "artifact://job-REPAIR-001/test-001/result.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-REPAIR-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "error-report-003",
+        "type": "ERROR_REPORT",
+        "uri": "artifact://job-REPAIR-001/report-003/error-report.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-REPAIR-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      }
+    ],
+    "declaration_style": "append project header prerequisites to the existing target rule",
+    "patch_accepted": true
+  },
+  "error": null
+}

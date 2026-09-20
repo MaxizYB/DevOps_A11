@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-FULL_CHECK-001",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "FULL_CHECK",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "retry_of_job_id": null,
+    "queued_at": "2026-09-20T10:04:00+08:00",
+    "started_at": "2026-09-20T10:04:03+08:00",
+    "finished_at": "2026-09-20T10:08:03+08:00",
+    "duration_ms": 240000,
+    "timeout_seconds": 1800
+  },
+  "input": {
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "environment": {
+      "image_uri": "artifact://job-DRAFT-001/image-001/image.tar",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "clean_build_command": "make clean && make",
+    "project_root": "/project",
+    "timeout_seconds": 1800
+  },
+  "output": {
+    "artifacts": [
+      {
+        "artifact_id": "actual-graph-001",
+        "type": "ACTUAL_GRAPH",
+        "uri": "artifact://job-FULL_CHECK-001/graph-001/actual.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-FULL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "declared-graph-001",
+        "type": "DECLARED_GRAPH",
+        "uri": "artifact://job-FULL_CHECK-001/graph-001/declared.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-FULL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "error-report-001",
+        "type": "ERROR_REPORT",
+        "uri": "artifact://job-FULL_CHECK-001/report-001/error-report.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-FULL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "build-log-001",
+        "type": "BUILD_LOG",
+        "uri": "artifact://job-FULL_CHECK-001/log-001/build.log",
+        "media_type": "text/plain",
+        "producer_job_id": "job-FULL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      }
+    ],
+    "findings_summary": {
+      "missing": 1,
+      "redundant": 0
+    }
+  },
+  "error": null
+}

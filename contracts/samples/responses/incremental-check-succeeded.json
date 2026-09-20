@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "job-INCREMENTAL_CHECK-001",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "INCREMENTAL_CHECK",
+  "status": "SUCCEEDED",
+  "execution": {
+    "attempt": 1,
+    "retry_of_job_id": null,
+    "queued_at": "2026-09-20T10:09:00+08:00",
+    "started_at": "2026-09-20T10:09:04+08:00",
+    "finished_at": "2026-09-20T10:11:04+08:00",
+    "duration_ms": 120000,
+    "timeout_seconds": 1800
+  },
+  "input": {
+    "base_commit": "0123456789abcdef0123456789abcdef01234567",
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "baseline": {
+      "actual_graph_uri": "artifact://job-FULL_CHECK-C0-001/graph-001/actual.json",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "environment": {
+      "image_uri": "artifact://job-DRAFT-001/image-001/image.tar",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "build_command": "make",
+    "timeout_seconds": 1800
+  },
+  "output": {
+    "artifacts": [
+      {
+        "artifact_id": "actual-graph-002",
+        "type": "ACTUAL_GRAPH",
+        "uri": "artifact://job-INCREMENTAL_CHECK-001/graph-002/actual.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-INCREMENTAL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      },
+      {
+        "artifact_id": "error-report-002",
+        "type": "ERROR_REPORT",
+        "uri": "artifact://job-INCREMENTAL_CHECK-001/report-002/error-report.json",
+        "media_type": "application/json",
+        "producer_job_id": "job-INCREMENTAL_CHECK-001",
+        "commit": "fedcba9876543210fedcba9876543210fedcba98",
+        "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+      }
+    ],
+    "current_findings": 1,
+    "new_findings": 1,
+    "resolved_findings": 0
+  },
+  "error": null
+}

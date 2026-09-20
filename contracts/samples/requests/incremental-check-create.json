@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0.0",
+  "trace_id": "trace-e2-a11-sample",
+  "job_type": "INCREMENTAL_CHECK",
+  "idempotency_key": "e2-incremental-check-c0-c1",
+  "input": {
+    "base_commit": "0123456789abcdef0123456789abcdef01234567",
+    "repository": {
+      "url": "https://github.com/example/make-sample.git",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98"
+    },
+    "baseline": {
+      "actual_graph_uri": "artifact://job-FULL_CHECK-C0-001/graph-001/actual.json",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "environment": {
+      "image_uri": "artifact://job-DRAFT-001/image-001/image.tar",
+      "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
+    },
+    "build_command": "make",
+    "timeout_seconds": 1800
+  }
+}
