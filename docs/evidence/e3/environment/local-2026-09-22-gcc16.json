@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-09-22T01:40:18Z",
+  "host": {
+    "system": "Linux",
+    "release": "6.18.40-2-lts",
+    "version": "#1 SMP PREEMPT_DYNAMIC Sat, 25 Jul 2026 19:01:40 +0000",
+    "machine": "x86_64",
+    "python_implementation": "CPython",
+    "python_version": "3.14.7"
+  },
+  "tools": {
+    "git": {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "path": "/usr/bin/git",
+      "available": true,
+      "returncode": 0,
+      "version": "git version 2.55.0"
+    },
+    "make": {
+      "command": [
+        "make",
+        "--version"
+      ],
+      "path": "/usr/bin/make",
+      "available": true,
+      "returncode": 0,
+      "version": "GNU Make 4.4.1"
+    },
+    "cc": {
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "path": "/usr/bin/cc",
+      "available": true,
+      "returncode": 0,
+      "version": "cc (GCC) 16.2.1 20260810"
+    },
+    "python3": {
+      "command": [
+        "/usr/bin/python3",
+        "--version"
+      ],
+      "path": "/usr/bin/python3",
+      "available": true,
+      "returncode": 0,
+      "version": "Python 3.14.7"
+    },
+    "strace": {
+      "command": [
+        "strace",
+        "--version"
+      ],
+      "path": "/usr/bin/strace",
+      "available": true,
+      "returncode": 0,
+      "version": "strace -- version 7.0"
+    }
+  }
+}

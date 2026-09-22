@@ -21,3 +21,13 @@
 - 人工采纳与限制：契约字段、错误码、状态和 URI 规则来自用户草稿；新增文件只为使 E2 交付物可验证和可追溯。未声称 B11 已完成互读验收。
 - 关联文件：`contracts/`、`docs/adr/0001-e2-async-job-artifact-contract.md`、`docs/backlog/e2-backlog.md`、`docs/evidence/e2-pair-review.md`。
 - 验证：运行 `python3 scripts/validate_contract.py`，并将结果写入 E2 验证记录。
+
+## 2026-09-22：E3 基线治理框架
+
+- 工具/模型：Codex。
+- 任务：在 #5 中建立 E3 的 fixture/work/evidence 目录边界、环境记录、证据模板、任务模板和校验工具。
+- 提示摘要：先完成组长不依赖成员样例的工作；MD/RD 样例和 C0/C1/C2 历史仍由 #6、#7 分别完成。
+- AI 建议：将版本化源码、可再生本地运行目录和可提交证据分开；用标准库脚本记录课程要求的系统与工具版本，并验证框架完整性。
+- 人工采纳与限制：E3 任务边界和必需证据来自课程课件及 #5/#6/#7；未生成 #6 的源码/Oracle，也未生成 #7 的 Git 历史、SHA 或行为结果。
+- 关联文件：`fixtures/e3/`、`work/e3/`、`docs/evidence/e3/`、`docs/backlog/e3-backlog.md`、`docs/adr/0002-e3-baseline-evidence-layout.md`、`scripts/e3/`。
+- 验证：运行环境采集、`python3 scripts/e3/validate_e3_framework.py`、Python 编译和 `git diff --check`。
