@@ -1,9 +1,12 @@
-# C0/C1/C2 Snapshots
+# EChecker C0/C1/C2 Snapshots
 
-[#7](https://github.com/MaxizYB/DevOps_A11/issues/7) 将在此处建立生成历史的快照或等价脚本：
+本目录保留用于生成 #7 真实 Git 历史的版本化快照。
 
-- `C0`：声明正确、clean build 输出 10 的基线。
-- `C1`：新增 `feature.h` 使用但遗漏声明依赖、clean build 输出 12 的版本。
-- `C2`：仅改变编译命令为 `-DMODE=7`、保留 C1 源码的版本。
+```text
+snapshots/
+├── C0/  # 基线：main.o 声明 main.c config.h，clean build 输出 10
+├── C1/  # 新增 feature.h 但漏写声明依赖，clean build 输出 12
+└── C2/  # 源码同 C1，只改 CFLAGS 为 -O0 -DMODE=7
+```
 
-快照目录不是 Git 仓库本身；真实历史必须在 `work/e3/` 生成并记录 SHA。
+每个快照只保存源码、Makefile 和简要说明。真实 Git 仓库、`.git/` 目录、编译产物和原始命令输出保存在 `work/e3/`。

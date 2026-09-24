@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "source": "INSTRUCTOR_ORACLE",
+  "issue": "#7",
+  "target": "main.o",
+  "configuration_id": "cfg-linux-ubuntu22-gcc11-o0-v1",
+  "oracle": {
+    "C0": {
+      "declared_dependencies": [
+        "main.c",
+        "config.h"
+      ],
+      "actual_dependencies": [
+        "main.c",
+        "config.h"
+      ],
+      "expected_findings": [],
+      "clean_output": "10"
+    },
+    "C1": {
+      "declared_dependencies": [
+        "main.c",
+        "config.h"
+      ],
+      "actual_dependencies": [
+        "main.c",
+        "config.h",
+        "feature.h"
+      ],
+      "expected_findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "feature.h",
+          "commit": "72092998daefc643163073b7203ddda847ce130e",
+          "evidence": "main.c includes feature.h, but Makefile declares main.o: main.c config.h"
+        }
+      ],
+      "clean_output": "12"
+    },
+    "C2": {
+      "declared_dependencies": [
+        "main.c",
+        "config.h"
+      ],
+      "actual_dependencies": [
+        "main.c",
+        "config.h",
+        "feature.h"
+      ],
+      "command_change": {
+        "from": "gcc -O0 -c main.c -o main.o",
+        "to": "gcc -O0 -DMODE=7 -c main.c -o main.o"
+      },
+      "expected_findings": [
+        {
+          "type": "MISSING",
+          "target": "main.o",
+          "dependency": "feature.h",
+          "commit": "0188a10285501024a25e4fa6a1cae9dec32e3ead",
+          "evidence": "C2 keeps the C1 source and Makefile dependency declaration, so feature.h remains undeclared."
+        }
+      ],
+      "incremental_from_C1_products_output": "12",
+      "clean_output": "19"
+    }
+  },
+  "expected_error_change": {
+    "C0_to_C1": {
+      "current_findings": 1,
+      "new_findings": 1,
+      "resolved_findings": 0
+    },
+    "C1_to_C2": {
+      "current_findings": 1,
+      "new_findings": 0,
+      "resolved_findings": 0,
+      "note": "The missing feature.h declaration persists; C2's behavioral change comes from the compile command change."
+    }
+  }
+}

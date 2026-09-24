@@ -41,3 +41,13 @@
 - 人工采纳与限制：采纳文档结构和产物样例；样例明确标记为 `CONTRACT_EXAMPLE`，不使用伪造的 PID、系统调用、时间戳或真实运行日志。
 - 关联文件：`docs/evidence/e2-buildchecker-handoff.md`、`services/buildchecker/README.md`、`services/buildchecker/examples/`。
 - 验证：运行 `python3 scripts/validate_contract.py`、三份 JSON 格式检查和 `git diff --check`。
+
+## 2026-09-24：E3 EChecker C0/C1/C2 基线
+
+- 工具/模型：Codex。
+- 任务：根据 #7 准备 EChecker 的 C0/C1/C2 Git 历史 fixture、人工 Oracle、命令证据和实际观察摘要。
+- 提示摘要：要求 C0 clean 输出 10，C1 新增 `feature.h` 但漏写 Makefile 依赖且 clean 输出 12，C2 只改编译命令并记录增量输出 12 与 clean 输出 19；遵循 #5 的 fixture/work/evidence 目录约定。
+- AI 建议：用版本化快照和生成脚本在 `work/e3/` 创建真实 Git 历史；将原始运行仓库和日志留在 ignored 的工作目录，将 SHA、Oracle、命令和观察摘要提交到 `docs/evidence/e3/echecker/`。
+- 人工采纳与限制：采纳最小 C/Make 样例和证据结构；不实现 EChecker 算法、服务端 API 或 BuildChecker 全量样例；最终证据切换为用户在 Ubuntu 22.04/GCC 11 环境中的 Linux 复现结果。
+- 关联文件：`fixtures/e3/echecker-history/`、`docs/evidence/e3/echecker/`。
+- 验证：运行 `conda run -n devops python fixtures\e3\echecker-history\create_history.py`、`conda run -n devops python scripts\e3\validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
