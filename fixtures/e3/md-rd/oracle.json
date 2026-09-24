@@ -1,7 +1,7 @@
 {
   "provenance": "MANUAL_ORACLE",
   "configuration_id": "e3-md-rd-gnu-make-v1",
-  "source_commit": "TO_BE_FILLED_AFTER_FIXTURE_COMMIT",
+  "source_commit": "ddedbb87bf980286c17ece296a8f9763841c31ea",
   "findings": [
     {
       "type": "MISSING",

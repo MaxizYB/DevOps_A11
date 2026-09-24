@@ -48,6 +48,6 @@
 - 任务：补充 Issue #6 的 MD/RD 测试样例、人工 Oracle 和实验记录，并整理相关文档。
 - 提示摘要：用最小 GNU Make 项目在同一个 `main.o` 中构造 `config.h` 的缺失依赖和 `unused.h` 的冗余依赖；在 `work/e3/` 副本中完成四步实验，不直接修改 fixture。
 - AI 建议：将 `main.o -> config.h` 记为 MISSING、`main.o -> unused.h` 记为 REDUNDANT，并分别保存人工 Oracle、运行日志和观察记录。
-- 人工采纳与限制：已检查 Makefile 的依赖关系及四步实验结果。修改 `config.h` 后普通 `make` 未重编译，clean build 后输出更新；修改 `unused.h` 后触发额外重编译。本阶段未实现或运行真正的 BuildChecker；fixture 最终 commit SHA、PR 和组员复现结果留待后续提交和 Review。
+- 人工采纳与限制：已检查 Makefile 的依赖关系及四步实验结果。修改 `config.h` 后普通 `make` 未重编译，clean build 后输出更新；修改 `unused.h` 后触发额外重编译。本阶段未实现或运行真正的 BuildChecker；fixture 源码提交 SHA 已记录，PR 和组员复现结果留待后续 Review。
 - 关联文件：`fixtures/e3/md-rd/`、`docs/evidence/e3/buildchecker/`、`docs/evidence/e3/environment/local-2026-09-24.json`；原始记录位于 `work/e3/20260924T021234Z-issue-6-md-rd/`。
 - 验证：运行四步 Make 实验，并执行 `python3 scripts/e3/validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。

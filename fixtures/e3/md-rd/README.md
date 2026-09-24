@@ -26,4 +26,4 @@ cd "$run/project"
 3. 保持 `VALUE=2`，执行 `make clean`、`make`、`./app`；程序应输出 `2`。
 4. 等待至少 2 秒，只修改运行副本的 `unused.h` 注释，再执行 `make`、`./app`；应看到 `main.o` 重编译，程序仍输出 `2`。
 
-检查每条命令的退出码和构建输出；如与上述判断不符，保留真实日志并检查文件时间戳。fixture 最终 commit SHA 待人工提交后补充。Cross-member reproduction: pending review.
+检查每条命令的退出码和构建输出；如与上述判断不符，保留真实日志并检查文件时间戳。fixture 源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`。Cross-member reproduction: pending review.

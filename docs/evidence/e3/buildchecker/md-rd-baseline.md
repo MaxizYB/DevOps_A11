@@ -5,7 +5,7 @@
 - 关联 Issue：[#6](https://github.com/MaxizYB/DevOps_A11/issues/6)
 - 样例类型：GNU Make MD/RD
 - fixture：`fixtures/e3/md-rd/`，复制到运行目录的 `project/`
-- fixture 完整 commit SHA：`TO_BE_FILLED_AFTER_FIXTURE_COMMIT`（本次文件尚未提交）
+- fixture 源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`（包含本次运行使用的源码和 Makefile；本次回填只修改元数据）
 - 当前分支：`test/6-md-rd-baseline`
 - 运行目录：`work/e3/20260924T021234Z-issue-6-md-rd/`
 
@@ -46,11 +46,11 @@
 ## 失败与下一步
 
 - 当前失败：本次基线实验没有阻塞性失败。
-- 下一步：人工提交 fixture 后补充最终 SHA；后续创建 PR；另一位组员按 fixture README 复现。
+- 下一步：创建 PR；另一位组员按 fixture README 复现。
 - Cross-member reproduction: pending review.
 
 ## 个人贡献与追溯
 
 - 作者：@andelutixia
 - PR：待后续创建
-- 最终提交 SHA：`TO_BE_FILLED_AFTER_FIXTURE_COMMIT`
+- 基线源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`

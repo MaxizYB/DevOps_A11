@@ -7,4 +7,4 @@
 - 环境清单：[`../environment/local-2026-09-24.json`](../environment/local-2026-09-24.json)
 - 原始日志：`work/e3/20260924T021234Z-issue-6-md-rd/`
 
-fixture 最终 commit SHA 待人工提交后补充。Cross-member reproduction: pending review.
+fixture 源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`。Cross-member reproduction: pending review.
