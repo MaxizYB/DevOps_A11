@@ -1,0 +1,18 @@
+{
+  "provenance": "CONTRACT_EXAMPLE",
+  "artifact_type": "ACTUAL_GRAPH",
+  "commit": "fedcba9876543210fedcba9876543210fedcba98",
+  "configuration_id": "cfg-ubuntu22-gcc12-release-v1",
+  "edges": [
+    {
+      "target": "main.o",
+      "dependency": "main.c",
+      "evidence": "本 CONTRACT_EXAMPLE 设定构建 main.o 时读取 main.c。"
+    },
+    {
+      "target": "main.o",
+      "dependency": "config.h",
+      "evidence": "本 CONTRACT_EXAMPLE 设定构建 main.o 时读取 config.h。"
+    }
+  ]
+}

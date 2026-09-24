@@ -31,3 +31,13 @@
 - 人工采纳与限制：E3 任务边界和必需证据来自课程课件及 #5/#6/#7；未生成 #6 的源码/Oracle，也未生成 #7 的 Git 历史、SHA 或行为结果。
 - 关联文件：`fixtures/e3/`、`work/e3/`、`docs/evidence/e3/`、`docs/backlog/e3-backlog.md`、`docs/adr/0002-e3-baseline-evidence-layout.md`、`scripts/e3/`。
 - 验证：运行环境采集、`python3 scripts/e3/validate_e3_framework.py`、Python 编译和 `git diff --check`。
+
+## 2026-09-23：E2 BuildChecker 交接材料
+
+- 工具/模型：Codex。
+- 任务：参与整理 BuildChecker E2 交接文档、README 和产物样例。
+- 提示摘要：按照 Issue #2 和现有 E2 公共契约补齐 BuildChecker 专有交接材料，不实现检测器，不修改公共契约和共享 Schema。
+- AI 建议：用同一 commit 和 `configuration_id` 编写实际依赖图、声明依赖图和错误报告样例，并说明 MD/RD 差集、下游读取方式和失败行为。
+- 人工采纳与限制：采纳文档结构和产物样例；样例明确标记为 `CONTRACT_EXAMPLE`，不使用伪造的 PID、系统调用、时间戳或真实运行日志。
+- 关联文件：`docs/evidence/e2-buildchecker-handoff.md`、`services/buildchecker/README.md`、`services/buildchecker/examples/`。
+- 验证：运行 `python3 scripts/validate_contract.py`、三份 JSON 格式检查和 `git diff --check`。

@@ -1,0 +1,26 @@
+{
+  "provenance": "CONTRACT_EXAMPLE",
+  "artifact_type": "DECLARED_GRAPH",
+  "commit": "fedcba9876543210fedcba9876543210fedcba98",
+  "configuration_id": "cfg-ubuntu22-gcc12-release-v1",
+  "edges": [
+    {
+      "target": "main.o",
+      "dependency": "main.c",
+      "location": {
+        "file": "Makefile",
+        "target": "main.o",
+        "rule": "main.o: main.c unused.h"
+      }
+    },
+    {
+      "target": "main.o",
+      "dependency": "unused.h",
+      "location": {
+        "file": "Makefile",
+        "target": "main.o",
+        "rule": "main.o: main.c unused.h"
+      }
+    }
+  ]
+}
