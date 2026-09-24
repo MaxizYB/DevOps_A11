@@ -1,5 +1,10 @@
-# BuildChecker E3 Evidence Boundary
+# BuildChecker E3 MD/RD 基线
 
-[#6](https://github.com/MaxizYB/DevOps_A11/issues/6) 在此保存 MD/RD 基线的人工 Oracle、实际构建命令与观察摘要。建议使用 `oracle.json`、`commands.md`、`observations.md` 和 `failures.md`；文件名可以调整，但必须保持内容可追溯。
+- 人工 Oracle：[`fixtures/e3/md-rd/oracle.json`](../../../../fixtures/e3/md-rd/oracle.json)
+- 基线记录：[`md-rd-baseline.md`](md-rd-baseline.md)
+- 实际命令与退出码：[`commands.md`](commands.md)
+- 观察与失败记录：[`observations.md`](observations.md)、[`failures.md`](failures.md)
+- 环境清单：[`../environment/local-2026-09-24.json`](../environment/local-2026-09-24.json)
+- 原始日志：`work/e3/20260924T021234Z-issue-6-md-rd/`
 
-不要将后续真实检测器报告伪装为人工 Oracle。真实报告应标记工具版本、运行 Job 和对应 commit/configuration。
+fixture 最终 commit SHA 待人工提交后补充。Cross-member reproduction: pending review.

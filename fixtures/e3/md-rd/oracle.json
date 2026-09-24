@@ -1,0 +1,21 @@
+{
+  "provenance": "MANUAL_ORACLE",
+  "configuration_id": "e3-md-rd-gnu-make-v1",
+  "source_commit": "TO_BE_FILLED_AFTER_FIXTURE_COMMIT",
+  "findings": [
+    {
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "evidence": "main.c includes config.h; Makefile lists only main.c and unused.h as main.o prerequisites.",
+      "reason": "Compiling main.c reads config.h, but main.o does not declare config.h as a prerequisite."
+    },
+    {
+      "type": "REDUNDANT",
+      "target": "main.o",
+      "dependency": "unused.h",
+      "evidence": "Makefile lists unused.h as a main.o prerequisite; main.c does not include or use unused.h.",
+      "reason": "Compiling main.c does not require unused.h, although main.o declares it as a prerequisite."
+    }
+  ]
+}
