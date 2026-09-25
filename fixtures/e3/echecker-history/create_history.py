@@ -8,13 +8,13 @@ import json
 import shutil
 import stat
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[3]
 SNAPSHOTS = ROOT / "fixtures" / "e3" / "echecker-history" / "snapshots"
-RUN_DIR = ROOT / "work" / "e3" / "20260924T020000Z-issue-7-echecker-history"
-REPO_DIR = RUN_DIR / "repo"
+RUN_ROOT = ROOT / "work" / "e3"
 
 
 GIT_DATES = {
@@ -95,14 +95,26 @@ def remove_readonly(function, path, _exc_info) -> None:
     function(path)
 
 
-def commit_snapshot(label: str, message: str) -> str:
-    replace_tree(SNAPSHOTS / label, REPO_DIR)
-    run(["git", "add", "."], REPO_DIR)
-    run(["git", "commit", "-m", message], REPO_DIR, label=label)
-    run(["git", "tag", "-f", label], REPO_DIR)
+def create_run_dir() -> tuple[Path, Path]:
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    run_dir = RUN_ROOT / f"{run_id}-issue-7-echecker-history"
+    suffix = 1
+    while run_dir.exists():
+        run_dir = RUN_ROOT / f"{run_id}-{suffix}-issue-7-echecker-history"
+        suffix += 1
+    repo_dir = run_dir / "repo"
+    repo_dir.mkdir(parents=True)
+    return run_dir, repo_dir
+
+
+def commit_snapshot(label: str, message: str, repo_dir: Path) -> str:
+    replace_tree(SNAPSHOTS / label, repo_dir)
+    run(["git", "add", "."], repo_dir)
+    run(["git", "commit", "-m", message], repo_dir, label=label)
+    run(["git", "tag", label], repo_dir)
     result = subprocess.run(
         ["git", "rev-parse", "HEAD"],
-        cwd=str(REPO_DIR),
+        cwd=str(repo_dir),
         check=True,
         text=True,
         stdout=subprocess.PIPE,
@@ -110,7 +122,7 @@ def commit_snapshot(label: str, message: str) -> str:
     return result.stdout.strip()
 
 
-def verify_history(shas: dict[str, str]) -> dict[str, object]:
+def verify_history(shas: dict[str, str], run_dir: Path, repo_dir: Path) -> dict[str, object]:
     make = find_make()
     clean_command = [make, "clean"]
     if make == "mingw32-make":
@@ -118,7 +130,7 @@ def verify_history(shas: dict[str, str]) -> dict[str, object]:
     steps: list[dict[str, object]] = []
 
     def checked(args: list[str]) -> dict[str, object]:
-        step = capture(args, REPO_DIR)
+        step = capture(args, repo_dir)
         steps.append(step)
         require_success(step)
         return step
@@ -126,23 +138,23 @@ def verify_history(shas: dict[str, str]) -> dict[str, object]:
     checked(["git", "-c", "advice.detachedHead=false", "checkout", "C0"])
     checked(clean_command)
     checked([make])
-    c0_output = checked([str(REPO_DIR / "app.exe")])["stdout"].strip()
+    c0_output = checked([str(repo_dir / "app.exe")])["stdout"].strip()
 
     checked(["git", "-c", "advice.detachedHead=false", "checkout", "C1"])
     checked(clean_command)
     checked([make])
-    c1_output = checked([str(REPO_DIR / "app.exe")])["stdout"].strip()
+    c1_output = checked([str(repo_dir / "app.exe")])["stdout"].strip()
 
     checked(["git", "-c", "advice.detachedHead=false", "checkout", "C2"])
     c2_command = checked([make, "-n", "-B", "main.o"])["stdout"].strip()
     checked([make])
-    c2_incremental_output = checked([str(REPO_DIR / "app.exe")])["stdout"].strip()
+    c2_incremental_output = checked([str(repo_dir / "app.exe")])["stdout"].strip()
     checked(clean_command)
     checked([make])
-    c2_clean_output = checked([str(REPO_DIR / "app.exe")])["stdout"].strip()
+    c2_clean_output = checked([str(repo_dir / "app.exe")])["stdout"].strip()
 
     summary = {
-        "repo": str(REPO_DIR),
+        "repo": str(repo_dir),
         "make_command": make,
         "commits": shas,
         "outputs": {
@@ -155,7 +167,7 @@ def verify_history(shas: dict[str, str]) -> dict[str, object]:
         "steps": steps,
     }
 
-    (RUN_DIR / "verification_summary.json").write_text(
+    (run_dir / "verification_summary.json").write_text(
         json.dumps(summary, indent=2),
         encoding="utf-8",
     )
@@ -168,27 +180,25 @@ def verify_history(shas: dict[str, str]) -> dict[str, object]:
             lines.append(str(step["stderr"]).rstrip())
         lines.append(f"exit={step['returncode']}")
         lines.append("")
-    (RUN_DIR / "verification.log").write_text("\n".join(lines), encoding="utf-8")
+    (run_dir / "verification.log").write_text("\n".join(lines), encoding="utf-8")
     return summary
 
 
 def main() -> int:
-    if RUN_DIR.exists():
-        shutil.rmtree(RUN_DIR, onerror=remove_readonly)
-    REPO_DIR.mkdir(parents=True)
+    run_dir, repo_dir = create_run_dir()
 
-    run(["git", "-c", "init.defaultBranch=main", "-c", "core.autocrlf=false", "init"], REPO_DIR)
+    run(["git", "-c", "init.defaultBranch=main", "-c", "core.autocrlf=false", "init"], repo_dir)
     shas = {
-        "C0": commit_snapshot("C0", "C0 baseline declared dependencies"),
-        "C1": commit_snapshot("C1", "C1 add missing feature dependency"),
-        "C2": commit_snapshot("C2", "C2 change compile flags only"),
+        "C0": commit_snapshot("C0", "C0 baseline declared dependencies", repo_dir),
+        "C1": commit_snapshot("C1", "C1 add missing feature dependency", repo_dir),
+        "C2": commit_snapshot("C2", "C2 change compile flags only", repo_dir),
     }
 
-    print(f"created: {REPO_DIR}")
+    print(f"created: {repo_dir}")
     for label, sha in shas.items():
         print(f"{label}: {sha}")
-    summary = verify_history(shas)
-    print(f"verification: {RUN_DIR / 'verification_summary.json'}")
+    summary = verify_history(shas, run_dir, repo_dir)
+    print(f"verification: {run_dir / 'verification_summary.json'}")
     print(f"outputs: {summary['outputs']}")
     return 0
 

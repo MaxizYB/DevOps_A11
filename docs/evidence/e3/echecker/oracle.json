@@ -3,7 +3,7 @@
   "source": "INSTRUCTOR_ORACLE",
   "issue": "#7",
   "target": "main.o",
-  "configuration_id": "cfg-linux-ubuntu22-gcc11-o0-v1",
+  "configuration_id": "cfg-linux-lts-gcc16-o0-v2",
   "oracle": {
     "C0": {
       "declared_dependencies": [
@@ -32,7 +32,7 @@
           "type": "MISSING",
           "target": "main.o",
           "dependency": "feature.h",
-          "commit": "72092998daefc643163073b7203ddda847ce130e",
+          "commit": "7f5e4341e938e890fa71b6d219ef51437d5cea1f",
           "evidence": "main.c includes feature.h, but Makefile declares main.o: main.c config.h"
         }
       ],
@@ -57,7 +57,7 @@
           "type": "MISSING",
           "target": "main.o",
           "dependency": "feature.h",
-          "commit": "0188a10285501024a25e4fa6a1cae9dec32e3ead",
+          "commit": "fb03409e287fde67af2f707e689cf1c38a36ff51",
           "evidence": "C2 keeps the C1 source and Makefile dependency declaration, so feature.h remains undeclared."
         }
       ],

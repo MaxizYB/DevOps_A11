@@ -31,9 +31,10 @@ EChecker 的 `INCREMENTAL_CHECK` 请求需要公共字段 `schema_version`、`tr
 | `environment.image_uri` | `artifact://job-DRAFT-001/image-001/image.tar` | 指向本次检测使用的构建环境镜像。 |
 | `environment.configuration_id` | `cfg-ubuntu22-gcc12-release-v1` | 标记当前任务使用的构建配置，必须与 baseline 配置一致。 |
 | `build_command` | `make` | 指定当前提交上的构建命令。 |
+| `project_root` | `/project` | 指定镜像内执行构建的非空项目根目录。 |
 | `timeout_seconds` | `1800` | 指定任务超时时间。 |
 
-Issue #3 中提到的 `project_root` 尚未进入当前 E2 契约。若后续实现需要该字段，应在契约 Issue 中作为字段变更讨论，并同步更新 Schema、样例和校验脚本。
+`project_root` 已在 E2 尚未有服务消费者前完成正式化，并同步进入两个 Schema、有效样例和校验脚本。若未来已有外部消费者再采用该新增必填字段，须按契约版本规则协商主版本升级。
 
 ## 有效样例解释
 
@@ -96,7 +97,7 @@ PASS contract validation: 2 schemas, 4 exchanges, 1 failed job, 3 rejections
 
 ## 当前结论
 
-EChecker 的 E2 交接材料已经能支持组长补全 `INCREMENTAL_CHECK` 的输入、输出、产物和失败行为：有效样例明确区分 C0、C1 和 baseline 图所属提交；无效样例给出可检查的拒绝行为；待决问题也已明确标出，避免把未确认字段或 B 组读取能力写成已完成事实。
+EChecker 的 E2 交接材料已经能支持组长补全 `INCREMENTAL_CHECK` 的输入、输出、产物和失败行为：有效样例明确区分 C0、C1 和 baseline 图所属提交，并包含正式的 `project_root`；无效样例给出可检查的拒绝行为；B 组产物读取能力仍如实标记为待确认。
 
 ## 个人贡献记录
 

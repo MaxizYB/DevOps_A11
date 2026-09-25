@@ -7,4 +7,4 @@
 - 环境清单：[`../environment/local-2026-09-24.json`](../environment/local-2026-09-24.json)
 - 原始日志：`work/e3/20260924T021234Z-issue-6-md-rd/`
 
-fixture 源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`。Cross-member reproduction: pending review.
+fixture 源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`。组长复核运行目录：`work/e3/20260925T044000Z-issue-6-md-rd/project/`；初始、MD、clean 和 RD 四步均与 Oracle 一致。

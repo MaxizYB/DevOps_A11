@@ -5,7 +5,7 @@
 - 配对组：A11 / B11
 - 版本：1.0.0
 - 更新时间：2026-09-20
-- 说明：本文件记录 E2 阶段的接口、数据传递和验收约定。
+- 说明：本文件记录 E2 阶段的接口、数据传递和验收约定。`INCREMENTAL_CHECK` 的 `project_root` 在 E2 尚未有服务消费者前完成最终化，因此仍属于 1.0.0 交付包；若已有外部消费者再采用该字段，必须按版本兼容规则发布新的主版本。
 
 ## 2. 小组职责与流程
 
@@ -366,11 +366,12 @@ ERROR_REPORT 中的发现使用 MISSING 和 REDUNDANT 类型，并记录 target�
     "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
   },
   "build_command": "make",
+  "project_root": "/project",
   "timeout_seconds": 1800
 }
 ```
 
-必填字段：base_commit、当前 commit、baseline 实际依赖图、baseline commit、配置 ID、镜像、构建命令和 timeout_seconds。
+必填字段：base_commit、当前 commit、baseline 实际依赖图、baseline commit、配置 ID、镜像、构建命令、项目根目录和 timeout_seconds。`project_root` 是镜像内用于执行构建的非空路径。
 
 baseline 的 commit 和 configuration 必须分别等于 base_commit 和当前任务使用的配置。缺少或不匹配时，创建请求被拒绝。
 

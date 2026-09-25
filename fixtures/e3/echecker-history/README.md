@@ -14,10 +14,10 @@
 从仓库根目录运行：
 
 ```powershell
-conda run -n devops python fixtures\e3\echecker-history\create_history.py
+python3 fixtures/e3/echecker-history/create_history.py
 ```
 
-脚本会创建 `work/e3/20260924T020000Z-issue-7-echecker-history/repo/`，并在其中生成真实 Git 历史和 tag：
+脚本会在 `work/e3/` 下创建一个新的 UTC 时间目录，并在其中生成真实 Git 历史和 tag；重复运行不会覆盖之前的原始记录：
 
 - `C0`
 - `C1`
