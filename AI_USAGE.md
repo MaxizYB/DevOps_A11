@@ -32,6 +32,26 @@
 - 关联文件：`fixtures/e3/`、`work/e3/`、`docs/evidence/e3/`、`docs/backlog/e3-backlog.md`、`docs/adr/0002-e3-baseline-evidence-layout.md`、`scripts/e3/`。
 - 验证：运行环境采集、`python3 scripts/e3/validate_e3_framework.py`、Python 编译和 `git diff --check`。
 
+## 2026-09-23：E2 BuildChecker 交接材料
+
+- 工具/模型：Codex。
+- 任务：参与整理 BuildChecker E2 交接文档、README 和产物样例。
+- 提示摘要：按照 Issue #2 和现有 E2 公共契约补齐 BuildChecker 专有交接材料，不实现检测器，不修改公共契约和共享 Schema。
+- AI 建议：用同一 commit 和 `configuration_id` 编写实际依赖图、声明依赖图和错误报告样例，并说明 MD/RD 差集、下游读取方式和失败行为。
+- 人工采纳与限制：采纳文档结构和产物样例；样例明确标记为 `CONTRACT_EXAMPLE`，不使用伪造的 PID、系统调用、时间戳或真实运行日志。
+- 关联文件：`docs/evidence/e2-buildchecker-handoff.md`、`services/buildchecker/README.md`、`services/buildchecker/examples/`。
+- 验证：运行 `python3 scripts/validate_contract.py`、三份 JSON 格式检查和 `git diff --check`。
+
+## 2026-09-24：E3 EChecker C0/C1/C2 基线
+
+- 工具/模型：Codex。
+- 任务：根据 #7 准备 EChecker 的 C0/C1/C2 Git 历史 fixture、人工 Oracle、命令证据和实际观察摘要。
+- 提示摘要：要求 C0 clean 输出 10，C1 新增 `feature.h` 但漏写 Makefile 依赖且 clean 输出 12，C2 只改编译命令并记录增量输出 12 与 clean 输出 19；遵循 #5 的 fixture/work/evidence 目录约定。
+- AI 建议：用版本化快照和生成脚本在 `work/e3/` 创建真实 Git 历史；将原始运行仓库和日志留在 ignored 的工作目录，将 SHA、Oracle、命令和观察摘要提交到 `docs/evidence/e3/echecker/`。
+- 人工采纳与限制：采纳最小 C/Make 样例和证据结构；不实现 EChecker 算法、服务端 API 或 BuildChecker 全量样例；最终证据切换为用户在 Ubuntu 22.04/GCC 11 环境中的 Linux 复现结果。
+- 关联文件：`fixtures/e3/echecker-history/`、`docs/evidence/e3/echecker/`。
+- 验证：运行 `conda run -n devops python fixtures\e3\echecker-history\create_history.py`、`conda run -n devops python scripts\e3\validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
+
 ## 2026-09-22：E2 EChecker 增量检测交接材料
 
 - 工具/模型：Codex。
@@ -40,7 +60,7 @@
 - AI 建议：将 `project_root` 标记为待决字段，因为当前 E2 契约尚未包含该输入；引用已有有效/无效样例解释基线校验和变化报告，不实现服务代码。
 - 人工采纳与限制：采纳文档结构和验证记录；交付范围限于 E2 模块交接材料，不实现 EChecker 服务、HTTP API 或最终共享 Schema；B 组产物读取能力和真实 C0/C1/C2 历史仍标记为待确认。
 - 关联文件：`services/echecker/README.md`、`docs/evidence/e2-echecker-incremental-check.md`。
-- 验证：运行 `git diff --check` 和 `conda run -n devops python scripts\validate_contract.py`，契约校验全部通过。
+- 验证：运行 `git diff --check` 和 `python3 scripts/validate_contract.py`，契约校验全部通过。
 
 ## 2026-09-24：E3 BuildChecker MD/RD 测试基线
 

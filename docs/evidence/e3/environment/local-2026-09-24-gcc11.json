@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "captured_at": "2026-09-24T00:00:00Z",
+  "host": {
+    "system": "Linux",
+    "release": "Ubuntu 22.04",
+    "version": "local WSL/Linux environment",
+    "machine": "x86_64",
+    "python_implementation": "CPython",
+    "python_version": "3.10.12"
+  },
+  "tools": {
+    "git": {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "path": null,
+      "available": true,
+      "returncode": 0,
+      "version": "git version 2.34.1"
+    },
+    "make": {
+      "command": [
+        "make",
+        "--version"
+      ],
+      "path": null,
+      "available": true,
+      "returncode": 0,
+      "version": "GNU Make 4.3"
+    },
+    "cc": {
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "path": null,
+      "available": true,
+      "returncode": 0,
+      "version": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0"
+    },
+    "python3": {
+      "command": [
+        "python3",
+        "--version"
+      ],
+      "path": null,
+      "available": true,
+      "returncode": 0,
+      "version": "Python 3.10.12"
+    },
+    "strace": {
+      "command": [
+        "strace",
+        "--version"
+      ],
+      "path": null,
+      "available": true,
+      "returncode": 0,
+      "version": "strace -- version 5.16"
+    }
+  }
+}
