@@ -15,6 +15,7 @@ BuildChecker、EChecker、DRAFT 和 MDFixer 都可能运行超过一次 HTTP 请
 - 成功分析发现写入 `ERROR_REPORT`，任务仍可为 `SUCCEEDED`；执行失败写入 `error`，终态为 `FAILED`、`TIMED_OUT` 或 `CANCELLED`，且不返回半成品 `output`。
 - 大型交接数据使用 `artifact://` URI；每个产物必须记录生产 Job、完整 commit 和 `configuration_id`。在本仓库中 URI 映射至 `artifacts/`，以后可替换为对象存储而不改变消费者接口。
 - EChecker 必须验证 `baseline.commit == base_commit`，并验证 baseline 与当前环境的 `configuration_id` 一致；缺失或不一致的输入返回 HTTP 400，不创建 Job。
+- `INCREMENTAL_CHECK.input.project_root` 是镜像内执行构建的非空路径。该字段在 E2 尚未有服务消费者前补入所有 Schema、样例和校验；若未来已有消费者再采用这一新增必填字段，必须按版本兼容规则提升主版本。
 
 ## 备选方案
 

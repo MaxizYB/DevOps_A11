@@ -35,9 +35,10 @@ EChecker 在 E2 阶段需要说明三件事：
 | `environment.image_uri` | 本次检测使用的构建环境镜像 URI。 |
 | `environment.configuration_id` | 本次检测使用的构建配置。 |
 | `build_command` | 在当前提交上执行的构建命令。 |
+| `project_root` | 镜像内执行构建的项目根目录，必须为非空路径。 |
 | `timeout_seconds` | 本次任务允许的最长执行时间。 |
 
-Issue #3 中提到的 `project_root` 仍是待决项：当前 E2 契约的 EChecker 输入尚未包含该字段。如果后续实现确实需要项目根目录，应在契约 Issue 中提出字段变更，并同步更新 Schema、样例和验证脚本。
+`project_root` 已作为 `INCREMENTAL_CHECK` 的正式必填输入写入 E2 契约、Schema、样例和校验脚本。由于 E2 尚未有服务消费者，该字段在 1.0.0 交付包内完成最终化；已有外部消费者若要采用该字段，必须按契约版本规则协商主版本升级。
 
 ## 基线校验
 
@@ -97,7 +98,6 @@ EChecker 消费 BuildChecker 的历史 `ACTUAL_GRAPH`，并产出新的 `ACTUAL_
 - 依赖 DRAFT 或 B 组提供可读取的构建环境镜像产物。
 - 依赖共享契约定义的 Job 模型、错误码、artifact URI 和版本策略。
 - 待确认 B 组是否能按 `artifact://` URI 读取 A 组产物。
-- 待确认 EChecker 是否需要把 `project_root` 纳入正式输入。
 - 待确认真实 C0/C1/C2 历史样例和人工 Oracle，E3 阶段会在 `fixtures/e3/echecker-history/` 与 `docs/evidence/e3/echecker/` 中补充。
 
 ## 现有样例和验证

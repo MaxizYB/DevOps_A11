@@ -29,6 +29,7 @@
       "configuration_id": "cfg-ubuntu22-gcc12-release-v1"
     },
     "build_command": "make",
+    "project_root": "/project",
     "timeout_seconds": 1800
   },
   "output": {

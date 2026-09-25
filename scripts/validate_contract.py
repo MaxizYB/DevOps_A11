@@ -154,8 +154,24 @@ def validate_input(job_type: str, value: Any) -> dict[str, Any]:
     elif job_type == "INCREMENTAL_CHECK":
         data = require_keys(
             value,
-            {"base_commit", "repository", "baseline", "environment", "build_command", "timeout_seconds"},
-            {"base_commit", "repository", "baseline", "environment", "build_command", "timeout_seconds"},
+            {
+                "base_commit",
+                "repository",
+                "baseline",
+                "environment",
+                "build_command",
+                "project_root",
+                "timeout_seconds",
+            },
+            {
+                "base_commit",
+                "repository",
+                "baseline",
+                "environment",
+                "build_command",
+                "project_root",
+                "timeout_seconds",
+            },
             "input",
         )
         require_string(data["base_commit"], "input.base_commit", COMMIT_RE)
@@ -171,6 +187,7 @@ def validate_input(job_type: str, value: Any) -> dict[str, Any]:
         require_string(baseline["configuration_id"], "input.baseline.configuration_id", CONFIGURATION_RE)
         environment = validate_environment(data["environment"], "input.environment")
         require_string(data["build_command"], "input.build_command")
+        require_string(data["project_root"], "input.project_root")
         if baseline["commit"] != data["base_commit"]:
             reject("REQUEST_1002", "input.baseline.commit must equal input.base_commit")
         if baseline["configuration_id"] != environment["configuration_id"]:

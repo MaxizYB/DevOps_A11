@@ -5,8 +5,8 @@
 - 关联 Issue：#7
 - 样例类型：C0-C1-C2
 - 项目来源或生成脚本：`fixtures/e3/echecker-history/create_history.py`
-- 运行目录：`work/e3/20260924T020000Z-issue-7-echecker-history/`
-- configuration_id 或等价配置：`cfg-linux-ubuntu22-gcc11-o0-v1`
+- 运行目录：`work/e3/20260925T043526Z-issue-7-echecker-history/`
+- configuration_id 或等价配置：`cfg-linux-lts-gcc16-o0-v2`
 
 ## 实际观察
 
@@ -28,8 +28,8 @@
 
 后续 EChecker 以 C0 的实际依赖图作为 baseline：
 
-- `base_commit = 8dfd90625e9d6f4598649ac3c956bbe46941e393`
-- `baseline.commit = 8dfd90625e9d6f4598649ac3c956bbe46941e393`
-- `baseline.configuration_id = cfg-linux-ubuntu22-gcc11-o0-v1`
+- `base_commit = 242df6090df69b2c1e61ac422030ae901eac715c`
+- `baseline.commit = 242df6090df69b2c1e61ac422030ae901eac715c`
+- `baseline.configuration_id = cfg-linux-lts-gcc16-o0-v2`
 
 比较 C0 到 C1 时，预期新增一个 `MISSING` 发现：`main.o -> feature.h`。比较 C1 到 C2 时，该 `MISSING` 发现仍为当前发现，但不是新增发现；C2 的重点是记录编译命令变化造成的增量构建输出 `12` 与 clean build 输出 `19` 的差异。

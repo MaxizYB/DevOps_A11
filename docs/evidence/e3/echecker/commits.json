@@ -3,33 +3,33 @@
   "issue": "#7",
   "branch": "test/7-c0-c1-c2-baseline",
   "fixture_source": "fixtures/e3/echecker-history/",
-  "run_directory": "work/e3/20260924T020000Z-issue-7-echecker-history/",
-  "configuration_id": "cfg-linux-ubuntu22-gcc11-o0-v1",
+  "run_directory": "work/e3/20260925T043526Z-issue-7-echecker-history/",
+  "configuration_id": "cfg-linux-lts-gcc16-o0-v2",
   "make_command": "make",
   "commits": {
     "C0": {
       "tag": "C0",
-      "sha": "8dfd90625e9d6f4598649ac3c956bbe46941e393",
+      "sha": "242df6090df69b2c1e61ac422030ae901eac715c",
       "role": "base_commit",
       "description": "Baseline with declared main.o dependencies matching the included headers in this fixture."
     },
     "C1": {
       "tag": "C1",
-      "sha": "72092998daefc643163073b7203ddda847ce130e",
-      "base_commit": "8dfd90625e9d6f4598649ac3c956bbe46941e393",
+      "sha": "7f5e4341e938e890fa71b6d219ef51437d5cea1f",
+      "base_commit": "242df6090df69b2c1e61ac422030ae901eac715c",
       "description": "Adds feature.h and uses it from main.c without declaring feature.h as a main.o prerequisite."
     },
     "C2": {
       "tag": "C2",
-      "sha": "0188a10285501024a25e4fa6a1cae9dec32e3ead",
-      "base_commit": "8dfd90625e9d6f4598649ac3c956bbe46941e393",
+      "sha": "fb03409e287fde67af2f707e689cf1c38a36ff51",
+      "base_commit": "242df6090df69b2c1e61ac422030ae901eac715c",
       "description": "Keeps C1 source and dependency declarations, changes only CFLAGS from -O0 to -O0 -DMODE=7."
     }
   },
   "echecker_baseline": {
-    "base_commit": "8dfd90625e9d6f4598649ac3c956bbe46941e393",
-    "baseline_commit": "8dfd90625e9d6f4598649ac3c956bbe46941e393",
+    "base_commit": "242df6090df69b2c1e61ac422030ae901eac715c",
+    "baseline_commit": "242df6090df69b2c1e61ac422030ae901eac715c",
     "required_rule": "baseline.commit must equal base_commit and baseline.configuration_id must equal the current task configuration_id",
-    "expected_actual_graph_source": "BuildChecker ACTUAL_GRAPH generated from C0 under cfg-linux-ubuntu22-gcc11-o0-v1"
+    "expected_actual_graph_source": "BuildChecker ACTUAL_GRAPH generated from C0 under cfg-linux-lts-gcc16-o0-v2"
   }
 }

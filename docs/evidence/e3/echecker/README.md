@@ -1,6 +1,6 @@
 # EChecker E3 Evidence
 
-本目录保存 [#7](https://github.com/MaxizYB/DevOps_A11/issues/7) 的可提交证据摘要。原始运行仓库、编译产物和完整验证日志位于 `work/e3/20260924T020000Z-issue-7-echecker-history/`，不提交到仓库。
+本目录保存 [#7](https://github.com/MaxizYB/DevOps_A11/issues/7) 的可提交证据摘要。收尾复现的原始运行仓库、编译产物和完整验证日志位于 `work/e3/20260925T043526Z-issue-7-echecker-history/`，不提交到仓库；成员先前的 Ubuntu/GCC 11 记录仍可从 PR #12 的提交历史追溯。
 
 ## 文件
 
@@ -15,4 +15,4 @@
 - `base_commit` 使用 C0。
 - C1 和 C2 的 baseline 图应来自 C0 的 `ACTUAL_GRAPH`。
 - `baseline.commit == base_commit`。
-- C0、C1、C2 使用同一 Linux 复现配置 `cfg-linux-ubuntu22-gcc11-o0-v1`；C2 额外记录编译命令变化 `-DMODE=7`，用于验证命令变化造成的增量行为差异。
+- C0、C1、C2 使用同一 Linux 复现配置 `cfg-linux-lts-gcc16-o0-v2`；C2 额外记录编译命令变化 `-DMODE=7`，用于验证命令变化造成的增量行为差异。

@@ -486,6 +486,7 @@
         "baseline",
         "environment",
         "build_command",
+        "project_root",
         "timeout_seconds"
       ],
       "properties": {
@@ -519,6 +520,10 @@
           "$ref": "#/$defs/environment"
         },
         "build_command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_root": {
           "type": "string",
           "minLength": 1
         },

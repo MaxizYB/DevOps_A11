@@ -52,6 +52,17 @@
 - 关联文件：`fixtures/e3/echecker-history/`、`docs/evidence/e3/echecker/`。
 - 验证：运行 `conda run -n devops python fixtures\e3\echecker-history\create_history.py`、`conda run -n devops python scripts\e3\validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
 
+## 2026-09-25：E2/E3 最终复现与收尾
+
+- 工具/模型：Codex。
+- 任务：审阅成员 PR，解决 EChecker 分支冲突，完成 E3 两项基线的收尾复现，并整理最终验收记录。
+- AI 建议：让 C0/C1/C2 生成脚本每次创建新的 UTC 运行目录；修正 C2 快照，使其相对 C1 只修改编译命令；将最终 SHA、环境和四组行为写入收尾证据。
+- 人工采纳与限制：采纳可重复运行目录和严格 C2 变更边界；没有把基线行为误写成 BuildChecker/EChecker 算法已经实现，也没有代替 B11 完成 E2-04 互读确认。
+- 关联文件：`fixtures/e3/echecker-history/create_history.py`、`fixtures/e3/echecker-history/snapshots/C2/README.md`、`docs/evidence/e3/final-acceptance.md`、`docs/backlog/e3-backlog.md`。
+- 验证：收尾生成脚本得到 C0/C1/C2 行为 `10 / 12 / 12 / 19`；E3 框架、E2 契约、Python 编译、JSON 和 `git diff --check` 均通过。
+
+- 契约收尾决策：将 Issue #3 提到的 `project_root` 正式加入 `INCREMENTAL_CHECK` 输入，并同步更新契约文档、两个 Schema、样例、校验器和 EChecker 交接材料。该字段在 E2 尚未有服务消费者前完成最终化；若已有外部消费者再采用新增必填字段，需按版本规则提升主版本并经双方确认。
+
 ## 2026-09-22：E2 EChecker 增量检测交接材料
 
 - 工具/模型：Codex。

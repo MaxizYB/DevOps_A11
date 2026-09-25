@@ -46,11 +46,11 @@
 ## 失败与下一步
 
 - 当前失败：本次基线实验没有阻塞性失败。
-- 下一步：创建 PR；另一位组员按 fixture README 复现。
-- Cross-member reproduction: pending review.
+- 收尾复核：组长于 2026-09-25 在 `work/e3/20260925T044000Z-issue-6-md-rd/project/` 独立副本按 README 重放四步，输出 `1 / 1 / 2 / 2`，与 Oracle 一致。
 
 ## 个人贡献与追溯
 
 - 作者：@andelutixia
-- PR：待后续创建
+- PR：#11（已合并）
+- 最终合并提交：`689c5d73a1751132b2586c6c53f39519a0682c88`
 - 基线源码提交 SHA：`ddedbb87bf980286c17ece296a8f9763841c31ea`
