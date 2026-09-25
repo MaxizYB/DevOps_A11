@@ -51,3 +51,23 @@
 - 人工采纳与限制：采纳最小 C/Make 样例和证据结构；不实现 EChecker 算法、服务端 API 或 BuildChecker 全量样例；最终证据切换为用户在 Ubuntu 22.04/GCC 11 环境中的 Linux 复现结果。
 - 关联文件：`fixtures/e3/echecker-history/`、`docs/evidence/e3/echecker/`。
 - 验证：运行 `conda run -n devops python fixtures\e3\echecker-history\create_history.py`、`conda run -n devops python scripts\e3\validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
+
+## 2026-09-22：E2 EChecker 增量检测交接材料
+
+- 工具/模型：Codex。
+- 任务：根据 #3 整理 EChecker 的增量检测模块说明和交接证据，补充 `INCREMENTAL_CHECK` 的输入、baseline 校验、输出语义、依赖和待决问题。
+- 提示摘要：要求依据接口契约、#3 说明和协作规范，在预期分支 `docs/3-echecker-incremental-check` 上完善模块 README 和证据文档。
+- AI 建议：将 `project_root` 标记为待决字段，因为当前 E2 契约尚未包含该输入；引用已有有效/无效样例解释基线校验和变化报告，不实现服务代码。
+- 人工采纳与限制：采纳文档结构和验证记录；交付范围限于 E2 模块交接材料，不实现 EChecker 服务、HTTP API 或最终共享 Schema；B 组产物读取能力和真实 C0/C1/C2 历史仍标记为待确认。
+- 关联文件：`services/echecker/README.md`、`docs/evidence/e2-echecker-incremental-check.md`。
+- 验证：运行 `git diff --check` 和 `python3 scripts/validate_contract.py`，契约校验全部通过。
+
+## 2026-09-24：E3 BuildChecker MD/RD 测试基线
+
+- 工具/模型：Codex。
+- 任务：补充 Issue #6 的 MD/RD 测试样例、人工 Oracle 和实验记录，并整理相关文档。
+- 提示摘要：用最小 GNU Make 项目在同一个 `main.o` 中构造 `config.h` 的缺失依赖和 `unused.h` 的冗余依赖；在 `work/e3/` 副本中完成四步实验，不直接修改 fixture。
+- AI 建议：将 `main.o -> config.h` 记为 MISSING、`main.o -> unused.h` 记为 REDUNDANT，并分别保存人工 Oracle、运行日志和观察记录。
+- 人工采纳与限制：已检查 Makefile 的依赖关系及四步实验结果。修改 `config.h` 后普通 `make` 未重编译，clean build 后输出更新；修改 `unused.h` 后触发额外重编译。本阶段未实现或运行真正的 BuildChecker；fixture 源码提交 SHA 已记录，PR 和组员复现结果留待后续 Review。
+- 关联文件：`fixtures/e3/md-rd/`、`docs/evidence/e3/buildchecker/`、`docs/evidence/e3/environment/local-2026-09-24.json`；原始记录位于 `work/e3/20260924T021234Z-issue-6-md-rd/`。
+- 验证：运行四步 Make 实验，并执行 `python3 scripts/e3/validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
