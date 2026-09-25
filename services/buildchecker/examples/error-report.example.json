@@ -1,0 +1,38 @@
+{
+  "provenance": "CONTRACT_EXAMPLE",
+  "artifact_type": "ERROR_REPORT",
+  "commit": "fedcba9876543210fedcba9876543210fedcba98",
+  "configuration_id": "cfg-ubuntu22-gcc12-release-v1",
+  "findings": [
+    {
+      "type": "MISSING",
+      "target": "main.o",
+      "dependency": "config.h",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98",
+      "location": {
+        "file": "Makefile",
+        "target": "main.o",
+        "rule": "main.o: main.c unused.h"
+      },
+      "evidence": {
+        "actual_dependency": "实际依赖图中存在 config.h。",
+        "declared_dependency": "Makefile 中 main.o 的前置依赖不包含 config.h。"
+      }
+    },
+    {
+      "type": "REDUNDANT",
+      "target": "main.o",
+      "dependency": "unused.h",
+      "commit": "fedcba9876543210fedcba9876543210fedcba98",
+      "location": {
+        "file": "Makefile",
+        "target": "main.o",
+        "rule": "main.o: main.c unused.h"
+      },
+      "evidence": {
+        "declared_dependency": "声明依赖图中存在 unused.h。",
+        "actual_dependency": "本 CONTRACT_EXAMPLE 场景的实际依赖中不存在 unused.h。"
+      }
+    }
+  ]
+}
