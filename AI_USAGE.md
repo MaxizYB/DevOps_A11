@@ -32,15 +32,15 @@
 - 关联文件：`fixtures/e3/`、`work/e3/`、`docs/evidence/e3/`、`docs/backlog/e3-backlog.md`、`docs/adr/0002-e3-baseline-evidence-layout.md`、`scripts/e3/`。
 - 验证：运行环境采集、`python3 scripts/e3/validate_e3_framework.py`、Python 编译和 `git diff --check`。
 
-## 2026-09-23：E2 BuildChecker 交接材料
+## 2026-09-22：E2 EChecker 增量检测交接材料
 
 - 工具/模型：Codex。
-- 任务：参与整理 BuildChecker E2 交接文档、README 和产物样例。
-- 提示摘要：按照 Issue #2 和现有 E2 公共契约补齐 BuildChecker 专有交接材料，不实现检测器，不修改公共契约和共享 Schema。
-- AI 建议：用同一 commit 和 `configuration_id` 编写实际依赖图、声明依赖图和错误报告样例，并说明 MD/RD 差集、下游读取方式和失败行为。
-- 人工采纳与限制：采纳文档结构和产物样例；样例明确标记为 `CONTRACT_EXAMPLE`，不使用伪造的 PID、系统调用、时间戳或真实运行日志。
-- 关联文件：`docs/evidence/e2-buildchecker-handoff.md`、`services/buildchecker/README.md`、`services/buildchecker/examples/`。
-- 验证：运行 `python3 scripts/validate_contract.py`、三份 JSON 格式检查和 `git diff --check`。
+- 任务：根据 #3 整理 EChecker 的增量检测模块说明和交接证据，补充 `INCREMENTAL_CHECK` 的输入、baseline 校验、输出语义、依赖和待决问题。
+- 提示摘要：要求依据接口契约、#3 说明和协作规范，在预期分支 `docs/3-echecker-incremental-check` 上完善模块 README 和证据文档。
+- AI 建议：将 `project_root` 标记为待决字段，因为当前 E2 契约尚未包含该输入；引用已有有效/无效样例解释基线校验和变化报告，不实现服务代码。
+- 人工采纳与限制：采纳文档结构和验证记录；交付范围限于 E2 模块交接材料，不实现 EChecker 服务、HTTP API 或最终共享 Schema；B 组产物读取能力和真实 C0/C1/C2 历史仍标记为待确认。
+- 关联文件：`services/echecker/README.md`、`docs/evidence/e2-echecker-incremental-check.md`。
+- 验证：运行 `git diff --check` 和 `conda run -n devops python scripts\validate_contract.py`，契约校验全部通过。
 
 ## 2026-09-24：E3 BuildChecker MD/RD 测试基线
 
