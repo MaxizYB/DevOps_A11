@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from buildchecker.cli import main, opened_header
-from scripts.e4.secret_scan import findings
+from scripts.e4.secret_scan import findings, workspace_files
 
 
 def test_version(capsys):
@@ -29,3 +29,19 @@ def test_secret_finding_is_redacted():
     assert result
     assert "sk-d" in result[0]
     assert "demo1234567890" not in result[0]
+
+
+def test_private_key_header_is_detected_without_leaking_value():
+    result = findings("demo", b"-----BEGIN PRIVATE KEY-----\n")
+    assert result
+    assert "PRIVATE KEY" not in result[0]
+
+
+def test_local_env_is_not_scanned_as_a_leak(monkeypatch, tmp_path: Path):
+    from scripts.e4 import secret_scan
+
+    fake = "sk-" + "demo" + "1234567890abcdefghijk"
+    (tmp_path / ".env").write_text(f'api_key="{fake}"\n')
+    (tmp_path / "leak-demo.txt").write_text(f'api_key="{fake}"\n')
+    monkeypatch.setattr(secret_scan, "ROOT", tmp_path)
+    assert [path.name for path in workspace_files()] == ["leak-demo.txt"]

@@ -6,7 +6,7 @@
 
 ## 决策
 
-- A11 在没有教师模板文件可读取的情况下，在现有仓库中自行建立 E4 A 组骨架。
+- A11 先在未取得教师实验包时建立 E4 A 组骨架；实验包取得后，对照 `E4实验包/A-buildchecker/` 并吸收兼容的工程改进。
 - E2 的 `contracts/`、E3 的 `fixtures/e3/` 和历史证据保持原路径不变；E4 只新增容器、编排、锁文件、CLI、测试和运行脚本。
 - BuildChecker 的 E4 CLI 只提供 `version` 和基于 E3 MD/RD fixture 的 `smoke`；实际依赖图分析留到后续 MVP，不把冒烟结果写成检测器结果。
 - 每次 `make` 子命令和 `make all` 都创建新的 `work/<UTC timestamp>/` 证据目录，原始日志默认不进入 Git。

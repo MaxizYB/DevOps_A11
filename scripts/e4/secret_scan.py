@@ -13,7 +13,8 @@ PATTERNS = (
     re.compile(rb"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(rb"gh[pousr]_[A-Za-z0-9]{36,}"),
     re.compile(rb"github_pat_[A-Za-z0-9_]{20,}"),
-    re.compile(rb"(?i)(?:api[_-]?key|access[_-]?token)\s*[:=]\s*['\"]?([A-Za-z0-9_-]{20,})"),
+    re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"),
+    re.compile(rb"(?i)(?:api[_-]?key|access[_-]?token|secret|password|passwd)\s*[:=]\s*['\"]?([A-Za-z0-9_./+=-]{20,})"),
 )
 
 
@@ -45,6 +46,8 @@ def workspace_files() -> list[Path]:
         relative = path.relative_to(ROOT)
         if ".git" in relative.parts or "work" in relative.parts:
             continue
+        if path.name == ".env" or (path.name.startswith(".env.") and path.name != ".env.example"):
+            continue
         files.append(path)
     return files
 
@@ -52,8 +55,11 @@ def workspace_files() -> list[Path]:
 def scan(image: str) -> list[str]:
     issues: list[str] = []
     paths = [p for p in run(["git", "ls-files", "--cached", "-z"]).split(b"\0") if p]
-    if any(Path(p.decode()).name == ".env" for p in paths):
+    if any(Path(p.decode()).name == ".env" or (Path(p.decode()).name.startswith(".env.") and Path(p.decode()).name != ".env.example") for p in paths):
         issues.append("tracked .env file")
+    env_file = ROOT / ".env"
+    if env_file.exists() and env_file.stat().st_mode & 0o077:
+        issues.append(".env permissions are broader than 600")
     for local in workspace_files():
         path = local.relative_to(ROOT).as_posix()
         issues.extend(findings(f"workspace/{path}", local.read_bytes()))

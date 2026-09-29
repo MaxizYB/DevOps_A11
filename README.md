@@ -42,6 +42,7 @@ Makefile                E4 一键命令入口
 compose.yaml             E4 容器资源与安全限制
 requirements-dev.*       E4 Python 开发依赖输入和哈希锁
 scripts/e4/              E4 环境、运行编排和密钥检查
+setup/                   服务器一次性初始化脚本
 ```
 
 ## 协作入口

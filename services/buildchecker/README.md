@@ -26,7 +26,7 @@ EChecker 读取 `ACTUAL_GRAPH`，并检查其中的 commit 和 `configuration_id
 
 ## E4 运行边界
 
-- `PYTHONPATH=services/buildchecker python -m buildchecker.cli version` reports the scaffold version locally; the container sets this path automatically.
-- `PYTHONPATH=services/buildchecker python -m buildchecker.cli smoke` rebuilds the E3 MD/RD fixture in a temporary directory under the container, traces `make` with `strace`, and checks that `config.h` was opened and the program prints `1`.
+- `PYTHONPATH=services/buildchecker python -m buildchecker version` reports the scaffold version locally; the container sets this path automatically.
+- `PYTHONPATH=services/buildchecker python -m buildchecker smoke` rebuilds the E3 MD/RD fixture in a temporary directory under the container, traces `make` with `strace`, and checks that `config.h` was opened and the program prints `1`.
 - The CLI does not claim to implement BuildChecker's `ACTUAL_GRAPH`, `DECLARED_GRAPH`, or MD/RD analysis.
 - Run from the repository root with `make all`; each run writes its evidence to a new ignored `work/<UTC timestamp>/` directory.

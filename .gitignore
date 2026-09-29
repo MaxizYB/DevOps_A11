@@ -1,9 +1,13 @@
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .env
 .env.*
 !.env.example
+*.pem
+*.key
 /*.tar.gz
+/*.zip
 /docs/papers/*
 
 # E3 keeps reproducible fixture sources in version control, but raw clones and

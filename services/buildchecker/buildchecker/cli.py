@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
         result = smoke(args.fixture)
     except (FileNotFoundError, subprocess.SubprocessError) as error:
         result = {"passed": False, "error": str(error)}
-    print(json.dumps(result, indent=2))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["passed"] else 1
 
 

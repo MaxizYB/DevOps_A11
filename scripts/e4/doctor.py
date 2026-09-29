@@ -15,6 +15,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+MIN_CPU = 2
+MIN_MEMORY_KIB = int(3.5 * 1024**2)
+MIN_DISK_BYTES = 40 * 1024**3
 
 
 def command(args: list[str]) -> tuple[int, str]:
@@ -41,8 +44,10 @@ def collect() -> dict[str, object]:
     for name, args in checks.items():
         code, output = command(args)
         tools[name] = {"available": code == 0, "version": output.splitlines()[0] if output else ""}
-        if code != 0:
+        if code != 0 and name != "docker_buildx":
             problems.append(f"{name} unavailable")
+        elif code != 0:
+            warnings.append("docker_buildx unavailable; install Docker Buildx before relying on buildx-only commands")
 
     _, student_id = command(["git", "config", "--local", "user.name"])
     _, email = command(["git", "config", "--local", "user.email"])
@@ -60,18 +65,22 @@ def collect() -> dict[str, object]:
         warnings.append("worktree is not clean; use a fresh clone for acceptance")
 
     disk = shutil.disk_usage(ROOT)
-    if disk.free < 10 * 1024**3:
-        warnings.append("less than 10 GiB free disk space")
+    if disk.free < MIN_DISK_BYTES:
+        problems.append("less than 40 GiB free disk space")
     memory_kib = None
     meminfo = Path("/proc/meminfo")
     if meminfo.exists():
         match = re.search(r"^MemTotal:\s+(\d+) kB", meminfo.read_text(), re.MULTILINE)
         if match:
             memory_kib = int(match.group(1))
-            if memory_kib < 3.5 * 1024**2:
-                warnings.append("less than 3.5 GiB visible memory")
-    if (os.cpu_count() or 0) < 2:
-        warnings.append("fewer than 2 visible CPUs")
+            if memory_kib < MIN_MEMORY_KIB:
+                problems.append("less than 3.5 GiB visible memory")
+    if (os.cpu_count() or 0) < MIN_CPU:
+        problems.append("fewer than 2 visible CPUs")
+
+    env_file = ROOT / ".env"
+    if env_file.exists() and env_file.stat().st_mode & 0o077:
+        problems.append(".env permissions are broader than 600")
 
     return {
         "captured_at": datetime.now(timezone.utc).isoformat(),
@@ -85,7 +94,7 @@ def collect() -> dict[str, object]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--output", "--out", dest="output", required=True, type=Path)
     args = parser.parse_args()
     report = collect()
     args.output.parent.mkdir(parents=True, exist_ok=True)

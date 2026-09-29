@@ -6,6 +6,11 @@ work
 docs
 contracts
 services/echecker
+setup
 **/__pycache__
 **/*.pyc
+.pytest_cache
+*.pem
+*.key
 *.tar.gz
+*.zip
