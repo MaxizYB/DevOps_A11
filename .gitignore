@@ -1,7 +1,14 @@
 __pycache__/
 *.py[cod]
+.env
+.env.*
+!.env.example
+/*.tar.gz
+/docs/papers/*
 
 # E3 keeps reproducible fixture sources in version control, but raw clones and
 # per-run build outputs are local evidence and must not be committed by default.
+/work/*
+!/work/e3/
 /work/e3/*
 !/work/e3/README.md
