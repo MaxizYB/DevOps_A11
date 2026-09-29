@@ -1,0 +1,2 @@
+# Development and test dependency; regenerate requirements-dev.lock with make lock.
+pytest==8.4.2

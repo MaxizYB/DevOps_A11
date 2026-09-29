@@ -2,6 +2,15 @@
 
 本文件记录影响课程设计、源码或交付材料的 AI 辅助工作。每项记录须说明人工判断和验证结果，不能把 AI 输出直接视为已验证结论。
 
+## 2026-09-29：E4 A 组可重复工程环境骨架
+
+- 工具/模型：Codex。
+- 任务：在教师实验包尚未取得时，依据 E4 课件和 A 组命令手册，在本仓库建立 BuildChecker 工程环境骨架；实验包取得后进行差异复核。
+- AI 建议：保留 E2/E3 目录，新增固定 digest Dockerfile、Compose 资源限制、带哈希依赖锁、`make all` 编排、`version/smoke` CLI、单元测试和脱敏密钥扫描，并吸收实验包中的模块入口、工具链记录、超时和项目隔离约定。
+- 人工采纳与限制：保留现有 E3 fixture 文本以维持基线，只采纳兼容的工程改进；没有把 smoke 结果表述为 BuildChecker 算法结果。由于当前开发机没有 Docker daemon，镜像构建、容器测试、镜像扫描和两名 ECS 组员复跑仍须在服务器验证。
+- 关联文件：`Dockerfile`、`compose.yaml`、`Makefile`、`scripts/e4/`、`services/buildchecker/buildchecker/`、`docs/evidence/e4/`、`docs/adr/0003-e4-reproducible-buildchecker-environment.md`。
+- 验证：Python 单测 `5 passed`；本机 `strace` smoke 通过；E2 契约校验、Python 编译、Compose 配置解析和 `git diff --check` 通过。
+
 ## 2026-09-20：E2 初始协作框架
 
 - 工具/模型：Codex
