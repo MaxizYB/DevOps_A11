@@ -67,7 +67,10 @@ def execute(
     else:
         result = run(None, None)
     if result.returncode:
-        raise RuntimeError(f"{' '.join(args[:3])} failed with exit code {result.returncode}; see {output or 'terminal'}")
+        evidence = str(output) if output else "terminal"
+        if stderr:
+            evidence += f" and {stderr}"
+        raise RuntimeError(f"{' '.join(args[:3])} failed with exit code {result.returncode}; see {evidence}")
 
 
 def ensure_env() -> None:
