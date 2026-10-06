@@ -16,6 +16,7 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp:rw,nosuid,nodev,size=128m
+      # Smoke compiles and executes app here; Docker tmpfs defaults to noexec.
+      - /tmp:rw,exec,nosuid,nodev,size=128m
     volumes:
       - ./work:/app/work

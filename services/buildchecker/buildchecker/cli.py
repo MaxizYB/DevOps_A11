@@ -63,8 +63,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     try:
         result = smoke(args.fixture)
-    except (FileNotFoundError, subprocess.SubprocessError) as error:
-        result = {"passed": False, "error": str(error)}
+    except (OSError, subprocess.SubprocessError) as error:
+        result = {"passed": False, "error": str(error), "error_type": type(error).__name__}
+        if isinstance(error, PermissionError):
+            result["hint"] = "Check file permissions and ensure the /tmp tmpfs mount includes exec."
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["passed"] else 1
 

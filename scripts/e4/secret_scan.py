@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -13,7 +14,8 @@ PATTERNS = (
     re.compile(rb"sk-[A-Za-z0-9_-]{20,}"),
     re.compile(rb"gh[pousr]_[A-Za-z0-9]{36,}"),
     re.compile(rb"github_pat_[A-Za-z0-9_]{20,}"),
-    re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"),
+    # A PEM header ends a line; a quoted source-code example does not.
+    re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----(?:\r?\n|$)"),
     re.compile(rb"(?i)(?:api[_-]?key|access[_-]?token|secret|password|passwd)\s*[:=]\s*['\"]?([A-Za-z0-9_./+=-]{20,})"),
 )
 
@@ -38,9 +40,18 @@ def findings(label: str, data: bytes) -> list[str]:
 
 
 def workspace_files() -> list[Path]:
-    """Return files in the checkout, excluding Git internals and E4 output."""
+    """Scan tracked and unignored files; local archives/docs are not delivery."""
+    listing = subprocess.run(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+        cwd=ROOT,
+        capture_output=True,
+    )
+    candidates = (
+        [ROOT / raw.decode("utf-8", "surrogateescape") for raw in listing.stdout.split(b"\0") if raw]
+        if listing.returncode == 0 else ROOT.rglob("*")
+    )
     files: list[Path] = []
-    for path in ROOT.rglob("*"):
+    for path in candidates:
         if not path.is_file():
             continue
         relative = path.relative_to(ROOT)
@@ -69,7 +80,9 @@ def scan(image: str) -> list[str]:
         issues.extend(findings(f"index/{path}", staged))
     issues.extend(findings("git-history", run(["git", "log", "--all", "--format=", "-p"])))
     issues.extend(findings("image-history", run(["docker", "history", "--no-trunc", "--format", "{{.CreatedBy}}", image])))
-    issues.extend(findings("image-env", run(["docker", "image", "inspect", "--format", "{{json .Config.Env}}", image])))
+    image_env = json.loads(run(["docker", "image", "inspect", "--format", "{{json .Config.Env}}", image]))
+    for variable in image_env or []:
+        issues.extend(findings("image-env", variable.encode("utf-8")))
     return issues
 
 
@@ -79,7 +92,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         issues = scan(args.image)
-    except (OSError, RuntimeError) as error:
+    except (OSError, RuntimeError, json.JSONDecodeError) as error:
         print(f"密钥检查：无法完成（{error}）")
         return 2
     if issues:
