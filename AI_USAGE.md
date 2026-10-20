@@ -11,6 +11,18 @@
 - 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/buildchecker/smoke.py`、`scripts/lab_cloud.py`、`scripts/run_e7_a_gate.py`、`tests/e7/`、`.github/workflows/e7-quality-gate.yml`、`docs/evidence/e5/`、`docs/evidence/e6/`、`docs/evidence/e7/`。
 - 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁待服务器运行后记录，不以本地结果替代。
 
+## 2026-10-20：E7 自主边界测试（Refs #22）
+
+- 工具/模型：Codex。
+- 任务：Refs #22；检查 ECS 输出、补充 E7 自主判定测试并整理个人说明与证据索引。
+- 提示摘要：检查已有结果后进行最小测试修改；用户指出职责边界后保留 E7 测试，整理 docs 和 AI 使用说明，不覆盖原始证据。
+- AI 建议与采纳：为独立判定器补充少一条、多一条、重复一条发现的拒绝测试；根据实际日志建立结果表、真实路径索引和重放命令。曾添加的服务 CLI 测试因超出本人职责已撤回，没有修改检测算法或放宽门禁预期。
+- 关联文件：`tests/e7/test_e7_a_gate.py`、`docs/evidence/e7/README.md`、`docs/evidence/e7/e7-20261020-test-cloud-validation.md` 和本记录。新增独立判定测试已在 ECS 宿主运行；当前服务镜像不包含该目录，严格要求测试进入镜像时需协调打包方式。
+- 来源与版本：检测器及既有测试来自公共基础提交 `41cc04da58911a8017fc2838471e15e7df5b95ef`。
+- 实际验证：用户在 ECS 执行后，Codex 读取原始日志核对独立判定 7 个方法通过（新增方法含 3 个子场景）、镜像构建退出 0、服务测试 15 项通过、八项门禁全通过且退出 0；JSON/CSV 逐项一致，证据校验退出 0 且仅 Makefile 输入哈希变化。AST 和差异检查已通过。
+- 原始证据：`/root/231880027/DevOps_A11/work/e7-validation-231880027-20261020-140239/`；构建与门禁记录的镜像 ID 均为 `sha256:b1677429ab19917bad50adbfe68f463ab2c802612a1af344eeba3c3abf99d8f8`。原始 work 不纳入 Git。
+- 本分支交接与限制：补完整实际工具版本和容器清理核对；提交测试、云端记录和证据索引并经组员评审。本条记录仅覆盖当前分支的自主测试与云端验证。
+
 ## 2026-10-06：E4 服务器 smoke 权限失败修复
 
 - 工具/模型：Codex。
