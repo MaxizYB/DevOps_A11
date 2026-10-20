@@ -25,7 +25,7 @@ COPY --chown=app:app services/buildchecker/tests/ services/buildchecker/tests/
 COPY --chown=app:app services/buildchecker/pytest.ini services/buildchecker/pytest.ini
 COPY --chown=app:app scripts/e4/ scripts/e4/
 COPY --chown=app:app pytest.ini /app/pytest.ini
-COPY --chown=app:app fixtures/e3/md-rd/ fixtures/md-rd/
+COPY --chown=app:app fixtures/md-rd/ fixtures/md-rd/
 ENV PYTHONPATH=/app:/app/services/buildchecker
 USER app
 CMD ["python", "-m", "buildchecker", "version"]
