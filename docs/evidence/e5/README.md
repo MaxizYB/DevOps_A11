@@ -31,3 +31,5 @@ python3 scripts/lab_cloud.py e5 --out work/e5-<student-id>
 ## 验收
 
 `program-output.txt` 应为 `1`，`make-db.txt` 应出现 `main.o: main.c unused.h`，trace 应出现成功打开 `config.h` 的记录。E5 交付还需要所用代码来源、命令、工具版本、退出码和证据相对路径。
+
+组长阶段 A 的实际云端记录见 [`../e5-e7-20261020-leader-run.md`](../e5-e7-20261020-leader-run.md)。成员运行时应复制该结构，但使用自己的学号目录、源码 SHA 和新的 `work/` 目录。
