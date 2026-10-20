@@ -1,13 +1,13 @@
 # BuildChecker
 
-This module is the boundary for A group's full dependency detection work. E4 adds a reproducible container and a minimal `version`/`smoke` CLI; the dependency-analysis algorithm remains out of scope until the later MVP work.
+This module is the boundary for A group's full dependency detection work. E4 supplies the reproducible container; E5 records the raw build trace and Make database, and E6 adds the auditable teaching-profile detector.
 
 Shared data formats belong to the group leader's E2 contract task. E4's environment entry point is `buildchecker.cli`.
 
 ```text
-buildchecker/  E4 CLI (`version`, `smoke`)
-tests/        E4 unit tests
-src/          reserved for later detector implementation
+buildchecker/  CLI (`version`, `smoke`, `full-check`)
+tests/        service and E6 detector tests
+src/          reserved for later production detector work
 ```
 
 ## E2 接口边界
@@ -28,5 +28,12 @@ EChecker 读取 `ACTUAL_GRAPH`，并检查其中的 commit 和 `configuration_id
 
 - `PYTHONPATH=services/buildchecker python -m buildchecker version` reports the scaffold version locally; the container sets this path automatically.
 - `PYTHONPATH=services/buildchecker python -m buildchecker smoke` rebuilds the E3 MD/RD fixture in a temporary directory under the container, traces `make` with `strace`, and checks that `config.h` was opened and the program prints `1`.
-- The CLI does not claim to implement BuildChecker's `ACTUAL_GRAPH`, `DECLARED_GRAPH`, or MD/RD analysis.
+- The E4 `version`/`smoke` path does not claim to implement the E6 `ACTUAL_GRAPH`, `DECLARED_GRAPH`, or MD/RD analysis.
 - Run from the repository root with `make all`; each run writes its evidence to a new ignored `work/<UTC timestamp>/` directory.
+
+## E5–E7 运行边界
+
+- `python3 scripts/lab_cloud.py e5 --out work/<run>` runs the full E5 trace in a Linux ECS container and preserves `trace/`, `make-db.txt`, build stderr and program output.
+- `python3 scripts/lab_cloud.py e6 --out work/<run>` runs `full-check`; `--fixed` changes only an isolated fixture copy for the repair comparison.
+- `python3 scripts/lab_cloud.py gate --out work/<run>` runs three original checks, one fixed check and three explicit failure scenarios. `tests/e7/` validates the gate oracle independently.
+- This is an auditable teaching profile for the single GNU Make fixture. It is not a claim to reproduce the paper's complete benchmark or to implement the later REST service.

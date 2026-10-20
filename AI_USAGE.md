@@ -2,6 +2,15 @@
 
 本文件记录影响课程设计、源码或交付材料的 AI 辅助工作。每项记录须说明人工判断和验证结果，不能把 AI 输出直接视为已验证结论。
 
+## 2026-10-20：E5–E7 A 轨道公共基础接入
+
+- 工具/模型：Codex。
+- 任务：依据 E5–E7 教学包，将 A-buildchecker 的 E6 全量检测、E7 门禁和云端实验入口接入已有 E2–E4 仓库，并为 #20 准备可供成员并行开发的公共版本。
+- AI 建议：保留 E4 环境入口，新增 `scripts/lab_cloud.py`；复用教学包的可审计 `fullcheck.py`、真实故障 oracle、CI artifact 流程；按学号隔离镜像和 `work/` 证据目录。
+- 人工采纳与限制：保留当前 E2–E4 契约和 Git 历史；仅导入 A 轨道代码，不导入 B 轨道或 EChecker 生产实现；修正参考入口的默认镜像名和 doctor 证据输出；将 doctor 的最低内存与既有 E4 ECS 门槛统一为 3.5 GiB（实际服务器为 3.5 GiB，仍低于推荐值）；增加 E4 CLI 兼容的 `opened_header` 辅助函数。论文级完整基准不在本阶段声明完成。
+- 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/buildchecker/smoke.py`、`scripts/lab_cloud.py`、`scripts/run_e7_a_gate.py`、`tests/e7/`、`.github/workflows/e7-quality-gate.yml`、`docs/evidence/e5/`、`docs/evidence/e6/`、`docs/evidence/e7/`。
+- 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁待服务器运行后记录，不以本地结果替代。
+
 ## 2026-10-06：E4 服务器 smoke 权限失败修复
 
 - 工具/模型：Codex。

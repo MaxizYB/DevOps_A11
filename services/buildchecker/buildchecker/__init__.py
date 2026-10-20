@@ -1,3 +1,2 @@
-"""BuildChecker E4 environment scaffold."""
-
-__version__ = "0.4.0"
+"""Course BuildChecker teaching implementation."""
+__version__ = "0.2.0-teaching"

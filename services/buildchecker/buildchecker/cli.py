@@ -1,75 +1,49 @@
-"""Minimal E4 CLI. Dependency analysis is intentionally out of scope."""
-
-from __future__ import annotations
-
+"""CLI keeps E4 version/smoke and adds the E6 full-check command."""
 import argparse
 import json
-import shutil
-import subprocess
-import tempfile
-from pathlib import Path
-
 from . import __version__
+from .smoke import run_smoke
+from .fullcheck import full_check
 
 
 def opened_header(trace: str, header: str = "config.h") -> bool:
-    return any("openat(" in line and f'"{header}"' in line and "= -1" not in line for line in trace.splitlines())
+    """Keep the E4 helper available to existing callers and tests."""
+    return any(
+        "openat(" in line and f'"{header}"' in line and "= -1" not in line
+        for line in trace.splitlines()
+    )
 
 
-def smoke(fixture: Path) -> dict[str, object]:
-    if not (fixture / "Makefile").is_file():
-        raise FileNotFoundError(f"fixture Makefile missing: {fixture}")
-    with tempfile.TemporaryDirectory(prefix="e4-buildchecker-") as temp:
-        project = Path(temp) / "project"
-        shutil.copytree(fixture, project)
-        subprocess.run(["make", "clean"], cwd=project, check=True, capture_output=True, text=True)
-        traced = subprocess.run(
-            ["strace", "-f", "-e", "trace=openat", "make"],
-            cwd=project,
-            capture_output=True,
-            text=True,
-            timeout=60,
-        )
-        app = subprocess.run([str(project / "app")], cwd=project, capture_output=True, text=True, timeout=10) if traced.returncode == 0 else None
-        trace_lines = [line for line in traced.stderr.splitlines() if '"config.h"' in line][:8]
-        result: dict[str, object] = {
-            "make_exit_code": traced.returncode,
-            "app_output": app.stdout.strip() if app else None,
-            "config_h_opened": trace_lines,
-            "trace_lines": len(traced.stderr.splitlines()),
-            "passed": traced.returncode == 0 and app is not None and app.returncode == 0
-            and app.stdout.strip() == "1" and opened_header(traced.stderr),
-        }
-        if traced.returncode != 0:
-            result["error_tail"] = traced.stderr.splitlines()[-8:]
-        return result
-
-
-def default_fixture() -> Path:
-    """Use the container copy when present, otherwise the repository fixture."""
-    container_fixture = Path("fixtures/md-rd")
-    return container_fixture if container_fixture.exists() else Path("fixtures/e3/md-rd")
-
-
-def main(argv: list[str] | None = None) -> int:
+def build_parser():
     parser = argparse.ArgumentParser(prog="buildchecker")
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("version")
-    smoke_parser = commands.add_parser("smoke")
-    smoke_parser.add_argument("--fixture", type=Path, default=default_fixture())
-    args = parser.parse_args(argv)
-    if args.command == "version":
-        print(__version__)
+    sub = parser.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("version")
+    smoke = sub.add_parser("smoke")
+    smoke.add_argument("--fixture", default="fixtures/md-rd")
+    full = sub.add_parser("full-check")
+    full.add_argument("--fixture", default="fixtures/md-rd")
+    full.add_argument("--out", required=True)
+    full.add_argument("--clean-command", default="make clean")
+    full.add_argument("--build-command", default="make app")
+    full.add_argument("--timeout", type=int, default=120)
+    full.add_argument("--fail-on-findings", action="store_true")
+    return parser
+
+def main(argv=None):
+    args = build_parser().parse_args(argv)
+    if args.cmd == "version":
+        print(f"buildchecker {__version__}")
         return 0
+    if args.cmd == "smoke":
+        result = run_smoke(args.fixture)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0 if result["passed"] else 1
     try:
-        result = smoke(args.fixture)
-    except (OSError, subprocess.SubprocessError) as error:
-        result = {"passed": False, "error": str(error), "error_type": type(error).__name__}
-        if isinstance(error, PermissionError):
-            result["hint"] = "Check file permissions and ensure the /tmp tmpfs mount includes exec."
+        if args.timeout <= 0:
+            raise ValueError("Timeout must be positive")
+        result = full_check(args.fixture, args.out, args.clean_command, args.build_command, args.timeout)
+    except (ValueError, OSError) as exc:
+        print(json.dumps({"status": "FAILED", "error": str(exc)}, ensure_ascii=False))
+        return 1
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0 if result["passed"] else 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+    return 0 if result["status"] == "SUCCEEDED" and not (args.fail_on_findings and result["findings"]) else 1

@@ -23,7 +23,25 @@ E3 当前只准备基线和证据，不实现 BuildChecker 或 EChecker 的生�
 - 组长：维护 E4 容器/Compose/Make 骨架，固定依赖并汇总服务器证据。
 - 两名组员：各自在独立克隆中设置本地 Git 身份，运行 `make all`，保存成功的 `work/<时间>/`，并比较工具版本、测试和冒烟结论。
 
-E4 的 CLI 只提供环境 `version` 和 E3 MD/RD 冒烟检查；BuildChecker 生产检测算法属于后续 MVP 阶段。运行入口和证据格式见 [`scripts/e4/README.md`](scripts/e4/README.md) 与 [`docs/backlog/e4-backlog.md`](docs/backlog/e4-backlog.md)。
+E4 的旧入口仍保留用于环境回归。E5–E7 在 A 组云服务器上使用 `scripts/lab_cloud.py`：E5 保存完整构建跟踪，E6 执行全量 MD/RD 检测，E7 执行重复与故障门禁。运行入口和证据要求见 [`docs/evidence/e5/README.md`](docs/evidence/e5/README.md)、[`docs/evidence/e6/README.md`](docs/evidence/e6/README.md) 与 [`docs/evidence/e7/README.md`](docs/evidence/e7/README.md)。
+
+## E5–E7 A 轨道
+
+正式实验在本组 Linux ECS 上进行；个人电脑用于编辑、GitHub PR/CI 和证据备份。每名成员在自己的学号目录独立克隆并设置本地 Git 身份，所有 `work/` 结果使用新的目录名。
+
+```sh
+python3 scripts/lab_cloud.py doctor --out work/doctor-<student-id>
+python3 scripts/lab_cloud.py build --out work/build-<student-id>
+python3 scripts/lab_cloud.py e5 --out work/e5-<student-id>
+python3 scripts/lab_cloud.py e6 --out work/e6-before-<student-id>
+python3 scripts/lab_cloud.py e6 --fixed --out work/e6-after-<student-id>
+python3 scripts/verify_e6_evidence.py \
+  --before work/e6-before-<student-id>/evidence/findings.json \
+  --after work/e6-after-<student-id>/evidence/findings.json
+python3 scripts/lab_cloud.py gate --out work/e7-<student-id>
+```
+
+`buildchecker` 镜像按本地学号命名为 `course1020-buildchecker:<student-id>`；E5–E7 入口不会覆盖 E4 的 `make` 证据。E6 报告的原始样例必须得到 `MISSING(main.o, config.h)` 和 `REDUNDANT(main.o, unused.h)`，修复副本必须为空；E7 的八个场景和独立判定测试必须全部通过。GitHub Actions 在每次 push/PR 上重新构建、测试并归档门禁证据。
 
 ## 目录结构
 
@@ -34,6 +52,7 @@ docs/adr/                架构决策记录
 docs/backlog/            课程阶段任务清单
 docs/evidence/           可追溯的设计与验证证据
 fixtures/e3/             版本控制的 E3 人工样例与历史快照
+fixtures/md-rd/          E5–E7 A 轨道标准输入副本
 work/e3/                 本地运行副本和原始输出（默认不提交）
 scripts/e3/              E3 环境采集与框架校验工具
 services/buildchecker/   BuildChecker 的实现与测试边界
@@ -42,6 +61,8 @@ Makefile                E4 一键命令入口
 compose.yaml             E4 容器资源与安全限制
 requirements-dev.*       E4 Python 开发依赖输入和哈希锁
 scripts/e4/              E4 环境、运行编排和密钥检查
+scripts/lab_cloud.py     E5–E7 云端实验入口
+tests/e7/                E7 独立门禁判定测试
 setup/                   服务器一次性初始化脚本
 ```
 
