@@ -9,7 +9,7 @@
 - AI 建议：保留 E4 环境入口，新增 `scripts/lab_cloud.py`；复用教学包的可审计 `fullcheck.py`、真实故障 oracle、CI artifact 流程；按学号隔离镜像和 `work/` 证据目录。
 - 人工采纳与限制：保留当前 E2–E4 契约和 Git 历史；仅导入 A 轨道代码，不导入 B 轨道或 EChecker 生产实现；修正参考入口的默认镜像名和 doctor 证据输出；将 doctor 的最低内存与既有 E4 ECS 门槛统一为 3.5 GiB（实际服务器为 3.5 GiB，仍低于推荐值）；增加 E4 CLI 兼容的 `opened_header` 辅助函数。论文级完整基准不在本阶段声明完成。
 - 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/buildchecker/smoke.py`、`scripts/lab_cloud.py`、`scripts/run_e7_a_gate.py`、`tests/e7/`、`.github/workflows/e7-quality-gate.yml`、`docs/evidence/e5/`、`docs/evidence/e6/`、`docs/evidence/e7/`。
-- 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁待服务器运行后记录，不以本地结果替代。
+- 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁已完成，实际路径和结果记录于 `docs/evidence/e5-e7-20261020-leader-run.md`，不以本地结果替代云端结论。
 
 ## 2026-10-06：E4 服务器 smoke 权限失败修复
 
