@@ -57,6 +57,40 @@ class TestFullCheck(unittest.TestCase):
         targets, _ = execution_graph(self.folder, self.root)
         self.assertEqual(set(targets["build/unit.o"]["dependencies"]), {"src/unit.c", "src/needed.h"})
 
+    def test_successful_symlink_creation_is_explicitly_unsupported(self):
+        for call in ('symlink("/etc/passwd", "outside.h")',
+                     'symlinkat("/etc/passwd", AT_FDCWD, "outside.h")'):
+            with self.subTest(call=call):
+                self.traces(driver_before=call + ' = 0\n',
+                            reader_extra='openat(AT_FDCWD, "outside.h", O_RDONLY) = 5\n')
+                with self.assertRaisesRegex(Unsupported, "Symlink"):
+                    execution_graph(self.folder, self.root)
+
+    def test_failed_symlink_creation_preserves_normal_dependencies(self):
+        for call in ('symlink("/etc/passwd", "outside.h")',
+                     'symlinkat("/etc/passwd", AT_FDCWD, "outside.h")'):
+            with self.subTest(call=call):
+                self.traces(driver_before=call + ' = -1 EEXIST (File exists)\n')
+                targets, _ = execution_graph(self.folder, self.root)
+                self.assertEqual(set(targets), {"unit.o"})
+                self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
+
+    def test_make_working_directory_change_is_explicitly_unsupported(self):
+        self.traces()
+        self.write("t.10", 'execve("/usr/bin/make", ["make", "-C", "src", "unit.o"], []) = 0\n'
+                   'chdir("src") = 0\nclone(child_stack=NULL, flags=SIGCHLD) = 11\n')
+        with self.assertRaisesRegex(Unsupported, "Make working directory"):
+            execution_graph(self.folder, self.root)
+
+    def test_failed_make_chdir_preserves_root_relative_dependencies(self):
+        self.traces()
+        self.write("t.10", 'execve("/usr/bin/make", ["make", "unit.o"], []) = 0\n'
+                   'chdir("missing") = -1 ENOENT (No such file or directory)\n'
+                   'clone(child_stack=NULL, flags=SIGCHLD) = 11\n')
+        targets, _ = execution_graph(self.folder, self.root)
+        self.assertEqual(set(targets), {"unit.o"})
+        self.assertEqual(set(targets["unit.o"]["dependencies"]), {"unit.c", "needed.h"})
+
     def test_deleted_internal_output_does_not_become_dependency(self):
         self.traces(writer_extra='openat(AT_FDCWD, "temporary.s", O_WRONLY|O_CREAT, 0666) = 4\n'
                     'openat(AT_FDCWD, "temporary.s", O_RDONLY) = 5\n'
