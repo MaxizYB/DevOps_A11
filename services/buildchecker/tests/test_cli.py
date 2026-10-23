@@ -5,7 +5,7 @@ from buildchecker.smoke import files_opened
 
 
 def test_version(capsys):
-    assert main(["version"]) == 0
+    assert main(["version"]) == 1
     assert capsys.readouterr().out.strip() == f"buildchecker {__version__}"
 
 
