@@ -157,8 +157,12 @@ def execution_graph(trace_dir, root):
                         "line": event["line"], "pid": pid, "operation": name}
             if name == "chdir" and ret == 0:
                 cwd = posixpath.normpath(posixpath.join(cwd, quoted_path(args[0])))
+                if pid in make_pids and cwd != root:
+                    raise Unsupported("Make working directory differs from the project root; -C is not yet supported")
             elif name == "fchdir" and ret == 0:
                 raise Unsupported("fchdir requires descriptor tracking, not yet implemented")
+            elif name in {"symlink", "symlinkat"} and ret == 0:
+                raise Unsupported("Symlink creation requires path resolution, not yet supported")
             elif name in {"clone", "clone3", "fork", "vfork"} and ret > 0:
                 visit(ret, cwd)  # Inherit cwd at the fork, not the parent's final cwd.
             elif name in {"open", "openat", "openat2", "creat"}:

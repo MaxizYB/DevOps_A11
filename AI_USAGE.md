@@ -2,6 +2,15 @@
 
 本文件记录影响课程设计、源码或交付材料的 AI 辅助工作。每项记录须说明人工判断和验证结果，不能把 AI 输出直接视为已验证结论。
 
+## 2026-10-22：E6 BuildChecker 验证辅助
+
+- 工具/模型：Codex。
+- 任务：辅助完成 Issue #21 的代码审阅、边界修复、测试补充和实验记录整理。
+- AI 建议：辅助分析 Make 工作目录与符号链接的处理边界，补充回归测试，并核对 MD/RD 结果、输入哈希和原始证据。
+- 人工采纳与限制：依据课程参考实现和实际运行结果整理材料；人工评审待完成，结论限于当前教学样例和构建配置。
+- 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/tests/test_fullcheck.py`、`docs/evidence/e6/`。
+- 验证：ECS 服务测试 19 项、独立判定测试 6 项、门禁 8 项通过；原始精确两条 MD/RD，修复后为空，仅 Makefile 输入哈希改变。详见 [E6 验证记录](docs/evidence/e6/issue-21-validation.md)。
+
 ## 2026-10-20：E5–E7 A 轨道公共基础接入
 
 - 工具/模型：Codex。
