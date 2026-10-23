@@ -22,6 +22,16 @@ class OracleTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             gate.evaluate("original-1", 1, successful([]))
 
+    def test_original_rejects_missing_extra_and_duplicate_findings(self):
+        findings = [{"type": t, "target": target, "dependency": dep, "evidence": ["test"]} for t, target, dep in sorted(gate.EXPECTED)]
+        extra = {"type": "MISSING", "target": "main.o", "dependency": "extra.h", "evidence": ["test"]}
+        for label, rows in (("missing", findings[:-1]),
+                            ("extra", findings + [extra]),
+                            ("duplicate", findings + [findings[0]])):
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(ValueError, "Oracle mismatch"):
+                    gate.evaluate("original-1", 1, successful(rows))
+
     def test_fixed_passes(self):
         gate.evaluate("fixed", 0, successful([]))
 

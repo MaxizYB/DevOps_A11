@@ -20,6 +20,17 @@
 - 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/buildchecker/smoke.py`、`scripts/lab_cloud.py`、`scripts/run_e7_a_gate.py`、`tests/e7/`、`.github/workflows/e7-quality-gate.yml`、`docs/evidence/e5/`、`docs/evidence/e6/`、`docs/evidence/e7/`。
 - 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁待服务器运行后记录，不以本地结果替代。
 
+## 2026-10-20：E7 自主测试、镜像配置与验证（Refs #22）
+
+- 工具/模型：Codex。
+- 提示摘要：补充 E7 自主边界测试，将测试及依赖脚本打包进镜像，执行验证并整理统一的结果与证据说明。
+- AI 建议与采纳：新增少一条、多一条、重复一条发现的拒绝测试；Dockerfile 仅增加两条 COPY，打包 tests/e7/ 和 scripts/run_e7_a_gate.py。未修改检测算法、服务测试、门禁预期或依赖。
+- 关联文件：tests/e7/test_e7_a_gate.py、services/buildchecker/Dockerfile、docs/evidence/e7/README.md、docs/evidence/e7/e7-20261020-test-cloud-validation.md 和本记录。
+- 来源与版本：参考检测器、门禁和既有测试来自公共基础提交 41cc04da58911a8017fc2838471e15e7df5b95ef。实际构建使用 9898fdd8daf35ba4b5e7cd6dbc241361794d6263 加证据保存的未提交 Dockerfile 补丁；该 SHA 单独不包含本次配置修改。
+- 实际验证：Codex 经 SSH 构建镜像，退出 0；pytest 22 passed（15 项服务＋7 项判定）；无宿主挂载容器内 unittest 7 个方法通过，新增方法含 3 个子场景；测试文件与依赖脚本哈希同宿主；八项门禁全部通过且退出 0；证据校验退出 0，仅 Makefile 输入哈希改变；9 个记录容器已移除，实际工具版本已保存。差异检查通过。
+- 证据：/root/231880027/DevOps_A11/work/e7-validation-231880027-20261020-151352/；镜像 ID sha256:ce5413913ee0d4d6b30ad74ab5dec02f5bf05ff7a3d2dc19ddde21be46842e4f，构建与门禁记录一致。
+- 整理：统一文档版本与证据目录名称，核对重命名前后全部文件内容不变；原始命令日志保留运行时路径。work 不纳入 Git，成果需组员评审。
+
 ## 2026-10-06：E4 服务器 smoke 权限失败修复
 
 - 工具/模型：Codex。
