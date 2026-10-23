@@ -8,4 +8,4 @@
 
 组长阶段 A 合并后，在 #20 留言发布可开工提交 SHA、镜像命名和命令。#21、#22 可并行；最终结果在最新 `main` 上重跑后再关闭 #20。
 
-组长阶段 A 运行记录：[`docs/evidence/e5-e7-20261020-leader-run.md`](../evidence/e5-e7-20261020-leader-run.md)。公共基础提交为 `42f9a73`；PR #23 的两次 Actions 运行均通过。成员从最新 `main` 或该 PR 合并后的提交开始，不要从组长工作分支继续提交。
+组长阶段 A 运行记录：[`docs/evidence/e5-e7-20261020-leader-run.md`](../evidence/e5-e7-20261020-leader-run.md)。PR #23 已合并，`main` 合并提交为 `41cc04da58911a8017fc2838471e15e7df5b95ef`（公共基础实现提交 `42f9a73`）；`e7-a-quality-gate` 已配置为严格必需检查，并要求至少一名组员批准。成员从最新 `main` 开始，不要从组长工作分支继续提交。
