@@ -2,6 +2,14 @@
 
 本文件记录影响课程设计、源码或交付材料的 AI 辅助工作。每项记录须说明人工判断和验证结果，不能把 AI 输出直接视为已验证结论。
 
+## 2026-10-23：E5–E7 评审、合并与最终交付（Refs #20、#22）
+
+- 工具：Codex，具体模型版本未记录；不伪造完整对话或模型版本。
+- 任务：重新核对 E5–E7 PPT、A 轨道指南、验收清单及报告/CSV 模板，实际审阅 PR #26/#27，协作完成 #28 的失败、拒绝和恢复，整理报告、分工和可提交的证据包。
+- 采纳：保留教学参考来源与 E2–E4；独立检出成员分支测试，最终集成源码本地 26 passed；对失败 PR 实际尝试普通合并并保存 exit=1，随后仅恢复错误测试预期；ECS 在最终 main SHA 上另建克隆重建并重跑，命令和实际结果进入被忽略的原始证据。
+- 授权与限制：组长明确授权本次审批例外；只临时调整审批，必需 CI、strict 与管理员约束始终保留，操作后恢复常态配置。不冒充两位成员完成个人 Review，不把失败演示算作算法修复，不把历史或助教记录冒充最终 main 运行。
+- 关联文件：`docs/实验报告.md`、`docs/AI使用说明.md`、`docs/分工与完成记录.md`、`docs/验收记录.csv`、`docs/backlog/e5-e7-backlog.md`；原始证据在 `work/e5-e7-final-20261023/`，ZIP 在仓库根目录且不纳入 Git。
+
 ## 2026-10-22：E6 BuildChecker 验证辅助
 
 - 工具/模型：Codex。
@@ -18,7 +26,7 @@
 - AI 建议：保留 E4 环境入口，新增 `scripts/lab_cloud.py`；复用教学包的可审计 `fullcheck.py`、真实故障 oracle、CI artifact 流程；按学号隔离镜像和 `work/` 证据目录。
 - 人工采纳与限制：保留当前 E2–E4 契约和 Git 历史；仅导入 A 轨道代码，不导入 B 轨道或 EChecker 生产实现；修正参考入口的默认镜像名和 doctor 证据输出；将 doctor 的最低内存与既有 E4 ECS 门槛统一为 3.5 GiB（实际服务器为 3.5 GiB，仍低于推荐值）；增加 E4 CLI 兼容的 `opened_header` 辅助函数。论文级完整基准不在本阶段声明完成。
 - 关联文件：`services/buildchecker/buildchecker/fullcheck.py`、`services/buildchecker/buildchecker/smoke.py`、`scripts/lab_cloud.py`、`scripts/run_e7_a_gate.py`、`tests/e7/`、`.github/workflows/e7-quality-gate.yml`、`docs/evidence/e5/`、`docs/evidence/e6/`、`docs/evidence/e7/`。
-- 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁待服务器运行后记录，不以本地结果替代。
+- 验证：本地 `python3 -m compileall`、`PYTHONPATH=.:services/buildchecker pytest -q services/buildchecker/tests tests/e7`（21 passed）；ECS Docker 构建、E5 原始证据和完整门禁已完成，实际路径和结果记录于 `docs/evidence/e5-e7-20261020-leader-run.md`，不以本地结果替代云端结论。
 
 ## 2026-10-20：E7 自主测试、镜像配置与验证（Refs #22）
 
