@@ -43,6 +43,12 @@ python3 scripts/lab_cloud.py gate --out work/e7-<student-id>
 
 `buildchecker` 镜像按本地学号命名为 `course1020-buildchecker:<student-id>`；E5–E7 入口不会覆盖 E4 的 `make` 证据。E6 报告的原始样例必须得到 `MISSING(main.o, config.h)` 和 `REDUNDANT(main.o, unused.h)`，修复副本必须为空；E7 的八个场景和独立判定测试必须全部通过。GitHub Actions 在每次 push/PR 上重新构建、测试并归档门禁证据。
 
+## E8–E10 A 轨道
+
+本阶段在原仓库独立接入 EChecker 受限教学实验，保留 E2–E7 代码和历史。公共准备与三人任务见 [E8–E10操作说明](docs/e8-e10/README.md) 及 [Backlog](docs/backlog/e8-e10-backlog.md)。每人都需完成 E8/E9/E10 和个人自主贡献，维护职责并不替代个人实验。
+
+新入口是 `python3 run_lab.py build`，环境定义在 `labs/e8e10/environment/`，运行代码在 `labs/e8e10/lab.py`，镜像使用 `course-e8e10:<本人学号>`。先等公共准备 PR 合并和发布 main SHA，再按说明在本人克隆中同步、登录自己的GitHub并运行；新原始证据仍写入被忽略的 `work/`。
+
 ## 目录结构
 
 ```text
