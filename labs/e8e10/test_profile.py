@@ -2,6 +2,35 @@ import copy, csv, json, tempfile, unittest
 from pathlib import Path
 from lab import fixture,scan,patch,commit
 
+class Student241880439Tests(unittest.TestCase):
+    """Test explicit edge identity, target ownership and configuration changes."""
+
+    def check_stage(self, stage, roundtrip=False):
+        from leader_cases import change, expected, prepare
+        from validation import compare_reports
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory) / 'sample'
+            prepare(project, stage)
+            commit(project, '241880439 independent ' + stage + ' baseline')
+            old = scan(project)
+            for restore in ([False, True] if roundtrip else [False]):
+                change(project, stage, restore=restore)
+                commit(project, '241880439 ' + stage + ' change restore=' + str(restore))
+                inc, full = scan(project, old), scan(project)
+                result = compare_reports(inc, full, expected(stage, restore=restore))
+                self.assertTrue(result['passed'], result)
+                old = inc
+
+    def test_e8_nested_header_leaf_addition_refreshes_history(self):
+        self.check_stage('e8')
+
+    def test_e9_include_migration_changes_missing_target_identity(self):
+        self.check_stage('e9')
+
+    def test_e10_conditional_header_switch_and_restore_refresh_both_directions(self):
+        self.check_stage('e10', roundtrip=True)
+
+
 class ProfileTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
