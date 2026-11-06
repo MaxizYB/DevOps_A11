@@ -169,22 +169,44 @@ def demo(stage,out,track):
         return
     rows=[]
     if track=='A':
+        from validation import (CASES, compare_reports, expected_case, matrix_gate,
+                                measure_case, performance_summary, project_buildchecker,
+                                write_csv)
         previous=baseline
-        cases=['unchanged','body','include','declaration','flags','header']
-        for case in cases:
-            if case=='body': (p/'helper.c').write_text('int helper(void){return 0+0;}\n')
-            if case=='include': (p/'main.c').write_text('#include "extra.h"\n'+(p/'main.c').read_text())
-            if case=='declaration': (p/'Makefile').write_text((p/'Makefile').read_text().replace('main.c unused.h','main.c unused.h config.h extra.h'))
-            if case=='flags': (p/'Makefile').write_text((p/'Makefile').read_text().replace('-O0','-O1'))
-            if case=='header': (p/'config.h').write_text('#include "extra.h"\n#define VALUE 1\n')
-            if case!='unchanged':commit(p,case)
-            for repeat in range(5):
-                inc=scan(p,previous); full=scan(p)
-                passed=all(inc[k]==full[k] for k in ['actual','declared','findings'])
-                rows.append({'case':case,'repeat':repeat+1,'equal':passed,'incremental_s':inc['elapsed_s'],'full_s':full['elapsed_s'],'reused':len(inc['reused']),'refreshed':len(inc['refreshed'])})
-                assert passed,case
-            save(out/(case+'.json'),inc); previous=inc
-        buildchecker(p,out/'final-buildchecker')
+        dynamic_check={'passed':False,'error':'dynamic crosscheck was not reached'}
+        failure=None
+        try:
+            for case in CASES:
+                if case=='body': (p/'helper.c').write_text('int helper(void){return 0+0;}\n')
+                if case=='include': (p/'main.c').write_text('#include "extra.h"\n'+(p/'main.c').read_text())
+                if case=='declaration': (p/'Makefile').write_text((p/'Makefile').read_text().replace('main.c unused.h','main.c unused.h config.h extra.h'))
+                if case=='flags': (p/'Makefile').write_text((p/'Makefile').read_text().replace('-O0','-O1'))
+                if case=='header': (p/'config.h').write_text('#include "extra.h"\n#define VALUE 1\n')
+                if case!='unchanged':commit(p,case)
+                case_rows,previous=measure_case(p,out,case,previous,scan)
+                rows.extend(case_rows)
+            buildchecker(p,out/'final-buildchecker')
+            projected=project_buildchecker(out/'final-buildchecker')
+            save(out/'dynamic-projection.json',projected)
+            dynamic_check=compare_reports(previous,projected,expected_case('header'))
+            save(out/'dynamic-comparison.json',dynamic_check)
+        except Exception as error:
+            failure={'type':type(error).__name__,'error':str(error)}
+            save(out/'failure.json',failure)
+        write_csv(out/'results.csv',rows)
+        try:
+            write_csv(out/'performance-summary.csv',performance_summary(rows))
+        except ValueError as error:
+            failure={'type':type(error).__name__,'error':str(error)}
+            save(out/'failure.json',failure)
+        gate=matrix_gate(rows,out,dynamic_check)
+        if failure is not None:
+            gate['passed']=False
+            gate['error']=failure
+        save(out/'gate.json',gate)
+        if not gate['passed']:
+            raise ValueError('A_E10_VALIDATION_FAILED; inspect '+str(out/'gate.json'))
+        return
     else:
         diff,_=patch(p,baseline); candidate=out/'candidate.patch';candidate.write_text(diff)
         rejected=validate(p,candidate,out/'reject-test',True);assert rejected['rollback']
