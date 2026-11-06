@@ -80,7 +80,7 @@ python3 run_lab.py e9 --track A --out work/e9-A-<唯一目录>
 python3 run_lab.py e10 --track A --out work/e10-A-<唯一目录>
 ```
 
-分步 E10 产物在 `OUT/matrix/`，一键 E10 的产物直接在 `OUT/`，后者不自动生成手册的 `performance-summary.csv`；统计必须按手册另做。E3历史与本包C0–C3含义不同，不能互换。
+分步 E10 产物在 `OUT/matrix/`，一键 E10 的产物直接在 `OUT/`。A 路线一键入口会保存六类各五次的 60 份增量/全量原始 JSON、逐次比较、30 行 `results.csv`、`performance-summary.csv` 及动态交叉核对；统计口径为 scan 耗时。分步路线仍按手册另做统计。E3历史与本包C0–C3含义不同，不能互换。
 
 ## 代码、镜像和证据的边界
 
