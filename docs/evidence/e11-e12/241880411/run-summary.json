@@ -1,0 +1,190 @@
+{
+  "issue": "https://github.com/MaxizYB/DevOps_A11/issues/38",
+  "student_id": "241880411",
+  "github": "andelutixia",
+  "date": "2026-11-11",
+  "scope": "Local Docker E11-A controlled classroom fixture",
+  "source": {
+    "main_at_preparation": "86e684dcdc59b5322283acf505f3c807f8840f7a",
+    "branch": "codex/38-e11a-boundaries",
+    "archive_name": "DevOps_E11_E12.zip",
+    "archive_sha256": "019e693625b6d97923a8e8769fef87765913a306725e3da22029eda955348b3f",
+    "file_sha256": {
+      "run_e11e12.py": "6ee0fb73a087fb4badd8557fd06a03700e2bc75d5935855c734ad24b4ff3240c",
+      "labs/e11e12/pipeline.py": "efceba6da871cb684358f201570d0d9b8f286c0fa22bc6b5eaf3186ca1b9b424",
+      "labs/e11e12/prepare.py": "421113f07861e6034057936dbaca120a45ca5e5eaa3b019fbb1db7260941d150",
+      "labs/e11e12/server.py": "b57a352cdf96a68d975ce7b397c7fed2f7cf947b5a12a2722d2946659a69e084",
+      "labs/e8e10/lab.py": "4e9985f7f7c35fbf54e22c7b1d280fa027803a17a49ceccd7f0632d6162fe418",
+      "labs/e11e12/environment/services/buildchecker/buildchecker/fullcheck.py": "21a66422856be2d46a28db3569a9645864a83622d552841873e3c6a82fdea0e9",
+      "labs/e11e12/environment/services/buildchecker/Dockerfile": "68a32b4bff2612b57ebe8611507ca728da9bbd7205af40faff15f1b3399092af",
+      "labs/e11e12/environment/requirements-dev.lock": "24f54d917487599d98e13c5733a75ca4a86652fa11cdccaf863c08e1cc66f5df",
+      "labs/e11e12/test_241880411_boundaries.py": "2da3d48fb2c121713e93dd86d6fa92d0a35c596e5ac3f45553327df929ea0dcf",
+      "scripts/verify_e11a_241880411.py": "ff8718693a29daa59e7bc6880c2d45fbcf7a5004902b2487e8c8cfc3fab9610f"
+    },
+    "snapshot": "work/setup-241880411/source/",
+    "foundation_commit": "effafdaa51f56c0291802b06f16f3ebb37e2cc1d"
+  },
+  "environment": {
+    "execution": "Docker Desktop Linux/arm64 on macOS; not ECS",
+    "host_os": "Darwin",
+    "host_python": "3.9.11",
+    "docker_server": "29.6.2",
+    "image_tag": "course-e11e12:241880411",
+    "image_id": "sha256:e3fb933422631485805af448dcd37cba1d061b481627c97420cd8cfba601c427",
+    "os": "linux",
+    "architecture": "arm64",
+    "toolchain_lock": [
+      "gcc=4:14.2.0-1",
+      "git=1:2.47.3-0+deb13u1",
+      "libc6-dev=2.41-12+deb13u4",
+      "make=4.4.1-2",
+      "strace=6.13+ds-1",
+      "python3=3.13.14",
+      "arch=arm64",
+      "pip:iniconfig==2.3.0",
+      "pip:packaging==26.3",
+      "pip:pluggy==1.6.0",
+      "pip:Pygments==2.21.0",
+      "pip:pytest==8.4.2"
+    ]
+  },
+  "run": {
+    "schema_version": "e11e12-1",
+    "job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+    "trace_id": "trace-3ff85f0605ea442ea1357e67badb608f",
+    "configuration_id": "cfg-e11e12-c3a8215bca3b450d",
+    "base_commit": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+    "target_commit": "80d9d489d78d190af4676f286f41b10aa9d9c3c9",
+    "status": "SUCCEEDED"
+  },
+  "request": {
+    "mode": "e11-a",
+    "repo": "/course/data/integration-sample/repo",
+    "base": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+    "target": "80d9d489d78d190af4676f286f41b10aa9d9c3c9",
+    "build_timeout": 600
+  },
+  "verification": {
+    "status": "SUCCEEDED",
+    "manifest_entries": 46,
+    "artifact_references_checked": 53,
+    "raw_read_edges_checked": 7,
+    "tamper_error_code": "ARTIFACT_HASH_MISMATCH"
+  },
+  "verification_checks": 715,
+  "before": {
+    "pipeline_status": "SUCCEEDED",
+    "independent_verifier_status": "FAILED",
+    "reason": "Three baseline checkout logs were attributed to target; retained unchanged"
+  },
+  "negative_probes": {
+    "status": "SUCCEEDED",
+    "probes": [
+      {
+        "case": "tampered_bytes",
+        "rejected": true,
+        "error": "manifest[21]: content SHA256",
+        "checks_until_rejection": 265
+      },
+      {
+        "case": "same_count_wrong_dependency_with_updated_hash",
+        "rejected": true,
+        "error": "target-full: actual matches independent oracle",
+        "checks_until_rejection": 691
+      }
+    ],
+    "original_evidence_changed": false
+  },
+  "selected_artifacts": [
+    {
+      "artifact_id": "baseline-cache.json",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/baseline-cache.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "5f8d0aeec7fa2dc491b3a6a1380d916d26dd5fc7de15b776018b8e6d8f0a89e8",
+      "bytes": 1395,
+      "commit": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "baseline-full/actual-graph.json",
+      "type": "ACTUAL_GRAPH",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/baseline-full/actual-graph.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "63e1a0a2261c319523cfbaabf92902b1b9a59d383b66630a86ce4f166cfc0625",
+      "bytes": 1201,
+      "commit": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "full-check.json",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/full-check.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "79ae8bf7bc0df7d9099a8aea515ed80596d56cc34a63913cab662e0a1f915907",
+      "bytes": 4613,
+      "commit": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "incremental-check.json",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/incremental-check.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "7c89f9916749bb586cf660d50437eb3af882619605c60c1aacbd1b70429ecd19",
+      "bytes": 2984,
+      "commit": "80d9d489d78d190af4676f286f41b10aa9d9c3c9",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "incremental-report.json",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/incremental-report.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "caaaf2d176cd1ff6e9652bfddb746c45a632154b9baf5c53fac4be70eb1fc49f",
+      "bytes": 1472,
+      "commit": "80d9d489d78d190af4676f286f41b10aa9d9c3c9",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "logs/base-project-resolve.log",
+      "type": "BUILD_LOG",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/logs/base-project-resolve.log",
+      "media_type": "text/plain",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "22824df5b84590a607e46d4498670bf133579a3313b6f86a8607d720d1da8c93",
+      "bytes": 41,
+      "commit": "75eea0eb66f0c0f391f6194fcfa9df1ae8f43333",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    },
+    {
+      "artifact_id": "target-full/findings.json",
+      "type": "ERROR_REPORT",
+      "uri": "artifact://job-3c9a03d6ac7c434b98ddd1b1caea1eb5/target-full/findings.json",
+      "media_type": "application/json",
+      "producer_job_id": "job-3c9a03d6ac7c434b98ddd1b1caea1eb5",
+      "sha256": "39c26ec0b948f2a8f24645ee79dafc6109d9fb0c8aaf643ad3f33d4dd2b675db",
+      "bytes": 3089,
+      "commit": "80d9d489d78d190af4676f286f41b10aa9d9c3c9",
+      "configuration_id": "cfg-e11e12-c3a8215bca3b450d"
+    }
+  ],
+  "raw_evidence": {
+    "before": "work/e11-a-241880411-20261111-before",
+    "after": "work/e11-a-241880411-20261111-after",
+    "logs": "work/setup-241880411"
+  },
+  "checks": {
+    "e11e12_tests": 25,
+    "personal_new_tests": 11,
+    "legacy_tests": 26,
+    "e8e10_tests": 25,
+    "e2_contract": "PASS",
+    "e11e12_contract": "PASS"
+  }
+}

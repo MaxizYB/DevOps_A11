@@ -246,7 +246,11 @@ def execute(request, out, job_id=None, trace_id=None):
     private_parts = {'base-project', 'target-project', 'sandbox', 'project'}
     result['artifacts'] = [
         dict(artifact(p, out, job_id),
-             commit=result.get('base_commit') if any(
+             commit=result.get('base_commit') if (
+                 # Snapshot logs describe the revision checked out for that side.
+                 p.relative_to(out).parent == Path('logs')
+                 and p.name.startswith('base-project-')
+             ) or any(
                  part in {'baseline-full', 'base-project', 'baseline-cache.json', 'full-check.json'}
                  for part in p.relative_to(out).parts
              ) else result.get('target_commit'),

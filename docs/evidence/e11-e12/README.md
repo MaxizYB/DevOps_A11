@@ -11,3 +11,5 @@
 本目录不把课程生成 fixture 或组长的公共自检计为成员个人实验；成员个人结果需在各自 Issue/PR 中引用
 
 组长的公共接入记录见 [environment-preparation-20261110.md](environment-preparation-20261110.md)。该记录区分了源码/契约校验、课程生成样例与尚未在本机完成的 Docker/服务器验证。
+
+241880411 的 Issue #38 验证见 [个人报告](241880411/个人报告.md) 和 [运行摘要](241880411/run-summary.json)，包含真实 Docker E11-A、一致性核查与产物及 API 边界测试。
