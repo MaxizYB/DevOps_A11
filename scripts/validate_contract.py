@@ -393,9 +393,13 @@ def validate_response(value: Any) -> dict[str, Any]:
 
 
 def validate_schema_files() -> int:
-    schema_paths = sorted((CONTRACTS / "schemas").glob("*.json"))
-    if len(schema_paths) != 2:
-        raise RuntimeError("expected exactly two E2 schema files")
+    expected_names = {"e2-create-request.schema.json", "e2-job-response.schema.json"}
+    schema_paths = sorted(
+        path for path in (CONTRACTS / "schemas").glob("*.json")
+        if path.name in expected_names
+    )
+    if {path.name for path in schema_paths} != expected_names:
+        raise RuntimeError("expected both versioned E2 schema files")
     for path in schema_paths:
         schema = load_json(path)
         if not isinstance(schema, dict) or "$schema" not in schema or "$defs" not in schema:

@@ -1,0 +1,32 @@
+name: E11-A preparation and contract gate
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  e11-a:
+    name: e11-a-buildchecker-echecker
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Configure CI identity
+        run: git config --local user.name 999999999 && git config --local user.email ci@example.invalid
+      - name: Build E11 environment
+        run: docker build --progress=plain -f labs/e11e12/environment/services/buildchecker/Dockerfile -t course-e11e12:999999999 labs/e11e12/environment
+      - name: Run A11 contract tests
+        run: |
+          python3 scripts/validate_e11e12_contract.py
+          python3 run_e11e12.py test
+      - name: Prepare controlled fixture
+        run: python3 run_e11e12.py prepare
+      - name: Run E11-A only
+        run: python3 run_e11e12.py run --request data/integration-sample/e11-a.json --out work/ci-e11-a
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: e11-a-evidence-${{ github.run_id }}
+          path: work/
+          retention-days: 14
