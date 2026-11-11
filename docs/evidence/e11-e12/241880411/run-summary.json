@@ -6,7 +6,7 @@
   "scope": "Local Docker E11-A controlled classroom fixture",
   "source": {
     "main_at_preparation": "86e684dcdc59b5322283acf505f3c807f8840f7a",
-    "branch": "codex/38-e11a-boundaries",
+    "branch": "test/38-e11a-boundaries",
     "archive_name": "DevOps_E11_E12.zip",
     "archive_sha256": "019e693625b6d97923a8e8769fef87765913a306725e3da22029eda955348b3f",
     "file_sha256": {
