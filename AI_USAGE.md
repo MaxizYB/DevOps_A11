@@ -2,6 +2,15 @@
 
 本文件记录影响课程设计、源码或交付材料的 AI 辅助工作。每项记录须说明人工判断和验证结果，不能把 AI 输出直接视为已验证结论。
 
+## 2026-11-12：E11-A 个人验证（231880027，Refs #39）
+
+- 工具/模型：Codex GPT-6.1Sol。
+- 任务：辅助编写 #39 的个人测试、复现脚本和证据摘要。
+- AI 建议：设置共享头文件和函数体变化场景，固定预期并校验报告提交与哈希。
+- 人工采纳与限制：采用个人测试和消费验证，复用课程参考实现；人工评审待完成。
+- 关联文件：`scripts/e11e12/`、个人测试文件及 [实验摘要](docs/evidence/e11-e12/231880027-independent-tests.md)。
+- 验证：21 项测试、25 项回归测试通过；刷新、复用及三类拒绝符合预期，`git diff --check` 通过。
+
 ## 2026-11-03：E8–E10任务发布与公共环境接入（Refs #29）
 
 - 工具：Codex；具体模型版本未记录，不猜测版本。
@@ -144,3 +153,13 @@
 - 人工采纳与限制：已检查 Makefile 的依赖关系及四步实验结果。修改 `config.h` 后普通 `make` 未重编译，clean build 后输出更新；修改 `unused.h` 后触发额外重编译。本阶段未实现或运行真正的 BuildChecker；fixture 源码提交 SHA 已记录，PR 和组员复现结果留待后续 Review。
 - 关联文件：`fixtures/e3/md-rd/`、`docs/evidence/e3/buildchecker/`、`docs/evidence/e3/environment/local-2026-09-24.json`；原始记录位于 `work/e3/20260924T021234Z-issue-6-md-rd/`。
 - 验证：运行四步 Make 实验，并执行 `python3 scripts/e3/validate_e3_framework.py`、JSON 格式检查和 `git diff --check`。
+
+## 2026-11-10：E11/E12 A11 公共准备
+
+- 工具/模型：Codex（gpt-6.1-sol）。
+- 任务：在 Issue #36 中接入 A11 的 E11-A 公共环境、E12 编排骨架、异步服务入口、契约校验、CI、操作文档和成员任务边界。
+- AI 建议：保留 E2 1.0.0 契约，把 E11/E12 作为编排层；将 data/ 与 work/ 作为本地可再生目录；把 B11 实现和真实跨组联调留给后续；对 E11-A 强制基线全量图、增量报告和目标全量结果对照。
+- 人工采纳与限制：采纳公共目录、路径约束、幂等冲突、服务重启失败标记和 SSH 回环访问方案；没有把编排父任务伪装成 E2 四类组件 Job，也没有把 E12 联调写成已完成。本机 Docker daemon 不可用，因此不宣称容器构建、服务启动或云端实验通过。
+- 关联文件：run_e11e12.py、labs/e11e12/、contracts/e11-e12-orchestration.md、contracts/schemas/e12-orchestration-request.schema.json、.github/workflows/e11e12-a.yml、docs/e11-e12/、docs/backlog/e11-e12-backlog.md。
+- 修正：修复 E11-A 执行后误进入 E11-B 固定报告分支；让全量检测使用请求超时；修复 E2 校验器只检查两份 E2 Schema 时被 E12 Schema 干扰的问题；补充 E11-A 流程和服务重启状态测试。
+- 验证：python3 scripts/validate_contract.py、python3 scripts/validate_e11e12_contract.py、14 项 labs/e11e12 单元测试、Python 编译和 git diff --check 均通过。
