@@ -142,4 +142,4 @@ git diff --check
 
 原始 data/work、压缩包和 .git 不进入提交。本次未进行外层 commit/push 或 GitHub 变更。
 
-AI 使用：Codex GPT-6.1Sol。输入为 Issue #39、教学材料、公共基础源码及实际日志；AI 编辑个人测试、消费者、复现脚本与本文，并执行容器测试和采证。fixture、scan、BuildChecker 和公共校验函数来自本组参考接入，个人贡献为独立场景、固定预期断言、消费验证适配与实际证据。未修改公共实现。尚无组员署名评审记录。
+AI 使用记录：[AI_USAGE.md](../../../AI_USAGE.md)。
