@@ -16,3 +16,6 @@ __pycache__/
 !/work/e3/
 /work/e3/*
 !/work/e3/README.md
+
+# E11–E12 local fixtures, API jobs and raw evidence are regenerated per run.
+/data/

@@ -49,6 +49,12 @@ python3 scripts/lab_cloud.py gate --out work/e7-<student-id>
 
 新入口是 `python3 run_lab.py build`，环境定义在 `labs/e8e10/environment/`，运行代码在 `labs/e8e10/lab.py`，镜像使用 `course-e8e10:<本人学号>`。先等公共准备 PR 合并和发布 main SHA，再按说明在本人克隆中同步、登录自己的GitHub并运行；新原始证据仍写入被忽略的 `work/`。
 
+## E11–E12 A11 轨道
+
+E11-A 是 A11 的个人轨道：BuildChecker 在基线提交生成全量实际图，EChecker 使用该缓存检查目标提交，再与目标提交全量结果对照。组长负责公共环境、E2 字段映射、运行入口、异步 API、契约拒绝测试和 E11-A 基线；两位成员分别完成独立变化刷新/复用与报告/哈希边界测试。B11 的 DRAFT→MDFixer 不在 A11 个人实现范围内。
+
+E12 只预先提供编排骨架和服务启动能力，不把 A11/B11 的实际联调计为完成。组长在双方 E11 轨道都验收后启动 `python3 run_e11e12.py serve --port 8080`，再通过 SSH 转发与 B11 联调并保存真实请求、状态、产物哈希和结论。公共样例由 `python3 run_e11e12.py prepare` 生成到被忽略的 `data/`；实际项目另放 `data/real-project/`，不得把样例结果当作个人实验或真实项目证据。
+
 ## 目录结构
 
 ```text
