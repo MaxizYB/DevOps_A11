@@ -9,11 +9,14 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--dataset-name',default='integration-sample')
     parser.add_argument('--python-image',default='python:3.13-slim@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f')
+    parser.add_argument('--debian-mirror',help='Optional HTTPS mirror origin serving /debian and /debian-security')
     args=parser.parse_args()
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]*',args.dataset_name):
         parser.error('dataset-name must be one safe directory name')
     if not re.fullmatch(r'[^\s]+@sha256:[0-9a-f]{64}',args.python_image):
         parser.error('python-image must be digest-pinned')
+    if args.debian_mirror and not re.fullmatch(r'https://[A-Za-z0-9.-]+(?::[0-9]+)?',args.debian_mirror):
+        parser.error('debian-mirror must be a plain HTTPS origin')
     root=ROOT/'data'/args.dataset_name
     if root.exists():raise SystemExit(str(root)+' already exists; preserve it and choose a new dataset name')
     project=root/'repo';fixture(project)
@@ -23,7 +26,12 @@ def main():
     base=commit(project,'integration C0')
     (project/'main.c').write_text('#include "extra.h"\n'+(project/'main.c').read_text(),encoding='utf-8')
     target=commit(project,'integration C1 add project include')
-    candidate=broken.replace('FROM '+tag,'FROM '+args.python_image).replace('RUN make app','RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*\nRUN make app')
+    install='apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 update && apt-get -o Acquire::ForceIPv4=true -o Acquire::Retries=3 install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*'
+    if args.debian_mirror:
+        install=("sed -i -e 's|http://deb.debian.org/debian-security|"+args.debian_mirror+"/debian-security|g' "
+                 "-e 's|http://deb.debian.org/debian|"+args.debian_mirror+"/debian|g' "
+                 '/etc/apt/sources.list.d/debian.sources && '+install)
+    candidate=broken.replace('FROM '+tag,'FROM '+args.python_image).replace('RUN make app','RUN '+install+'\nRUN make app')
     (root/'candidate.Dockerfile').write_text(candidate,encoding='utf-8')
     fixed=scan(project)
     save(root/'fixed-md.json',{'schema_version':'e11e12-1','kind':'fixed-md','status':'SUCCEEDED','commit':target,'data':fixed})
@@ -31,7 +39,7 @@ def main():
     save(root/'e11-a.json',dict(mode='e11-a',**common))
     save(root/'e11-b.json',dict(mode='e11-b',**common,candidate=str(root/'candidate.Dockerfile'),fixed_report=str(root/'fixed-md.json'),expected_output='1'))
     save(root/'e12.json',dict(mode='e12',**common,candidate=str(root/'candidate.Dockerfile'),expected_output='1'))
-    save(root/'dataset.json',{'source':'course-generated controlled C/Make project','base_commit':base,'target_commit':target,'python_image':args.python_image,'candidate_source':'recorded dependency-install pattern adapted to the two-source-file project','expected_output':'1','purpose':'classroom baseline; replace request paths with your own project for real-data integration'})
+    save(root/'dataset.json',{'source':'course-generated controlled C/Make project','base_commit':base,'target_commit':target,'python_image':args.python_image,'debian_mirror':args.debian_mirror,'candidate_source':'recorded dependency-install pattern adapted to the two-source-file project','expected_output':'1','purpose':'classroom baseline; replace request paths with your own project for real-data integration'})
     print(root)
 
 if __name__=='__main__':main()

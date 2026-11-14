@@ -15,6 +15,7 @@ parser.add_argument('--port', type=int, default=8080)
 parser.add_argument('--docker-cli-image', help='Digest-pinned mirror of the Docker CLI image; build only')
 parser.add_argument('--dataset-name', default='integration-sample', help='Fresh fixture directory below data/; prepare only')
 parser.add_argument('--python-image', help='Digest-pinned Python base for the fixture; prepare only')
+parser.add_argument('--debian-mirror', help='HTTPS mirror origin for fixture dependency installation; prepare only')
 args = parser.parse_args()
 
 if os.name != 'posix':
@@ -84,6 +85,8 @@ else:
         command += ['labs/e11e12/prepare.py', '--dataset-name', args.dataset_name]
         if args.python_image:
             command += ['--python-image', args.python_image]
+        if args.debian_mirror:
+            command += ['--debian-mirror', args.debian_mirror]
     elif args.stage == 'serve':
         command += ['labs/e11e12/server.py', '--host', '0.0.0.0', '--port', '8080']
     elif args.stage == 'test':
