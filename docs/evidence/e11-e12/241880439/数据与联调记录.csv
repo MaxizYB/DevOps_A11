@@ -1,0 +1,7 @@
+实验,数据来源,仓库,base_commit,target_commit,job_id,trace_id,报告路径,补丁路径,结果
+E11-A,course-generated integration-sample,本次prepare生成,d9b600bfb9096982ebc07f36636a71f681520ad4,9dc23d7d632359c5efa2c75faeaf3610f8a8ef06,job-2ad309ce1ff44319888f1efebed970b4,trace-74d2ad81856b49bbae992ff9153ec010,evidence/leader/e11-a/result.json,,SUCCEEDED
+E11-B参考,course-generated integration-mirror,本次prepare生成,6b33188cb464514c6a2baae75a8cedffb2ee4bc2,b091fc6f4ce391b2b50f79d983a25ebf5e3d8639,job-bcede11fc0a64a99b2b3de2c99662948,trace-b91c63f70b07492d8f9e8040e86688a2,evidence/leader/reference-e11-b-mirror/result.json,evidence/leader/reference-e11-b-mirror/candidate.patch,SUCCEEDED_NOT_B11_ATTESTATION
+E12固定样例参考,course-generated integration-mirror,本次prepare生成,6b33188cb464514c6a2baae75a8cedffb2ee4bc2,b091fc6f4ce391b2b50f79d983a25ebf5e3d8639,job-49857aac45db4432b64ef6dd4c0dbdb5,trace-e5b8c58181da45359e680a0e2d6067b5,evidence/leader/reference-e12-mirror/result.json,evidence/leader/reference-e12-mirror/candidate.patch,SUCCEEDED_REFERENCE_ONLY
+E12同机API,course-generated integration-mirror,本次prepare生成,6b33188cb464514c6a2baae75a8cedffb2ee4bc2,b091fc6f4ce391b2b50f79d983a25ebf5e3d8639,job-7fff076eca3a40efae98acde26bcd5fb,trace-a44d83fd5a1d459fa3f454ad22a3bb25,evidence/leader/api-client/verification.json,evidence/leader/api-client/downloads/candidate.patch,SUCCEEDED_NOT_PEER_CONFIRMATION
+E12真实项目,尚未提供,,,,,,,,PENDING
+E12跨组访问,B11尚未实际执行,,,,,,,,PENDING
