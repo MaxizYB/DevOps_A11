@@ -40,13 +40,32 @@ e12-01 是 Docker Hub 元数据连接失败，原始结果/日志保留。e12-02
 
 已存在的不同内容输入和 work 目录拒绝覆盖，重试使用新名字。
 
-本地最终单元测试 61 项通过（含 cJSON 适配、数据集名称/重试输入保护、交接包白名单/哈希及现有三人测试）；E2、E11/E12 契约与 git diff --check 通过。早期云端的 54 项测试与源码 1e47db0 对应；新增交接/准备测试另随最后代码版本复核，不能把次数混算。
+本地最终单元测试 61 项通过（含 cJSON 适配、数据集名称/重试输入保护、交接包白名单/哈希及现有三人测试）；E2、E11/E12 契约与 git diff --check 通过。云端源码 47fe838 的 61 项测试也全部通过；原始日志为 work/cjson-integration-20261115/final-cloud-tests.log。
 
 ## API、交接及交付状态
 
-共享 API 切换与跨机器组长自验结果将在完成后追加；B11 新版独立 cJSON API 结果仍待对方实际运行回传，不能使用组长自验代替。
+共享 API 已切换至容器 a11-e12-cjson-20261115，宿主仍只监听 127.0.0.1:8080。旧 a11-e12-20261114 容器已停止但保留，旧源码与证据未删除。b11-e12 转发账号不变，到期日为 2026-11-28。
+
+组长从自己的本机，经 SSH 隧道访问云端新服务，完成实际提交、重复提交、不同 target 的 409、查询及全部产物下载。此访问者为 A11 组长，不是 B11：
+
+- 实际部署 SHA：47fe83823f24c04e5bad36467f453a3296b1eed0；实现指纹与前述运行相同，implementation_differs_from_commit=false。
+- 操作时间：2026-11-15 14:37（Asia/Shanghai）；客户端目录 work/cjson-api-client-20261115-A11。
+- job_id：job-63d2157400244237b5476b46cd08bf33；trace_id：trace-12faa55abf9248658d525c9befeddae5。
+- verification.status=SUCCEEDED，89 个产物，207 项客户端检查全部通过。
+- repair 消费的本轮增量封装 SHA256：6e2327b1ce79efae003f3a22b7723e050ac1abaaab203fd0833bca3cb0fdba56。
+- candidate.patch SHA256：a481b9a52f7e07d9369bc67cf80a1ff5f703b21781f2fb13791f78713c21dbf0。
+- 五阶段版本/提交/job/trace/config、补丁五项验证和最终无 MD 均通过；same-key 返回同一任务，修改 target 返回 409。
+
+B11 新版独立 cJSON API 结果仍待对方实际运行回传，不能使用上述组长跨机器自验替代对方确认。
 
 给 B11 的新版 ZIP 不含密码，不包含旧私密交接包；继续通过原 b11-e12 账号转发。包内有部署元数据、请求、数据清单、客户端、Dockerfile 和回执模板，并自带逐文件哈希。
+
+- 文件：A11-给B11-cJSON正式联调-20261115.zip，位于当前仓库根目录，Git 忽略；共 11 个文件。
+- ZIP SHA256：46ed0071c34570755a19f5235e26024036da5aa0fe37de9ab05f54c7790ef11f。
+- 包内 deployment.json 对应实际部署 47fe838 和实现指纹；客户端先核对实现指纹，再创建任务。
+- 打包命令：python3 scripts/e11e12/package_cjson_handoff.py --request work/cjson-handoff-inputs/cjson-a11-request.json --dataset work/cjson-handoff-inputs/cjson-a11-dataset.json --deployment work/cjson-handoff-inputs/deployment.json --out A11-给B11-cJSON正式联调-20261115.zip。
+
+新增代码和文档已推送至现有收尾 PR #42；GitHub main 尚未合并。CI 与保护状态应以实际 GitHub 记录为准，不将组长代码自查写成非作者批准。
 
 操作全景和提交物归属见 联调全景与提交材料.md；B11 操作见 B11-cJSON正式联调.md。最终 E11/E12 课程包应在收到新版 B11 结果与必要个人材料、完成真实协作追溯后重新整理，当前不标成全部验收通过。
 
