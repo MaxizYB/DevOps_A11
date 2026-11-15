@@ -42,10 +42,10 @@ def prepare(bundle, data, name='cjson', python_image=None, debian_mirror=None):
     if git(repo, 'rev-parse', 'HEAD') != TARGET or git(repo, 'status', '--porcelain'):
         raise ValueError('Existing real-project must be clean and at the agreed target; not overwritten')
     commits = {}
-    for name, sha in [('base', BASE), ('target', TARGET)]:
+    for commit_name, sha in [('base', BASE), ('target', TARGET)]:
         if git(repo, 'rev-parse', sha+'^{commit}') != sha:
             raise ValueError('Missing upstream commit: '+sha)
-        commits[name] = {'sha': sha, 'description': git(repo, 'show', '-s', '--format=%s', sha)}
+        commits[commit_name] = {'sha': sha, 'description': git(repo, 'show', '-s', '--format=%s', sha)}
     commits['reference_fix'] = {'sha':REFERENCE_FIX, 'included_in_bundle':False,
                               'role':'Upstream answer reference only; not needed to execute the experiment'}
     examples = ROOT/'labs/e11e12/examples'
