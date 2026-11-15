@@ -1,5 +1,7 @@
 # E11–E12 证据目录
 
+最终汇总：2026-11-15 B11 的 cJSON 独立客户端与服务器同任务核验通过，见 [最终验收与交付](../../e11-e12/最终验收与交付.md)。个人原始记录保持原样，历史待办以最终汇总为准。
+
 原始运行目录使用被 .gitignore 忽略的 work/，建议按以下命名保存：
 
 - work/e11-a-<student-id>-<timestamp>/：E11-A baseline/full/incremental、target full、日志和 result.json
