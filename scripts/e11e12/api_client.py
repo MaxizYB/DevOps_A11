@@ -120,7 +120,12 @@ def run(base, request, key, out, timeout, expected_deployment=None):
         summary.update(job_id=job, trace_id=submitted['trace_id'])
         code, replay = json_exchange('same-key', '/v1/jobs', body)
         require(code == 202 and replay.get('job_id') == job, 'same key reuses same job')
-        changed = dict(body, input=dict(request, expected_output=request.get('expected_output', '1')+'-conflict'))
+        # Exercise the handbook's same-key/different-target conflict without
+        # creating a second job or needing another available project commit.
+        changed_target = next(value * 40 for value in '012'
+                              if value * 40 not in (request['base'], request['target']))
+        changed = dict(body, input=dict(request, target=changed_target))
+        save(out/'conflict-request.json', changed)
         code, conflict = json_exchange('conflict', '/v1/jobs', changed)
         require(code == 409 and conflict.get('code') == 'IDEMPOTENCY_CONFLICT', 'changed input returns 409')
         deadline = time.monotonic() + timeout

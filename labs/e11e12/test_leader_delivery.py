@@ -49,12 +49,17 @@ class APIClientVerification(unittest.TestCase):
             self.assertEqual(result['artifact_count'],len(payloads))
             self.assertEqual((out/'downloads/full-check.json').read_bytes(),payloads['full-check.json'])
             self.assertTrue((out/'conflict.json').is_file())
+            conflict = json.loads((out/'conflict-request.json').read_text())
+            self.assertNotEqual(conflict['input']['target'], 'b'*40)
+            self.assertEqual(conflict['input']['base'], 'a'*40)
+            self.assertEqual(conflict['idempotency_key'], 'key')
 
     def test_changed_download_is_not_saved_or_accepted(self):
         responses, _ = self.fixture(corrupt=True)
         with tempfile.TemporaryDirectory() as directory, patch.object(api_client,'exchange',side_effect=responses):
             out=Path(directory)/'client'
-            result=api_client.run('http://127.0.0.1:8080',{},'key',out,5)
+            result=api_client.run('http://127.0.0.1:8080',
+                                 {'mode':'e11-a','base':'a'*40,'target':'b'*40},'key',out,5)
             self.assertEqual(result['status'],'FAILED')
             self.assertIn('artifact transport SHA256',result['error'])
             self.assertFalse((out/'downloads/baseline-cache.json').exists())

@@ -180,3 +180,12 @@
 - 关联文件：run_e11e12.py、labs/e11e12/、contracts/e11-e12-orchestration.md、contracts/schemas/e12-orchestration-request.schema.json、.github/workflows/e11e12-a.yml、docs/e11-e12/、docs/backlog/e11-e12-backlog.md。
 - 修正：修复 E11-A 执行后误进入 E11-B 固定报告分支；让全量检测使用请求超时；修复 E2 校验器只检查两份 E2 Schema 时被 E12 Schema 干扰的问题；补充 E11-A 流程和服务重启状态测试。
 - 验证：python3 scripts/validate_contract.py、python3 scripts/validate_e11e12_contract.py、14 项 labs/e11e12 单元测试、Python 编译和 git diff --check 均通过。
+
+## 2026-11-15：B11 cJSON 交接接入与云端联调准备
+
+- 工具：Codex。操作者/整理者：A11 组长 241880439。
+- 用户要求：以现有 cJSON 上游历史缺陷为真实开源样例，接入 B11 交接、完成 A11 修改和部署，并说明双方下一轮操作与最终材料归属。
+- AI 辅助：审计 B11 源码和原始清单；保留 A11 编排/路径/报告边界，迁入 cJSON 专用适配和测试；补充编译命令一致的依赖缓存、报告衔接校验、部署指纹、离线数据准备和不含密码的新版客户端打包。
+- 来源：B11 7b45b9c04686f3aefe861bb1d8a17aa63c969f23；DaveGamble/cJSON base 359567fdde253f311545a6c80b0fa6fb62e8ff09、target cf0d87a095becada87336ed786f11070e9a037b5。候选为 B11 记录候选加明确记录的镜像/包源调整，不声称本轮调用模型生成候选。
+- 实际验证：本地单元/契约测试、云端五阶段和 API 自验；准确命令、结果与未完成项见 docs/e11-e12/cJSON接入与验证记录.md 和归档原始证据。失败目录保留，选题不虚构为本组长期维护。
+- 边界：组长自验不代替 B11 独立运行；B11 个人报告、ADR 与 Review 不代签；不修改 main 分支保护，也不把 AI 检查冒充非作者批准。
