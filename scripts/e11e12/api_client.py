@@ -37,7 +37,58 @@ def artifact_name(item, job_id):
     return name
 
 
-def run(base, request, key, out, timeout):
+def verify_pipeline(request, manifest, out, require):
+    """Verify stage identity and live report consumption, not just transport."""
+    mode = request.get('mode')
+    stages = {
+        'e11-a':['full-check','incremental-check'],
+        'e11-b':['draft','fixed-md','repair','recheck'],
+        'e12':['draft','full-check','incremental-check','repair','recheck'],
+    }[mode]
+    require(manifest['base_commit'] == request['base'].lower()
+            and manifest['target_commit'] == request['target'].lower(), 'result matches requested commits')
+    require(manifest.get('project_profile','teaching') == request.get('project_profile','teaching'),
+            'result matches requested project profile')
+    require([item['name'] for item in manifest['stages']] == stages, 'expected ordered stages')
+    envelopes = {}
+    for name in stages:
+        raw = (out/'downloads'/(name+'.json')).read_bytes()
+        descriptor = next(item['artifact'] for item in manifest['stages'] if item['name'] == name)
+        require(hashlib.sha256(raw).hexdigest() == descriptor['sha256'], 'stage descriptor SHA256: '+name)
+        envelope = json.loads(raw)
+        expected_commit = manifest['base_commit'] if name == 'full-check' else manifest['target_commit']
+        require(envelope['schema_version'] == 'e11e12-1' and envelope['kind'] == name
+                and envelope['status'] == 'SUCCEEDED' and envelope['commit'] == expected_commit
+                and envelope['job_id'] == manifest['job_id'] and envelope['trace_id'] == manifest['trace_id']
+                and envelope['configuration_id'] == manifest['configuration_id'], 'stage identity/configuration: '+name)
+        envelopes[name] = envelope
+    if 'incremental-check' in envelopes:
+        current = envelopes['incremental-check']['data']
+        baseline_raw = (out/'downloads/baseline-cache.json').read_bytes()
+        require(current['commit'] == manifest['target_commit']
+                and current['baseline_commit'] == manifest['base_commit']
+                and current['baseline_cache_sha256'] == hashlib.sha256(baseline_raw).hexdigest(),
+                'incremental report consumes this baseline cache')
+        reference = json.loads((out/'downloads/target-full/findings.json').read_text())
+        targets = {'cJSON_Utils.o'} if request.get('project_profile') == 'cjson' else {'main.o','helper.o'}
+        normalized = lambda findings: sorted((f['type'],f['target'],f['dependency'])
+                                             for f in findings if f['target'] in targets)
+        require(normalized(current['findings']) == normalized(reference['findings']),
+                'incremental findings match target full check')
+    if 'repair' in envelopes:
+        expected_input = 'incremental-check' if mode == 'e12' else 'fixed-md'
+        consumed = envelopes['repair']['data']['input_report']
+        raw = (out/'downloads'/(expected_input+'.json')).read_bytes()
+        require(artifact_name(consumed, manifest['job_id']) == expected_input+'.json'
+                and hashlib.sha256(raw).hexdigest() == consumed['sha256'], 'repair uses this run report')
+        final = envelopes['recheck']['data']
+        verdict = final['validation']
+        require(verdict['accepted'] is True and bool(verdict['checks'])
+                and all(value is True for value in verdict['checks'].values()), 'patch accepted with all validation checks')
+        require(not any(f['type'] == 'MISSING' for f in final['findings']), 'no missing dependencies after repair')
+
+
+def run(base, request, key, out, timeout, expected_deployment=None):
     out.mkdir(parents=True, exist_ok=False)
     body = {'idempotency_key': key, 'input': request}
     save(out/'request.json', body)
@@ -59,6 +110,10 @@ def run(base, request, key, out, timeout):
     try:
         code, health = json_exchange('health', '/health')
         require(code == 200 and health.get('schema_version') == 'e11e12-1', 'health and version')
+        summary['deployment'] = health.get('deployment')
+        if expected_deployment:
+            require(health.get('deployment',{}).get('implementation_sha256') == expected_deployment,
+                    'server matches agreed deployment fingerprint')
         code, submitted = json_exchange('submit', '/v1/jobs', body)
         require(code == 202, 'accepted real task')
         job = submitted['job_id']
@@ -86,6 +141,9 @@ def run(base, request, key, out, timeout):
                 'successful task-local result manifest')
         summary.update(configuration_id=manifest['configuration_id'],
                        base_commit=manifest['base_commit'], target_commit=manifest['target_commit'])
+        if expected_deployment:
+            require(manifest.get('deployment',{}).get('implementation_sha256') == expected_deployment,
+                    'job matches agreed deployment fingerprint')
         downloaded = []
         for item in manifest['artifacts']:
             name = artifact_name(item, job)
@@ -100,6 +158,7 @@ def run(base, request, key, out, timeout):
             destination.write_bytes(raw)
             downloaded.append({'uri': item['uri'], 'sha256': digest, 'bytes': len(raw)})
         save(out/'downloaded.json', downloaded)
+        verify_pipeline(request, manifest, out, require)
         summary.update(status='SUCCEEDED', artifact_count=len(downloaded))
     except (ValueError, OSError, KeyError, TimeoutError) as error:
         summary.update(status='FAILED', error=str(error))
@@ -114,8 +173,10 @@ def main():
     parser.add_argument('--key', required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--timeout', type=int, default=1200)
+    parser.add_argument('--expected-deployment', help='Agreed implementation SHA256 from A11')
     args = parser.parse_args()
-    result = run(args.url.rstrip('/'), json.loads(args.request.read_text()), args.key, args.out.resolve(), args.timeout)
+    result = run(args.url.rstrip('/'), json.loads(args.request.read_text()), args.key, args.out.resolve(), args.timeout,
+                 args.expected_deployment)
     print(json.dumps({k:v for k,v in result.items() if k != 'checks'}, ensure_ascii=False, indent=2))
     return 0 if result['status'] == 'SUCCEEDED' else 1
 

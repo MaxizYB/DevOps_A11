@@ -11,6 +11,7 @@ import threading
 import uuid
 from urllib.parse import unquote
 from pipeline import ROOT, execute, save, validate_request
+from deployment import metadata
 
 class Store:
     def __init__(self, root):
@@ -60,6 +61,7 @@ class Store:
 
 def serve(host='127.0.0.1',port=8080):
     store=Store(ROOT/'work/api-jobs')
+    deployed = metadata()
     class Handler(BaseHTTPRequestHandler):
         def reply(self,code,obj):
             data=json.dumps(obj,ensure_ascii=False).encode();self.send_response(code);self.send_header('Content-Type','application/json; charset=utf-8');self.end_headers();self.wfile.write(data)
@@ -77,7 +79,7 @@ def serve(host='127.0.0.1',port=8080):
                 self.reply(409 if message == 'IDEMPOTENCY_CONFLICT' else 400,
                            {'error': message, 'code': 'IDEMPOTENCY_CONFLICT' if message == 'IDEMPOTENCY_CONFLICT' else 'REQUEST_1001'})
         def do_GET(self):
-            if self.path=='/health':return self.reply(200,{'status':'ok','schema_version':'e11e12-1'})
+            if self.path=='/health':return self.reply(200,{'status':'ok','schema_version':'e11e12-1', 'deployment':deployed})
             parts=self.path.split('?')[0].strip('/').split('/')
             if len(parts)<3 or parts[:2]!=['v1','jobs'] or parts[2] not in store.jobs:return self.reply(404,{'error':'NOT_FOUND'})
             jid=parts[2];state=store.get(jid);out=store.root/jid/'evidence'

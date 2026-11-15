@@ -1,0 +1,6 @@
+FROM python:3.13-slim
+WORKDIR /work
+COPY . .
+RUN make cJSON_Utils.o
+RUN make test
+CMD ["sh", "-c", "./cJSON_test >/dev/null && echo 1"]

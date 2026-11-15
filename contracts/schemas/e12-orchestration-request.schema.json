@@ -7,10 +7,12 @@
   "required": ["mode", "repo", "base", "target"],
   "properties": {
     "mode": {"enum": ["e11-a", "e11-b", "e12"]},
+    "project_profile": {"enum": ["teaching", "cjson"]},
     "repo": {"type": "string", "minLength": 1},
     "base": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
     "target": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
     "candidate": {"type": "string", "minLength": 1},
+    "broken_dockerfile": {"type": "string", "minLength": 1},
     "fixed_report": {"type": "string", "minLength": 1},
     "expected_output": {"type": "string", "minLength": 1},
     "build_timeout": {"type": "integer", "minimum": 1}
@@ -21,6 +23,11 @@
     {"if": {"properties": {"mode": {"const": "e11-b"}}},
      "then": {"required": ["fixed_report"]}},
     {"if": {"properties": {"mode": {"const": "e12"}}},
-     "then": {"not": {"required": ["fixed_report"]}}}
+     "then": {"not": {"required": ["fixed_report"]}}},
+    {"if": {"required": ["project_profile"], "properties": {
+       "project_profile": {"const": "cjson"}, "mode": {"enum": ["e11-b", "e12"]}}},
+     "then": {"required": ["broken_dockerfile"]}},
+    {"if": {"not": {"required": ["project_profile"], "properties": {"project_profile": {"const": "cjson"}}}},
+     "then": {"not": {"required": ["broken_dockerfile"]}}}
   ]
 }
