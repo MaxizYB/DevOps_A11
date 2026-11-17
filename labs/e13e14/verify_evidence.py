@@ -9,7 +9,9 @@ STAGES = ['draft', 'full-check', 'incremental-check', 'repair', 'recheck']
 def verify(root):
     root = root.resolve()
     result = json.loads((root/'result.json').read_text())
-    expected = STAGES if any(x['name']=='draft' for x in result['stages']) else ['full-check', 'incremental-check']
+    names = [x['name'] for x in result['stages']]
+    expected = (['draft', 'fixed-md', 'repair', 'recheck'] if 'fixed-md' in names else
+                STAGES if 'draft' in names else ['full-check', 'incremental-check'])
     if result['status'] != 'SUCCEEDED' or [x['name'] for x in result['stages']] != expected:
         raise ValueError('Task/stage status not a complete successful run')
     count = 0
@@ -38,7 +40,7 @@ def verify(root):
         expected_commit = result['base_commit'] if stage['name']=='full-check' else result['target_commit']
         if envelope['commit'] != expected_commit:
             raise ValueError('Stage commit mismatch')
-    if expected == STAGES:
+    if 'repair' in names:
         repair = json.loads((root/'repair.json').read_text())['data']
         recheck = json.loads((root/'recheck.json').read_text())['data']
         if result['schema_version']=='e14-compose-1':
@@ -50,7 +52,8 @@ def verify(root):
             if response['validation']['accepted'] is not True or recheck['remaining_missing'] != 0:
                 raise ValueError('Repair/recheck not accepted')
         else:
-            if repair['input_report']['sha256'] != hashlib.sha256((root/'incremental-check.json').read_bytes()).hexdigest():
+            report_name = 'fixed-md' if 'fixed-md' in names else 'incremental-check'
+            if repair['input_report']['sha256'] != hashlib.sha256((root/(report_name+'.json')).read_bytes()).hexdigest():
                 raise ValueError('Repair did not consume the current report')
             if recheck['validation']['accepted'] is not True or any(x['type']=='MISSING' for x in recheck['findings']):
                 raise ValueError('Missing dependencies remain')

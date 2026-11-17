@@ -131,7 +131,7 @@ def e14(run, project):
         except (ValueError,KeyError) as exc:
             save(run.root/'a11-compose-verification.json',dict(status='FAIL',error=str(exc)))
     request=json.loads((project/'e12.json').read_text())
-    timeout=project/'e14-timeout-preflight.json'
+    timeout=project/(run.root.name+'-timeout.json')
     if timeout.exists():
         raise ValueError('Do not overwrite timeout input')
     save(timeout,dict(request,build_timeout=0.01))
