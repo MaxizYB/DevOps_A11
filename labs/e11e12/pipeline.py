@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 import re
 import subprocess
 import sys
@@ -117,13 +118,17 @@ def validate_request(request):
         fixed = data_path(request.get('fixed_report'), 'fixed_report')
         if not fixed.is_file():
             raise Failure('INVALID_REQUEST', 'fixed_report does not exist')
+    if 'fixed_report_sha256' in request:
+        digest = request['fixed_report_sha256']
+        if mode != 'e11-b' or not isinstance(digest, str) or not re.fullmatch(r'[0-9a-f]{64}', digest):
+            raise Failure('INVALID_REQUEST', 'fixed_report_sha256 requires e11-b and a lowercase SHA256')
     if mode == 'e12' and 'fixed_report' in request:
         raise Failure('INVALID_REQUEST', 'E12 must consume the current incremental report, not fixed_report')
     if 'expected_output' in request and (not isinstance(request['expected_output'], str) or not request['expected_output']):
         raise Failure('INVALID_REQUEST', 'expected_output must be a non-empty string')
     timeout = request.get('build_timeout', 600)
-    if isinstance(timeout, bool) or not isinstance(timeout, int) or timeout < 1:
-        raise Failure('INVALID_REQUEST', 'build_timeout must be a positive integer')
+    if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
+        raise Failure('INVALID_REQUEST', 'build_timeout must be finite positive seconds')
     return request
 
 def check_envelope(report, commit, kind=None):
@@ -261,7 +266,8 @@ def execute(request, out, job_id=None, trace_id=None):
         elif mode == 'e11-b':
             # E11-B still consumes a fixed MD input, separately from A's live output.
             fixed=data_path(request['fixed_report'], 'fixed_report')
-            envelope=json.loads(fixed.read_text(encoding='utf-8'))
+            expected = request.get('fixed_report_sha256')
+            envelope = load_artifact(fixed, expected) if expected is not None else json.loads(fixed.read_text(encoding='utf-8'))
             check_envelope(envelope,target_sha,'fixed-md')
             current=envelope['data']
             if current.get('commit') != target_sha:

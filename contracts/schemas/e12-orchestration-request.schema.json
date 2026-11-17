@@ -14,10 +14,13 @@
     "candidate": {"type": "string", "minLength": 1},
     "broken_dockerfile": {"type": "string", "minLength": 1},
     "fixed_report": {"type": "string", "minLength": 1},
+    "fixed_report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "expected_output": {"type": "string", "minLength": 1},
-    "build_timeout": {"type": "integer", "minimum": 1}
+    "build_timeout": {"type": "number", "exclusiveMinimum": 0}
   },
   "allOf": [
+    {"if": {"required": ["fixed_report_sha256"]},
+     "then": {"properties": {"mode": {"const": "e11-b"}}}},
     {"if": {"properties": {"mode": {"enum": ["e11-b", "e12"]}}},
      "then": {"required": ["candidate"]}},
     {"if": {"properties": {"mode": {"const": "e11-b"}}},
