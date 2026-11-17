@@ -137,7 +137,10 @@ class Handler(BaseHTTPRequestHandler):
             length = int(self.headers.get('Content-Length', '0'))
             if length < 1 or length > 100000:
                 raise ValueError('Invalid request size')
-            data = json.loads(self.rfile.read(length))
+            value = json.loads(self.rfile.read(length))
+            if not isinstance(value, dict):
+                raise ValueError('Request must be a JSON object')
+            data = value
             result = run(data)
             print(json.dumps({'role': ROLE, 'job_id': data.get('job_id'),
                               'trace_id': data.get('trace_id'), 'status': 'SUCCEEDED',
