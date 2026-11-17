@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import subprocess
 import sys
 import time
 import traceback
@@ -29,6 +30,12 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def mark_safe(repo):
+    """The compose host may create snapshots as a different UID than this role."""
+    subprocess.run(['git', 'config', '--global', '--add', 'safe.directory', str(repo)],
+                   check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def save(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
@@ -37,6 +44,7 @@ def save(path, data):
 def run(data):
     project = local(data['project'])
     out = local(data['out'])
+    mark_safe(project)
     if out.exists():
         raise ValueError('Output already exists')
     if ROLE == 'draft':
@@ -53,6 +61,7 @@ def run(data):
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'findings.json')}
     if ROLE == 'echecker':
         base = local(data['base'])
+        mark_safe(base)
         baseline_graph = local(data['baseline_graph'])
         target_findings = local(data['target_findings'])
         old = scan(base)
