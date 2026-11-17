@@ -40,7 +40,9 @@ def execute(out,image):
     checks['history_fake']=run(['python3','scripts/secret_scan.py','.','--history'],repo,1)
     image_tag='e13-c6-fake-'+uuid.uuid4().hex[:12]
     dockerfile=out/'Dockerfile.image-probe'
-    dockerfile.write_text('FROM '+image+'\nARG A11_C6_KEY\nENV API_KEY=$A11_C6_KEY\n')
+    # scratch keeps the disposable credential only in one config-only image,
+    # with no shared base layers; removing its image removes the test artifact.
+    dockerfile.write_text('FROM scratch\nARG A11_C6_KEY\nENV API_KEY=$A11_C6_KEY\n')
     built=run(['docker','build','--quiet','-f',str(dockerfile),'-t',image_tag,
                '--build-arg','A11_C6_KEY='+fake,str(out)],ROOT,0)
     if not built['passed']:
