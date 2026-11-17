@@ -68,6 +68,9 @@ RECEIPT='''# B11 → A11：E13项目与实时报告消费回执
 def package(project,a_result,out,extra=None):
     project=project.resolve();a_result=a_result.resolve()
     dataset=json.loads((project/'dataset.json').read_text())
+    dataset['bundle_project_branch']=dataset['project_branch']
+    dataset['online_project_branch']='feat/43-a11-config-probe'
+    dataset['online_project_ref_note']='Use this online branch for target; project_branch is the original branch name inside the fixed offline bundle.'
     result=json.loads((a_result/'result.json').read_text())
     verified=verify(a_result)
     if result['target_commit']!=dataset['target'] or result['base_commit']!=dataset['base']:
@@ -76,6 +79,7 @@ def package(project,a_result,out,extra=None):
     entries={}
     for name in ('a11-project.bundle','candidate.Dockerfile','dataset.json','e11-a.json','e12.json','C0-functional-tests.log','C1-functional-tests.log','bundle-verification.log'):
         entries[name]=(project/name).read_bytes()
+    entries['dataset.json']=(json.dumps(dataset,ensure_ascii=False,indent=2)+'\n').encode()
     for name in ('verify_package.py','prepare_b11.py','handoff_a_to_b.py'):
         entries[name]=(KIT/name).read_bytes()
     entries['USAGE.md']=USAGE.encode()

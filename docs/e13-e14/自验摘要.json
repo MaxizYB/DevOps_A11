@@ -1,0 +1,41 @@
+{
+  "scope": "A11 leader public preparation; not B11 execution, independent member acceptance, or final RC",
+  "date": "2026-11-17",
+  "group": "A11",
+  "paired_group": "B11",
+  "project": {
+    "base": "5b431fcc656804434db59f4452f046ef284e6eb4",
+    "target": "c2301112968b4cf185a94449e5dbc85764f4a2df",
+    "online_branch": "feat/43-a11-config-probe",
+    "original_bundle_branch": "feat/43-a11-exchange-project"
+  },
+  "old_tests": 68,
+  "new_tests": 17,
+  "e13": {
+    "a11_a": {"status": "SUCCEEDED", "artifacts_verified": 47, "job_id": "job-4849cde500db4c489735d1744bd17e8f"},
+    "a11_e12": {"status": "SUCCEEDED", "artifacts_verified": 88},
+    "H1_jsmn": {"status": "SUCCEEDED", "artifacts_verified": 88},
+    "H2_inih": {"status": "SUCCEEDED", "artifacts_verified": 88},
+    "H3_tiny_aes": {"status": "SUCCEEDED", "artifacts_verified": 88},
+    "local_report_consumption": {"status": "SUCCEEDED", "artifacts_verified": 50, "scope": "A11 self replay, NOT B11"},
+    "C2": "STALE_REPORT",
+    "C3": "ARTIFACT_HASH_MISMATCH",
+    "C4": "outer FAILED / inner TIMED_OUT",
+    "C5": "applicable patch rejected by actual build; original commit and tracked bytes unchanged; rollback true",
+    "C6": "fake key detected in isolated workspace/history/image and runtime; cleanup re-scan passed",
+    "C7": "failed then normal successful task; distinct job/trace and hashes verified",
+    "C8": "actual A11 API: same input reused job, changed input HTTP409; 47 downloaded artifacts verified"
+  },
+  "e14": {
+    "fixed_fixture": {"status": "SUCCEEDED", "artifacts_verified": 162},
+    "a11_project_four_services": {"status": "SUCCEEDED", "artifacts_verified": 174},
+    "fault": "HTTP422 / TIMEOUT / no success",
+    "new_task_recovery": {"status": "SUCCEEDED", "artifacts_verified": 174},
+    "compose": "preflight completed and this project stopped; original E12 service unchanged"
+  },
+  "source_history_actual_image_scan": "PASS",
+  "runtime_scan": {"text_files": 2152, "hits": 0, "errors": 0},
+  "visible_memory_bytes": 3799126016,
+  "image_id": "sha256:548752eeae6ae6ea598e0a5aa9e26874bb27c3065b22e554e800a6595b1e8d53",
+  "pending": ["B11 independently maintained project", "B11 actual report consumption receipt", "formal paired-project C1-C8", "members independent checks", "review and merge", "final E13 gate and merged-candidate E14 rerun", "v0.9-rc release"]
+}
