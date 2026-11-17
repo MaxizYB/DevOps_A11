@@ -25,7 +25,7 @@
 
 - labs/e13e14/：20261116教学脚本及A11接入；不覆盖旧实验。
 - labs/e13e14/projects/a11-config-probe/：A11项目的base/target可审阅源模板；实际独立Git历史由prepare_project.py生成并固定在交接清单。
-- data/e13-a11-project-20261117/：固定项目克隆、Git bundle、请求、候选和来源（忽略Git，另打包）。
+- data/e13-a11-project-20261117-v2/：固定项目克隆、Git bundle、请求、候选和来源（忽略Git，另打包）。
 - data/e13-upstream-student/：教师三个适配项目与来源，不能代替配对交换项目。
 - work/e13-*/、work/e14-*/：新证据目录，绝不覆盖旧结果。
 

@@ -54,7 +54,7 @@ class Run:
         return folder
 
 def e13(run, project):
-    inputs = ROOT/'data/e13-leader-preflight-inputs'
+    inputs = ROOT/'data'/('e13-leader-preflight-inputs-'+run.root.name)
     if inputs.exists():
         raise ValueError('Preserve previous preflight inputs')
     inputs.mkdir()
@@ -153,7 +153,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('suite',choices=['e13','e14'])
     p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--project',type=Path,default=ROOT/'data/e13-a11-project-20261117')
+    p.add_argument('--project',type=Path,default=ROOT/'data/e13-a11-project-20261117-v2')
     args=p.parse_args()
     run=Run(args.out.resolve())
     (e13 if args.suite=='e13' else e14)(run,args.project.resolve())
