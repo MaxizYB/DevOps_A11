@@ -37,5 +37,16 @@
   "runtime_scan": {"text_files": 2152, "hits": 0, "errors": 0},
   "visible_memory_bytes": 3799126016,
   "image_id": "sha256:548752eeae6ae6ea598e0a5aa9e26874bb27c3065b22e554e800a6595b1e8d53",
-  "pending": ["B11 independently maintained project", "B11 actual report consumption receipt", "formal paired-project C1-C8", "members independent checks", "review and merge", "final E13 gate and merged-candidate E14 rerun", "v0.9-rc release"]
+  "peer_cjson_received_20261117": {
+    "base": "cf0d87a095becada87336ed786f11070e9a037b5",
+    "target": "f0c8fa4f812abe50964956cd0580ab963430ba35",
+    "status": "A_CHECKS_COMPLETE_B_CONSUMPTION_PENDING",
+    "job_id": "job-85e6c008fc4a433d813ebc18b675039d",
+    "artifacts_verified": 45,
+    "make_test_base_and_target": "PASS",
+    "finding": "MISSING cJSON_Utils.o -> cJSON.h",
+    "scope": "cJSON_Utils.o existing profile, not arbitrary project targets",
+    "raw_scan": "24 upstream static fixture hits; retained and reviewed separately; actual logs scan exit 0"
+  },
+  "pending": ["B11 actual report consumption receipt", "B11 test A11 project handoff", "formal paired-project full C1-C8", "members independent checks", "review and merge", "final E13 gate and merged-candidate E14 rerun", "v0.9-rc release"]
 }
