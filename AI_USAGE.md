@@ -33,8 +33,8 @@
 
 - 使用者：A11 组长 241880439 / MaxizYB；工具：Codex。用户要求在收到 B11-E13-handoff-20261118.tar.gz 后先完成可完成的整合工作。
 - AI 辅助：读取并解包 B11 交付材料；逐个核对 result/request/recheck/validation JSON；重算 artifact URI 对应文件的 SHA-256 和字节数；核对 base/target、阶段顺序、C2–C8 与 H1–H3 语义；编写 B11 独立核验记录并更新 E13 分工、交叉测试和验证记录。
-- 成员成果：将 PR #48 对应分支在本地合入 E13/E14 集成分支，仅用于整合 241880411 的个人证据和测试改动；运行 py_compile 与 labs/e13e14 的 21 项单测通过。未伪写 GitHub Review、PR 合并或 B11 签收。
-- 人工判断与限制：PR #48 最新四服务检查的失败来自 Docker Hub 拉取 python:3.13-slim 的 HTTP 500，另有同提交成功检查；B11 交付目录的 96 个扫描命中属于已核对的上游 Unity 固定 Postman 示例，未被改写成零命中。E13 门禁、B11 正式签收、#45 独立记录和 v0.9-rc 仍待完成。
+- 成员成果：将 PR #48 对应分支在本地整合到 E13/E14 集成分支，纳入 241880411 的个人证据和测试改动；运行 py_compile 与 labs/e13e14 的 21 项单测通过。远程 GitHub 随后将 PR #48 标记为已合并，合并提交为 `55e60ca391ec60dcc723284102c856c6dedff44c`；不把该远程状态扩写为 B11 签收或成员以外的 Review。
+- 人工判断与限制：PR #48 的历史 run #12 曾因 Docker Hub 拉取 python:3.13-slim 返回 HTTP 500 失败；合并提交对应的 E13-E14 integration gate run #14 已成功。B11 交付目录的 96 个扫描命中属于已核对的上游 Unity 固定 Postman 示例，未被改写成零命中。E13 最终门禁、B11 正式签收、#45 独立记录、PR #47 最终合并和 v0.9-rc 仍待完成。
 
 ## 2026-11-11：E11-A 个人验证辅助（241880411）
 
