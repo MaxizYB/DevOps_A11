@@ -21,19 +21,19 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(command.call_args.args[0],['git','config','--global','--add','safe.directory','/course/work/example/base-project'])
 
     def test_rejects_work_root_and_outside_paths(self):
-        with tempfile.TemporaryDirectory() as temp, patch.object(service,'ROOT',Path(temp)):
+        with tempfile.TemporaryDirectory() as temp, patch.object(service,'ROOT',Path(temp).resolve()):
             for value in (str(Path(temp)/'work'),str(Path(temp)/'data/p'),'/tmp/outside'):
                 with self.subTest(value=value),self.assertRaises(ValueError):
                     service.local(value)
 
     def test_symlink_escape_rejected(self):
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as other, patch.object(service,'ROOT',Path(temp)):
+        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as other, patch.object(service,'ROOT',Path(temp).resolve()):
             work=Path(temp)/'work';work.mkdir()
             (work/'link').symlink_to(other,target_is_directory=True)
             with self.assertRaises(ValueError):service.local(str(work/'link/report.json'))
 
     def test_mdfixer_rejects_transfer_hash_before_json_parse(self):
-        with tempfile.TemporaryDirectory() as temp,patch.object(service,'ROOT',Path(temp)),patch.object(service,'ROLE','mdfixer'),patch.object(service,'mark_safe'):
+        with tempfile.TemporaryDirectory() as temp,patch.object(service,'ROOT',Path(temp).resolve()),patch.object(service,'ROLE','mdfixer'),patch.object(service,'mark_safe'):
             work=Path(temp)/'work';work.mkdir()
             report=work/'report.json';report.write_text('not json')
             project=work/'project';project.mkdir()
