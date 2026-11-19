@@ -9,10 +9,13 @@ import traceback
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-sys.path[:0] = ['/course/labs/e8e10', '/course/labs/e11e12/vendor', '/app']
+HERE = Path(__file__).resolve()
+sys.path[:0] = [str(HERE.parents[1] / 'e11e12'), '/course/labs/e8e10',
+                '/course/labs/e11e12/vendor', '/app']
 from lab import scan, patch, validate
 from draft.autobuild import auto_build
 from buildchecker.fullcheck import full_check
+import cjson_profile
 
 ROOT = Path('/course').resolve()
 ROLE = os.environ['E14_ROLE']
@@ -41,9 +44,19 @@ def save(path, data):
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
+def profile_tools(profile):
+    if profile == 'teaching':
+        return scan, patch, validate, ('main.o', 'helper.o'), 'make app'
+    if profile == 'cjson':
+        return cjson_profile.scan, cjson_profile.patch, cjson_profile.validate, (cjson_profile.TARGET,), 'make cJSON_Utils.o'
+    raise ValueError('Unsupported project profile: ' + str(profile))
+
+
 def run(data):
     project = local(data['project'])
     out = local(data['out'])
+    profile = data.get('project_profile', 'teaching')
+    profile_scan, profile_patch, profile_validate, targets, build_command = profile_tools(profile)
     mark_safe(project)
     if out.exists():
         raise ValueError('Output already exists')
@@ -55,7 +68,7 @@ def run(data):
             raise ValueError('DRAFT_' + result['status'] + ': ' + str(result.get('error')))
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'result.json')}
     if ROLE == 'buildchecker':
-        result = full_check(project, out)
+        result = full_check(project, out, build_command=build_command)
         if result['status'] != 'SUCCEEDED':
             raise ValueError('BUILDCHECKER_' + result['status'] + ': ' + str(result.get('error')))
         return {'status': 'SUCCEEDED', 'result': result, 'artifact': str(out / 'findings.json')}
@@ -64,24 +77,24 @@ def run(data):
         mark_safe(base)
         baseline_graph = local(data['baseline_graph'])
         target_findings = local(data['target_findings'])
-        old = scan(base)
+        old = profile_scan(base)
         graph = json.loads(baseline_graph.read_text())
-        projected = {t: sorted({e['dependency'] for e in graph if e['target'] == t})
-                     for t in ('main.o', 'helper.o')}
+        projected = {t: sorted({e['dependency'] for e in graph if e['target'] == t}) for t in targets}
         if old['actual'] != projected:
             raise ValueError('Baseline BuildChecker/GCC graph mismatch')
         old['actual'] = projected
-        current = scan(project, old)
+        current = profile_scan(project, old)
         reference = json.loads(target_findings.read_text())
         normalize = lambda fs: sorted((x['type'], x['target'], x['dependency']) for x in fs
-                                      if x['target'] in ('main.o', 'helper.o'))
+                                      if x['target'] in targets)
         if reference['status'] != 'SUCCEEDED' or normalize(current['findings']) != normalize(reference['findings']):
             raise ValueError('Incremental/full findings mismatch')
         out.mkdir(parents=True)
         save(out / 'baseline-cache.json', old)
         envelope = {'schema_version': 'e11e12-1', 'kind': 'incremental-check',
                     'status': 'SUCCEEDED', 'commit': data['target_commit'],
-                    'job_id': data['job_id'], 'trace_id': data['trace_id'], 'data': current}
+                    'job_id': data['job_id'], 'trace_id': data['trace_id'],
+                    'project_profile': profile, 'data': current}
         if current['commit'] != data['target_commit']:
             raise ValueError('Target commit mismatch')
         save(out / 'incremental-check.json', envelope)
@@ -97,14 +110,16 @@ def run(data):
                 'e11e12-1', 'incremental-check', 'SUCCEEDED', data['target_commit'],
                 data['job_id'], data['trace_id']):
             raise ValueError('Report identity mismatch')
+        if envelope.get('project_profile', 'teaching') != profile:
+            raise ValueError('Report project profile mismatch')
         out.mkdir(parents=True)
-        diff, edits = patch(project, envelope['data'])
+        diff, edits = profile_patch(project, envelope['data'])
         if not diff:
             raise ValueError('No missing dependency to repair')
         candidate = out / 'candidate.patch'
         candidate.write_text(diff, encoding='utf-8')
         save(out / 'repair-plan.json', edits)
-        verdict = validate(project, candidate, out / 'validation')
+        verdict = profile_validate(project, candidate, out / 'validation')
         if not verdict['accepted']:
             raise ValueError('Patch rejected: ' + str(verdict))
         return {'status': 'SUCCEEDED', 'patch': str(candidate),
