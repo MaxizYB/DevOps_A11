@@ -1,5 +1,9 @@
 # E11–E12 A11 操作入口
 
+2026-11-15 最终状态：B11 已完成新版 cJSON 独立 API 联调，A11 已与服务器同一任务交叉核验。最终提交请先读 [最终验收与交付](最终验收与交付.md)，以下准备/参考回放流程保留供复现。
+
+2026-11-15 新增：已整合 B11 的 cJSON 历史缺陷样例，后续正式联调用新版请求而非下方旧课程样例。见 [cJSON 接入与验证](cJSON接入与验证记录.md)、[B11 新版操作](B11-cJSON正式联调.md)、[联调全景与提交材料](联调全景与提交材料.md)。保留原课程实验入口供单独复现。
+
 ## 公共环境
 
 在 Linux 云服务器上设置本地 Git 身份为数字学号后执行：
@@ -9,6 +13,13 @@
     python3 run_e11e12.py prepare
 
 prepare 只创建课程生成的 data/integration-sample/，真实项目必须另建 data/real-project/，并使用完整 base/target SHA。data/ 和 work/ 不进入 Git。
+
+2026-11-14 收尾验证使用独立服务器克隆 /root/241880439/DevOps_A11-e11-e12-20261114。已存在的旧样例与个人目录保留。Docker Hub 元数据不可达时可通过 --docker-cli-image 指定相同摘要的镜像源；prepare 支持 --dataset-name、--python-image、--debian-mirror，覆盖值写入 dataset.json。示例：
+
+    python3 run_e11e12.py build --docker-cli-image m.daocloud.io/docker.io/library/docker:28.5.1-cli@sha256:9190b0613792e658a7783cf14b2d5ace5941bb68ede7276922ea36ee457d76ad
+    python3 run_e11e12.py prepare --dataset-name integration-mirror --python-image m.daocloud.io/docker.io/library/python:3.13-slim@sha256:f82c96458eedc847b233e582eb31336f4954b39cae020b6dcf5b3ed0e5cbcd74 --debian-mirror https://mirrors.tuna.tsinghua.edu.cn
+
+重新运行须用新的 dataset-name 和 work 子目录。镜像源替换保持指定摘要，不关闭 TLS 或包签名校验。
 
 ## A11 E11-A
 
@@ -23,6 +34,12 @@ prepare 只创建课程生成的 data/integration-sample/，真实项目必须�
 
 服务宿主端口只绑定 127.0.0.1，B11 通过 SSH 转发访问。相同幂等键必须复用任务，修改输入返回 409；服务重启会把未完成任务标记为 SERVER_RESTARTED。真实跨组联调由组长后续亲自执行并单独记录。
 
+组长本轮服务容器为 a11-e12-20261114。下载与取证入口：
+
+    python3 scripts/e11e12/api_client.py --request data/integration-mirror/e12.json --key <本次唯一编号> --out work/api-client-<本次唯一编号>
+
+该命令提交真实任务并校验每个产物的清单哈希、响应头哈希和下载内容。B11 通过转发使用 --url http://127.0.0.1:18080，完整交接见 [B11联调交接](B11联调交接.md)。
+
 ## 提交边界
 
-A11 CI 只运行契约测试、环境构建和 E11-A；不运行 B11 的实现，也不把 E12 联调写成已通过。完整流程和真实项目验收待 B11 就绪后执行
+A11 独立 CI 运行契约测试、环境构建和 E11-A；新增 E12 reference CI 运行课程固定 MD 适配器、五阶段和真实回环 API，以参考回放身份归档，B11 个人实现和分机确认仍由对方提供。交付内容、状态与剩余人工事项见 [最终交付检查](最终交付检查.md)，三人贡献见 [最终分工与完成记录](最终分工与完成记录.md)。

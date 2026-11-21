@@ -1,5 +1,7 @@
 # E11–E12 证据目录
 
+最终汇总：2026-11-15 B11 的 cJSON 独立客户端与服务器同任务核验通过，见 [最终验收与交付](../../e11-e12/最终验收与交付.md)。个人原始记录保持原样，历史待办以最终汇总为准。
+
 原始运行目录使用被 .gitignore 忽略的 work/，建议按以下命名保存：
 
 - work/e11-a-<student-id>-<timestamp>/：E11-A baseline/full/incremental、target full、日志和 result.json
@@ -13,3 +15,7 @@
 组长的公共接入记录见 [environment-preparation-20261110.md](environment-preparation-20261110.md)。该记录区分了源码/契约校验、课程生成样例与尚未在本机完成的 Docker/服务器验证。
 
 241880411 的 Issue #38 验证见 [个人报告](241880411/个人报告.md) 和 [运行摘要](241880411/run-summary.json)，包含真实 Docker E11-A、一致性核查与产物及 API 边界测试。
+
+231880027 的 Issue #39 结果见 [独立测试记录](231880027-independent-tests.md)；设计与组长复核结论见 [ADR](231880027-ADR.md)。
+
+2026-11-14 组长云端收尾见 [个人报告](241880439/个人报告.md)、[ADR](241880439/ADR.md) 和 [数据清单](241880439/数据与联调记录.csv)。报告区分 A11 样例验收、参考 E11-B/E12 回放、待 B11 实际访问和真实项目验收；原始 work 证据随本地压缩包归档，不纳入 Git。

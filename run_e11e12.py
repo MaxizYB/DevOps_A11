@@ -12,6 +12,10 @@ parser.add_argument('stage', choices=['build', 'prepare', 'run', 'serve', 'test'
 parser.add_argument('--request')
 parser.add_argument('--out')
 parser.add_argument('--port', type=int, default=8080)
+parser.add_argument('--docker-cli-image', help='Digest-pinned mirror of the Docker CLI image; build only')
+parser.add_argument('--dataset-name', default='integration-sample', help='Fresh fixture directory below data/; prepare only')
+parser.add_argument('--python-image', help='Digest-pinned Python base for the fixture; prepare only')
+parser.add_argument('--debian-mirror', help='HTTPS mirror origin for fixture dependency installation; prepare only')
 args = parser.parse_args()
 
 if os.name != 'posix':
@@ -24,10 +28,15 @@ if not re.fullmatch(r'[0-9]{6,16}', student_id):
 image = 'course-e11e12:' + student_id
 
 if args.stage == 'build':
+    build_args = []
+    if args.docker_cli_image:
+        if not re.fullmatch(r'[^\s]+@sha256:[0-9a-f]{64}', args.docker_cli_image):
+            parser.error('--docker-cli-image must be pinned by SHA256 digest')
+        build_args = ['--build-arg', 'DOCKER_CLI_IMAGE='+args.docker_cli_image]
     command = [
         'docker', 'build', '-f',
         str(root / 'labs/e11e12/environment/services/buildchecker/Dockerfile'),
-        '-t', image, str(root / 'labs/e11e12/environment'),
+        '-t', image, *build_args, str(root / 'labs/e11e12/environment'),
     ]
 else:
     needs_docker_socket = args.stage == 'serve'
@@ -73,7 +82,11 @@ else:
         '-v', str(root) + ':/course', '-w', '/course', image, 'python3',
     ]
     if args.stage == 'prepare':
-        command += ['labs/e11e12/prepare.py']
+        command += ['labs/e11e12/prepare.py', '--dataset-name', args.dataset_name]
+        if args.python_image:
+            command += ['--python-image', args.python_image]
+        if args.debian_mirror:
+            command += ['--debian-mirror', args.debian_mirror]
     elif args.stage == 'serve':
         command += ['labs/e11e12/server.py', '--host', '0.0.0.0', '--port', '8080']
     elif args.stage == 'test':

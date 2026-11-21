@@ -19,10 +19,12 @@ A11 负责 BuildChecker→EChecker（E11-A）和编排层中对全量/增量报�
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
 | mode | 是 | e11-a、e11-b 或 e12 |
+| project_profile | 否 | teaching（默认）或 cjson；cjson 目前只分析 cJSON_Utils.o |
 | repo | 是 | 服务器 data/ 下的项目路径；真实项目需保留来源记录 |
 | base | 是 | 基线提交的完整 40 位 SHA |
 | target | 是 | 目标提交的完整 40 位 SHA |
 | candidate | E11-B/E12 | DRAFT 候选 Dockerfile 路径 |
+| broken_dockerfile | cjson 的 E11-B/E12 | data/ 下的实验失败 Dockerfile，只写入隔离副本，不改上游提交 |
 | fixed_report | E11-B | 固定 MD 报告路径；E12 不使用固定报告 |
 | expected_output | 否 | 镜像验证的期望输出，默认由调用方明确提供 |
 | build_timeout | 否 | 构建/验证超时秒数，必须为正整数 |
@@ -37,7 +39,7 @@ A11 负责 BuildChecker→EChecker（E11-A）和编排层中对全量/增量报�
 | e11-b | draft(target) → fixed-md → repair → recheck | B11 负责实际实现；A11 只保留编排兼容性 |
 | e12 | draft → full-check(base) → incremental-check(target) → repair → recheck(target) | A11/B11 共同联调；本阶段不提前宣称完成 |
 
-E11-A 的增量报告必须消费基线缓存，且与同一目标提交的全量报告在 main.o、helper.o 投影上相等。E12 的 MDFixer 输入必须是同一轮 incremental-check 的实际产物，不得回退到固定 MD。
+E11-A 的增量报告必须消费基线缓存，且与同一目标提交的全量报告在 profile 目标投影上相等（teaching 为 main.o、helper.o，cjson 为 cJSON_Utils.o）。报告记录 baseline_commit、baseline_cache_sha256、refreshed/reused；输入未失效时才允许复用。E12 的 MDFixer 输入必须是同一轮 incremental-check 的实际产物，不得回退到固定 MD。
 
 ### 3.1 E2 字段映射
 
@@ -70,6 +72,8 @@ E11-A 的增量报告必须消费基线缓存，且与同一目标提交的全�
 - GET /v1/jobs/{job_id}/files/{relative_path}：下载并通过 X-Content-SHA256 校验
 
 相同幂等键和完全相同输入必须复用同一任务；同一键修改输入返回 HTTP 409 IDEMPOTENCY_CONFLICT。服务重启后未完成任务标记 SERVER_RESTARTED，已完成任务仍可查询。
+
+health 和 result 额外包含 deployment：实际 source_commit、implementation_sha256、是否存在实现文件未提交差异、B11 来源 SHA。implementation_sha256 是参与执行的文件内容指纹，不等于工具链 configuration_id；客户端须按交接包中的指纹核对，不能仅靠操作者填写 B11 SHA 声称已部署。
 
 ## 6. 联调前置检查
 
