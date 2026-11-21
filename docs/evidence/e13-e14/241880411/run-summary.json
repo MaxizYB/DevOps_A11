@@ -1,0 +1,492 @@
+{
+  "issue": 44,
+  "student": "241880411",
+  "date": "2026-11-18",
+  "branch": "test/44-e13-faults-upstream",
+  "tested_system_commit": "32544b1b37d6e34a240372c90941885ca14b3993",
+  "environment": {
+    "platform": "macOS Docker Desktop Linux/arm64",
+    "docker_engine": "29.6.2",
+    "docker_compose": "v5.3.1",
+    "docker_cpus": 10,
+    "docker_memory_bytes": 8321515520,
+    "image": "course-e11e12:241880411",
+    "image_id": "sha256:e3fb933422631485805af448dcd37cba1d061b481627c97420cd8cfba601c427"
+  },
+  "E13": {
+    "H1-H3": {
+      "package_sha256": "707cd09b37b69db0312fcef8292edac0c777b5a906bd1e82625bff53630481bc",
+      "nested_package_sha256": "d9818c5f34d6ff5b6016222dabd7f56daca09ceaa5f525be214e146e3d485435",
+      "socket_retry": "Docker Desktop bind-mounted socket has gid 0; use --group-add 0 for the pipeline container",
+      "cases": [
+        {
+          "name": "H1-jsmn",
+          "upstream": [
+            "Original project: https://github.com/zserge/jsmn",
+            "Pinned upstream commit: 25647e692c7906b96ffd2b05ca54c097948e879c",
+            "The course fixture retains the upstream core and license; main.c, Makefile, Dockerfile and the helper wrapper are course additions."
+          ],
+          "base": "66a6dafcc20cea76bf017923d3db725d78407845",
+          "target": "948a1d30cd758d32d45a50f788e5a95fb1d89c69",
+          "request": "work/issue44/h123/H1-jsmn.request.json",
+          "evidence": "work/issue44/h123/H1-jsmn-docker-gid0",
+          "first_run": {
+            "evidence": "work/issue44/h123/H1-jsmn",
+            "exit_code": 1,
+            "error": "DRAFT_FAILED"
+          },
+          "exit_code": 0,
+          "stages": [
+            "draft",
+            "full-check",
+            "incremental-check",
+            "repair",
+            "recheck"
+          ],
+          "job_id": "job-cdfd56856ce643aa942acc8149edf3fa",
+          "trace_id": "trace-4b0b83fbee1441f092dd01d472d5c2b0",
+          "artifacts_verified": 88,
+          "candidate_dockerfile_sha256": "2ac5ae7cd7e296cb30e78e6f740642b76d8c4286356a2a5ad1dba5d4ebc7a6e7",
+          "candidate_image_id": "sha256:f1ee51b5639c4681250e9f2627df3b75455105ab9af074b5d4436d715079b4df",
+          "expected_and_actual_stdout": "1",
+          "baseline_findings": [],
+          "target_findings": [
+            [
+              "MISSING",
+              "helper.o",
+              "extra.h"
+            ]
+          ],
+          "final_findings": [],
+          "incremental_report_sha256": "a5340d7147d8de8223d9e686b9088193210f7078a2609ac085d4c4e9b49d6ffb",
+          "patch_sha256": "8598e9b539354b5b628a6d992932cf1602c8acf6c75e75af3a73ba32f3fe51ba",
+          "patch_accepted": true,
+          "original_repo_clean": true
+        },
+        {
+          "name": "H2-inih",
+          "upstream": [
+            "Original project: https://github.com/benhoyt/inih",
+            "Pinned upstream commit: 611ab51f8dd7ec583543815b0de693495045fbf8",
+            "The course fixture retains the upstream core and license; main.c, Makefile, Dockerfile and the helper wrapper are course additions."
+          ],
+          "base": "aafc740a2cac05a74541abede93b7d59ed23b87f",
+          "target": "3aadb81763c79651e4dfa99b725ba921ee2b8a39",
+          "request": "work/issue44/h123/H2-inih.request.json",
+          "evidence": "work/issue44/h123/H2-inih-docker-gid0",
+          "first_run": {
+            "evidence": "work/issue44/h123/H2-inih",
+            "exit_code": 1,
+            "error": "DRAFT_FAILED"
+          },
+          "exit_code": 0,
+          "stages": [
+            "draft",
+            "full-check",
+            "incremental-check",
+            "repair",
+            "recheck"
+          ],
+          "job_id": "job-d288a854f308473d8638f34208a3f231",
+          "trace_id": "trace-90e428cf797844b29a09d60d0e5dd890",
+          "artifacts_verified": 88,
+          "candidate_dockerfile_sha256": "7bf4b0b9861137354132a2a7676b567ec2de1f0ee71161034a27e8a7b06f4e90",
+          "candidate_image_id": "sha256:74651bd455feaaef06692b770d16630b29469df736467f37d9a6032083eda3b1",
+          "expected_and_actual_stdout": "1",
+          "baseline_findings": [
+            [
+              "REDUNDANT",
+              "main.o",
+              "unused.h"
+            ]
+          ],
+          "target_findings": [
+            [
+              "MISSING",
+              "main.o",
+              "extra.h"
+            ],
+            [
+              "REDUNDANT",
+              "main.o",
+              "unused.h"
+            ]
+          ],
+          "final_findings": [
+            [
+              "REDUNDANT",
+              "main.o",
+              "unused.h"
+            ]
+          ],
+          "incremental_report_sha256": "20a4e1fcbe6bf8ad6f7afe89aaf6d910112d4af92b8bd60b68571c2b5c747a78",
+          "patch_sha256": "2c9db75d9a84e3271257c94bae1fa67dd007c455d1db920c2d94b0ae92b5b4ac",
+          "patch_accepted": true,
+          "original_repo_clean": true
+        },
+        {
+          "name": "H3-tiny-aes",
+          "upstream": [
+            "Original project: https://github.com/kokke/tiny-AES-c",
+            "Pinned upstream commit: 23856752fbd139da0b8ca6e471a13d5bcc99a08d",
+            "The course fixture retains the upstream core and license; main.c, Makefile, Dockerfile and the helper wrapper are course additions."
+          ],
+          "base": "dc8099306d7023b7337328d718149973e7b17978",
+          "target": "5640bb69a01e64559207e9f74d15a9ae71a4d0f3",
+          "request": "work/issue44/h123/H3-tiny-aes.request.json",
+          "evidence": "work/issue44/h123/H3-tiny-aes-docker-gid0",
+          "first_run": {
+            "evidence": "work/issue44/h123/H3-tiny-aes",
+            "exit_code": 1,
+            "error": "DRAFT_FAILED"
+          },
+          "exit_code": 0,
+          "stages": [
+            "draft",
+            "full-check",
+            "incremental-check",
+            "repair",
+            "recheck"
+          ],
+          "job_id": "job-6b277b5bf570434dbb4f77bb7ac5282a",
+          "trace_id": "trace-4c6502df107a42859115da94b7cd23ca",
+          "artifacts_verified": 88,
+          "candidate_dockerfile_sha256": "08305c26b934d66ed96bd0ea149a597fcbe0be23d363511ab75037c51476eee9",
+          "candidate_image_id": "sha256:92223e5378561787466adfe8f73f02c7e3ad1941ab39e9b5041f64cff5c1cd71",
+          "expected_and_actual_stdout": "1",
+          "baseline_findings": [],
+          "target_findings": [
+            [
+              "MISSING",
+              "helper.o",
+              "extra.h"
+            ]
+          ],
+          "final_findings": [],
+          "incremental_report_sha256": "e9d5b851089d9b2944b66d207506fe480667c3aff5cdc7c73ad1ceedbae36bfc",
+          "patch_sha256": "ccd510fc4ebbd03405bf0f0e73c1624e9d5a88480de0820aebe8f781e41773b5",
+          "patch_accepted": true,
+          "original_repo_clean": true
+        }
+      ]
+    },
+    "C4-C5": {
+      "scope": "Independent A11-side C4/C5 on the received B11 cJSON input",
+      "base": "cf0d87a095becada87336ed786f11070e9a037b5",
+      "target": "f0c8fa4f812abe50964956cd0580ab963430ba35",
+      "received_inputs": {
+        "archive_file": "cjson-b-e13-handoff.tar.gz",
+        "archive_sha256": "7e8ece5d8dda4b2a04ea2f605fcafa31d1aca2c375c36d1cedf1d33fe09e8142",
+        "received_candidate_sha256": "f8cbb53146b9453b8530f8a549696f6d44c6b51bd44fea04675a710c1768bbe7",
+        "received_bundle_sha256": "fd853d3c40721c9109770b510d755ee1a3946041954898f00cdad5c0098c1357",
+        "reference_archive": "A11_to_B11_cJSON_E13当次检测结果_20261117.zip",
+        "reference_archive_sha256": "6115452f8b8cdde1f3a2ea745eda44ecb416114f45fb637645fb1cdc8fde9478",
+        "reference_package_verification": {
+          "status": "PASS",
+          "files": 1553
+        },
+        "report_sha256": "3b77016dd7a243c11ed7e22b07f4b8c7a1a848727ce358685403576329136b72",
+        "report_source": {
+          "job_id": "job-85e6c008fc4a433d813ebc18b675039d",
+          "trace_id": "trace-d1af5a4997ff472485a7a46fba2b9bf7",
+          "uri": "artifact://job-85e6c008fc4a433d813ebc18b675039d/incremental-check.json",
+          "sha256": "5347b7852f913109d560acb4ef2d4fe495ff82d2b7b29d8d265cab707b2af320"
+        },
+        "local_broken_harness_sha256": "146484f5dccf36352349a85372114aca7400aa491f62c52b46a85b1be784b490"
+      },
+      "candidate_sha256": "f8cbb53146b9453b8530f8a549696f6d44c6b51bd44fea04675a710c1768bbe7",
+      "input_unchanged": true,
+      "tracked_files": 222,
+      "c4": {
+        "passed": true,
+        "exit_code": 1,
+        "outer": "FAILED",
+        "error": {
+          "code": "DRAFT_FAILED",
+          "message": "Docker client command exceeded 0.5s"
+        },
+        "inner": "TIMED_OUT",
+        "timeout_s": 0.5,
+        "job_id": "job-9de63dd338624ac49964db08d93ef556",
+        "trace_id": "trace-22ed8fc898c24661acd31372bcfd08d2",
+        "build_trace_id": "e6-b-38855e96e7c84b048af3fc23a4148f17",
+        "child_seen": true,
+        "container_id": "73e0b7f4c9a93fd1fa4ff77294b802cd5df3736514a10356e58d7e85b4af775f",
+        "events": [
+          "create",
+          "attach",
+          "start",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "top",
+          "die",
+          "destroy"
+        ],
+        "process_after_exit": 1,
+        "container_after_exit": 1,
+        "artifact_hashes_verified": 12
+      },
+      "c5": {
+        "passed": true,
+        "validator_exit": 0,
+        "build_exit": 2,
+        "baseline_exit": 0,
+        "validation": {
+          "accepted": false,
+          "checks": {
+            "patch_applies": true
+          },
+          "error": "COMMAND_FAILED ['make', 'cJSON_Utils.o']: make: *** [Makefile:108: cJSON_Utils.o] Error 1\n",
+          "source_unchanged": true,
+          "rollback": true
+        },
+        "patch_sha256": "f9d84c08a24f06ecdda9033778ac801aca612b8a128c408bc2a977473eb45fbb",
+        "validation_sha256": "15ab00c9148aa244dc50b42b4cef43712ed71a0cefaaee4530802ec6a153092a"
+      },
+      "b11_scope": "A11 member fault checks on B11 source SHAs. B11 runs its own repair and signs the receipt.",
+      "evidence": "work/issue44/c45/formal",
+      "additional_checks": {
+        "container_lifecycle": [
+          {
+            "Action": "create",
+            "timeNano": 1794968724545420883
+          },
+          {
+            "Action": "start",
+            "timeNano": 1794968724664101550
+          },
+          {
+            "Action": "die",
+            "timeNano": 1794968726075468384
+          },
+          {
+            "Action": "destroy",
+            "timeNano": 1794968726098357592
+          }
+        ],
+        "die_exit": "1",
+        "attempted_build_image_tag": "e6-draft-replay:38855e96e7c84b048af3fc23a4148f17-1",
+        "image_inspect_command": [
+          "docker",
+          "image",
+          "inspect",
+          "--format",
+          "{{.Id}}",
+          "e6-draft-replay:38855e96e7c84b048af3fc23a4148f17-1"
+        ],
+        "image_inspect_exit": 1,
+        "image_inspect_stdout": "\n",
+        "image_inspect_stderr": "Error response from daemon: No such image: e6-draft-replay:38855e96e7c84b048af3fc23a4148f17-1\n",
+        "sha256": {
+          "C4-timeout/result.json": "06a928b7386ffba97dc274bf6f9486eb6ed478acbedfa82766280ecd9107bca2",
+          "C4-timeout/draft-build/result.json": "2adb581fc1ddb6f51b3332b4c665240be927cfcef1954bd2c8aeee548d4a7d29",
+          "C5-wrong-patch/applicable-wrong.patch": "f9d84c08a24f06ecdda9033778ac801aca612b8a128c408bc2a977473eb45fbb",
+          "C5-wrong-patch/validation/validation.json": "15ab00c9148aa244dc50b42b4cef43712ed71a0cefaaee4530802ec6a153092a"
+        },
+        "reference_report_sha256_verified": "5347b7852f913109d560acb4ef2d4fe495ff82d2b7b29d8d265cab707b2af320",
+        "reference_report_used_for_c5": false,
+        "reference_report_note": "C5 is a direct applicable wrong patch at the MDFixer validation boundary."
+      }
+    },
+    "C6": {
+      "source_history_image": "work/issue44/c6/source-history-image/result.json",
+      "runtime_fake_clean_incomplete": "work/issue44/c6/runtime-logs/result.json",
+      "source_history_image_exit_code": 0,
+      "H1-H3_runtime_scan": "work/issue44/h123-runtime-scan.log",
+      "E14_runtime_scan": "work/issue44/c6/e14-runtime.stdout.log"
+    }
+  },
+  "E14": {
+    "H1": {
+      "http_probes": 16,
+      "image_id": "sha256:e3fb933422631485805af448dcd37cba1d061b481627c97420cd8cfba601c427",
+      "initial": {
+        "status": "PASS",
+        "job_id": "job-da13f6785681458ea58023e5a407e110",
+        "trace_id": "trace-ade25771644548d2b03c4303194e48c2",
+        "artifacts": 183,
+        "target": "948a1d30cd758d32d45a50f788e5a95fb1d89c69",
+        "scope": "One actual run, not peer signoff or RC gate",
+        "unique_artifact_files": 183,
+        "base": "66a6dafcc20cea76bf017923d3db725d78407845",
+        "remaining_rd": []
+      },
+      "timeout": {
+        "job_id": "job-6e1b94f4008546e8b47233cafcdc99f9",
+        "trace_id": "trace-03e6b7b28487436eb4db7d85d2ec59ba",
+        "http": 422,
+        "outer": "FAILED",
+        "draft": "TIMED_OUT",
+        "error_code": "TIMEOUT",
+        "result_sha256": "f5f1fde0aa753553df4d1f668b9809545f255d80ab6e61b904541a85d290f90b"
+      },
+      "recovery": {
+        "status": "PASS",
+        "job_id": "job-d99e299e11f04c0e8c0ab1faf3b90a9f",
+        "trace_id": "trace-1af7542248ee4dbeb7d6ff29795adf99",
+        "artifacts": 183,
+        "target": "948a1d30cd758d32d45a50f788e5a95fb1d89c69",
+        "scope": "One actual run, not peer signoff or RC gate",
+        "unique_artifact_files": 183,
+        "base": "66a6dafcc20cea76bf017923d3db725d78407845",
+        "remaining_rd": []
+      },
+      "role_log_counts": {
+        "initial": {
+          "buildchecker": 3,
+          "echecker": 1,
+          "draft": 1,
+          "mdfixer": 1
+        },
+        "timeout": {
+          "buildchecker": 0,
+          "echecker": 0,
+          "draft": 1,
+          "mdfixer": 0
+        },
+        "recovery": {
+          "buildchecker": 3,
+          "echecker": 1,
+          "draft": 1,
+          "mdfixer": 1
+        }
+      },
+      "initial_evidence": "work/issue44/e14/fixture-h1",
+      "verification_evidence": "work/issue44/e14/independent-h1"
+    },
+    "A11": {
+      "http_probes": 16,
+      "image_id": "sha256:e3fb933422631485805af448dcd37cba1d061b481627c97420cd8cfba601c427",
+      "initial": {
+        "status": "PASS",
+        "job_id": "job-e5264c68f6124386b9c1941417e6eda1",
+        "trace_id": "trace-3f7896b705ec4c3c87e38112767ec564",
+        "artifacts": 174,
+        "target": "c2301112968b4cf185a94449e5dbc85764f4a2df",
+        "scope": "One actual run, not peer signoff or RC gate",
+        "unique_artifact_files": 174,
+        "base": "5b431fcc656804434db59f4452f046ef284e6eb4",
+        "remaining_rd": [
+          {
+            "type": "REDUNDANT",
+            "target": "main.o",
+            "dependency": "unused.h",
+            "evidence": [
+              {
+                "source": "make_database",
+                "artifact": "make-db.txt",
+                "line": 1052,
+                "declaration": "main.o: main.c config.h unused.h"
+              }
+            ],
+            "scope": "Not observed in this recipe job under this build configuration"
+          }
+        ]
+      },
+      "timeout": {
+        "job_id": "job-cd05e5b1eea3474fb8f0f2b34c08664f",
+        "trace_id": "trace-d327077df7074c9a8e34bf71d6277f83",
+        "http": 422,
+        "outer": "FAILED",
+        "draft": "TIMED_OUT",
+        "error_code": "TIMEOUT",
+        "result_sha256": "98f7423fd2c90b078ee9b48c00ec7fef746511f708200c31d77106d805c21d77"
+      },
+      "recovery": {
+        "status": "PASS",
+        "job_id": "job-053b9df8a2ee428e8134dcdbfd782566",
+        "trace_id": "trace-20f8a297c2d044d68e3581889a4d8270",
+        "artifacts": 174,
+        "target": "c2301112968b4cf185a94449e5dbc85764f4a2df",
+        "scope": "One actual run, not peer signoff or RC gate",
+        "unique_artifact_files": 174,
+        "base": "5b431fcc656804434db59f4452f046ef284e6eb4",
+        "remaining_rd": [
+          {
+            "type": "REDUNDANT",
+            "target": "main.o",
+            "dependency": "unused.h",
+            "evidence": [
+              {
+                "source": "make_database",
+                "artifact": "make-db.txt",
+                "line": 1052,
+                "declaration": "main.o: main.c config.h unused.h"
+              }
+            ],
+            "scope": "Not observed in this recipe job under this build configuration"
+          }
+        ]
+      },
+      "role_log_counts": {
+        "initial": {
+          "buildchecker": 3,
+          "echecker": 1,
+          "draft": 1,
+          "mdfixer": 1
+        },
+        "timeout": {
+          "buildchecker": 0,
+          "echecker": 0,
+          "draft": 1,
+          "mdfixer": 0
+        },
+        "recovery": {
+          "buildchecker": 3,
+          "echecker": 1,
+          "draft": 1,
+          "mdfixer": 1
+        }
+      },
+      "initial_evidence": "work/issue44/e14/a11",
+      "verification_evidence": "work/issue44/e14/independent-a11",
+      "exchange_archive_sha256": "432aabb597f74e14550bcfa1f42bfeba6ed61a5f80d515ea417f1239c006350b",
+      "candidate_sha256": "621c2d44a7f7b05a796f03ed6301b9df8d28e3aba9e7cac2520b2cd8f1def6a7"
+    },
+    "fixed_fixture": {
+      "status": "PASS",
+      "job_id": "job-5b9d8ae3b362458a8ce2d82686e703eb",
+      "trace_id": "trace-41b37f40c8074cf980667e5f35aff2c1",
+      "artifacts": 162,
+      "target": "2c34bda335794b9b442a546ce1a444a12c288b6d",
+      "scope": "One actual run, not peer signoff or RC gate",
+      "base": "89f79e8405fac4a61762bfeac33d0ef3af0da6bd",
+      "first_attempt": "work/issue44/e14/fixture",
+      "successful_mirror_retry": "work/issue44/e14/fixed-https"
+    },
+    "scope": "Personal four-service audit on the foundation branch using the fixed fixture, H1, and the A11 exchanged project."
+  },
+  "regressions": {
+    "E11-E12": 68,
+    "E13-E14": 21,
+    "contracts": [
+      "E2",
+      "E11/E12"
+    ],
+    "evidence": "work/issue44/regression"
+  }
+}

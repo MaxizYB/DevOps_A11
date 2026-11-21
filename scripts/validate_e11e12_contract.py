@@ -2,6 +2,7 @@
 """Dependency-free checks for the A11 E11/E12 orchestration request contract."""
 
 import json
+import math
 import re
 from pathlib import Path
 
@@ -36,7 +37,7 @@ def main():
         fail('e12 candidate is required')
     if 'fixed_report' in sample:
         fail('e12 sample must not carry a fixed report')
-    if isinstance(sample.get('build_timeout'), bool) or not isinstance(sample.get('build_timeout'), int) or sample['build_timeout'] < 1:
+    if isinstance(sample.get('build_timeout'), bool) or not isinstance(sample.get('build_timeout'), (int, float)) or not math.isfinite(sample['build_timeout']) or sample['build_timeout'] <= 0:
         fail('build_timeout must be positive')
     print('E11/E12 orchestration contract: PASS')
 
