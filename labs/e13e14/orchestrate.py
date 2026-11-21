@@ -45,7 +45,20 @@ def command(argv, cwd, log):
     return p.stdout.strip()
 
 
-def snapshot(repo, revision, target, logs):
+def validate_project_profile(project, profile):
+    names = {p.name for p in project.glob('*.c')}
+    if profile == 'teaching':
+        if names != {'main.c', 'helper.c'} or not (project / 'config.h').is_file():
+            raise ValueError('Unsupported teaching project profile')
+    elif profile == 'cjson':
+        required = ('cJSON.c', 'cJSON.h', 'cJSON_Utils.c', 'cJSON_Utils.h', 'Makefile')
+        if any(not (project / name).is_file() for name in required):
+            raise ValueError('Unsupported cJSON project profile')
+    else:
+        raise ValueError('Unsupported project profile: ' + str(profile))
+
+
+def snapshot(repo, revision, target, logs, profile='teaching'):
     if not re.fullmatch(r'[0-9a-f]{40}', revision):
         raise ValueError('Use a full Git commit SHA')
     head = command(['git', 'rev-parse', '--verify', revision + '^{commit}'], repo,
@@ -53,9 +66,26 @@ def snapshot(repo, revision, target, logs):
     command(['git', 'clone', '--no-hardlinks', '--no-checkout', str(repo), str(target)], repo,
             logs / (target.name + '-clone.log'))
     command(['git', 'checkout', '--detach', head], target, logs / (target.name + '-checkout.log'))
-    if {p.name for p in target.glob('*.c')} != {'main.c', 'helper.c'} or not (target / 'config.h').is_file():
-        raise ValueError('Unsupported teaching project profile')
+    validate_project_profile(target, profile)
     return head
+
+
+def prepare_harness(request, target, candidate, out):
+    if request.get('project_profile', 'teaching') != 'cjson':
+        if 'broken_dockerfile' in request:
+            raise ValueError('broken_dockerfile is only supported for cjson')
+        return
+    broken = host_path(request['broken_dockerfile'])
+    if not broken.is_relative_to((ROOT / 'data').resolve()) or not broken.is_file():
+        raise ValueError('broken_dockerfile must be a file inside data/')
+    destination = target / 'Dockerfile.broken'
+    if destination.exists() or destination.is_symlink():
+        raise ValueError('Refusing to overwrite upstream Dockerfile.broken')
+    destination.write_bytes(broken.read_bytes())
+    save(out / 'harness-provenance.json', {
+        'scope': 'Experiment-owned Dockerfile in isolated target snapshot, not upstream',
+        'broken_sha256': digest(broken), 'candidate_sha256': digest(candidate),
+    })
 
 
 def call(role, payload, evidence):
@@ -82,18 +112,21 @@ def execute(request, out):
         raise ValueError('Output must be inside work/')
     repo = host_path(request['repo'])
     candidate = host_path(request['candidate'])
+    profile = request.get('project_profile', 'teaching')
+    if not isinstance(profile, str) or profile not in {'teaching', 'cjson'}:
+        raise ValueError('Unsupported project profile: ' + str(profile))
     if not repo.resolve().is_relative_to((ROOT / 'data').resolve()) or not candidate.resolve().is_relative_to((ROOT / 'data').resolve()):
         raise ValueError('Input project and candidate must be in data/')
     out.mkdir(parents=True)
     job = 'job-' + uuid.uuid4().hex
     trace = 'trace-' + uuid.uuid4().hex
     result = {'schema_version': 'e14-compose-1', 'job_id': job, 'trace_id': trace,
-              'status': 'RUNNING', 'stages': []}
+              'project_profile': profile, 'status': 'RUNNING', 'stages': []}
     save(out / 'request.json', request)
 
     def payload(project, folder, **extra):
         return {'project': container_path(project), 'out': container_path(folder),
-                'job_id': job, 'trace_id': trace, **extra}
+                'job_id': job, 'trace_id': trace, 'project_profile': profile, **extra}
 
     def stage(name, commit, data):
         item = {'name': name, 'commit': commit, 'job_id': job, 'trace_id': trace, 'status': 'SUCCEEDED', 'data': data}
@@ -105,9 +138,10 @@ def execute(request, out):
         base = out / 'base-project'
         target = out / 'target-project'
         logs = out / 'logs'
-        base_sha = snapshot(repo, request['base'], base, logs)
-        target_sha = snapshot(repo, request['target'], target, logs)
+        base_sha = snapshot(repo, request['base'], base, logs, profile)
+        target_sha = snapshot(repo, request['target'], target, logs, profile)
         result.update(base_commit=base_sha, target_commit=target_sha)
+        prepare_harness(request, target, candidate, out)
 
         drafted = call('draft', payload(target, out / 'draft-build',
                                         candidate=container_path(candidate),
