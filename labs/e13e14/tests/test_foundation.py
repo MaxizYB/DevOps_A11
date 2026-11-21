@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / 'labs/e11e12'))
 sys.path.insert(0, str(ROOT / 'labs/e13e14'))
 import pipeline
 import handoff_a_to_b
+import orchestrate
 
 
 class FoundationTests(unittest.TestCase):
@@ -33,6 +34,59 @@ class FoundationTests(unittest.TestCase):
     def test_fractional_timeout_allowed(self):
         self.request['build_timeout'] = 0.01
         self.assertEqual(pipeline.validate_request(self.request)['build_timeout'], 0.01)
+
+    def test_e14_profile_validation_accepts_cjson_files(self):
+        project = self.root / 'cjson'
+        project.mkdir()
+        for name in ('cJSON.c', 'cJSON.h', 'cJSON_Utils.c', 'cJSON_Utils.h', 'Makefile'):
+            (project / name).write_text('fixture\n')
+        orchestrate.validate_project_profile(project, 'cjson')
+
+    def test_e14_profile_validation_rejects_teaching_shape_for_cjson(self):
+        project = self.root / 'cjson'
+        project.mkdir()
+        (project / 'main.c').write_text('fixture\n')
+        with self.assertRaisesRegex(ValueError, 'Unsupported cJSON project profile'):
+            orchestrate.validate_project_profile(project, 'cjson')
+
+    def test_cjson_harness_preserves_candidate_and_records_original_bytes(self):
+        target = self.root / 'snapshot'
+        target.mkdir()
+        broken = self.root / 'Dockerfile.broken'
+        raw = b'FROM example:tag\nWORKDIR /work\n'
+        broken.write_bytes(raw)
+        original = self.candidate.read_bytes()
+        out = self.root / 'run'
+        request = dict(project_profile='cjson', broken_dockerfile=orchestrate.container_path(broken))
+        orchestrate.prepare_harness(request, target, self.candidate, out)
+        self.assertEqual((target / 'Dockerfile.broken').read_bytes(), raw)
+        self.assertEqual(broken.read_bytes(), raw)
+        self.assertEqual(self.candidate.read_bytes(), original)
+        provenance = json.loads((out / 'harness-provenance.json').read_text())
+        self.assertEqual(provenance['candidate_sha256'], hashlib.sha256(original).hexdigest())
+        self.assertEqual(provenance['broken_sha256'], hashlib.sha256(raw).hexdigest())
+
+    def test_cjson_harness_never_overwrites_upstream_file(self):
+        target = self.root / 'snapshot'
+        target.mkdir()
+        existing = target / 'Dockerfile.broken'
+        existing.write_bytes(b'keep upstream')
+        broken = self.root / 'broken'
+        broken.write_bytes(b'experiment')
+        request = dict(project_profile='cjson', broken_dockerfile=orchestrate.container_path(broken))
+        with self.assertRaisesRegex(ValueError, 'Refusing to overwrite'):
+            orchestrate.prepare_harness(request, target, self.candidate, self.root / 'run')
+        self.assertEqual(existing.read_bytes(), b'keep upstream')
+
+    def test_cjson_harness_rejects_broken_file_outside_data(self):
+        request = dict(project_profile='cjson', broken_dockerfile='/course/work/outside')
+        with self.assertRaisesRegex(ValueError, 'inside data'):
+            orchestrate.prepare_harness(request, self.repo, self.candidate, self.root / 'run')
+
+    def test_teaching_harness_rejects_cjson_only_input(self):
+        with self.assertRaisesRegex(ValueError, 'only supported for cjson'):
+            orchestrate.prepare_harness(dict(broken_dockerfile='/course/data/input'),
+                                        self.repo, self.candidate, self.root / 'run')
 
     def test_invalid_timeouts_rejected(self):
         for value in (True, False, 0, -1, math.inf, -math.inf, math.nan, '1', None):

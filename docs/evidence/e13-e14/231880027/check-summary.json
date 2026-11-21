@@ -1,0 +1,175 @@
+{
+  "issue": 45,
+  "operator": "231880027",
+  "source_sha": "b5f66f3bc52ab20364141ce193cd873d2d653973",
+  "base": "cf0d87a095becada87336ed786f11070e9a037b5",
+  "target": "f0c8fa4f812abe50964956cd0580ab963430ba35",
+  "personal_source_sha256": {
+    "scripts/e13e14/run_peer.py": "edc9d2acf2d4976e665b41a3dab9a2d2553da6a50ca294292170d54e3688363e",
+    "scripts/e13e14/verify_peer.py": "b5f46b66f62b57e183d291cf971c2a763b559787499f2893e5e966b4ca2338b6",
+    "scripts/e13e14/run_e14_audit.py": "8976ebe2a45659bd7235513ab65cd1e73aca350649a49828d29ad5c2bda89ec0",
+    "labs/e13e14/tests/test_peer.py": "58d161ef776117c3e61f7a741f5d930c016be2d3c77bd8c513b34b0a53cce29b"
+  },
+  "E13_evidence": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation",
+  "C1_A": {
+    "status": "PASS",
+    "job_id": "job-b108dd505a16485897c2dec119d5d19a",
+    "trace_id": "trace-2f8aef21c9ec437099f46910103701a5",
+    "configuration_id": "cfg-e11e12-bc70f4e9e436d256",
+    "artifacts": 45,
+    "findings": [
+      {
+        "type": "MISSING",
+        "target": "cJSON_Utils.o",
+        "dependency": "cJSON.h"
+      }
+    ],
+    "reused": [
+      "cJSON_Utils.o"
+    ],
+    "refreshed": [],
+    "trace": {
+      "baseline-full": {
+        "trace_file": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/C1/baseline-full/trace/t.43",
+        "line": 719,
+        "text": "openat(AT_FDCWD, \"cJSON.h\", O_RDONLY|O_NOCTTY) = 4",
+        "make_database_line": 968,
+        "declaration": "cJSON_Utils.o: cJSON_Utils.c cJSON_Utils.c cJSON_Utils.h"
+      },
+      "target-full": {
+        "trace_file": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/C1/target-full/trace/t.99",
+        "line": 719,
+        "text": "openat(AT_FDCWD, \"cJSON.h\", O_RDONLY|O_NOCTTY) = 4",
+        "make_database_line": 968,
+        "declaration": "cJSON_Utils.o: cJSON_Utils.c cJSON_Utils.c cJSON_Utils.h"
+      }
+    }
+  },
+  "C1_B": {
+    "status": "PENDING_LEADER_RECEIPT",
+    "reason": "New personal report has not been delivered to B11; no peer communication performed"
+  },
+  "C2": "STALE_REPORT exit 1",
+  "C3": "ARTIFACT_HASH_MISMATCH exit 1",
+  "C7": {
+    "status": "PASS",
+    "failed_job": "job-267b7cc07602488f9f6023a514748b3d",
+    "failed_trace": "trace-12f623ff7d1f4fb4818d89911e705c2b",
+    "recovered": {
+      "status": "PASS",
+      "job_id": "job-4cca000889694ae898009c61b02ceb5d",
+      "trace_id": "trace-23c14550bfa449d8bb193568accafd15",
+      "configuration_id": "cfg-e11e12-bc70f4e9e436d256",
+      "artifacts": 45,
+      "findings": [
+        {
+          "type": "MISSING",
+          "target": "cJSON_Utils.o",
+          "dependency": "cJSON.h"
+        }
+      ],
+      "reused": [
+        "cJSON_Utils.o"
+      ],
+      "refreshed": [],
+      "trace": {
+        "baseline-full": {
+          "trace_file": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/C7-recovered/baseline-full/trace/t.43",
+          "line": 719,
+          "text": "openat(AT_FDCWD, \"cJSON.h\", O_RDONLY|O_NOCTTY) = 4",
+          "make_database_line": 968,
+          "declaration": "cJSON_Utils.o: cJSON_Utils.c cJSON_Utils.c cJSON_Utils.h"
+        },
+        "target-full": {
+          "trace_file": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/C7-recovered/target-full/trace/t.99",
+          "line": 719,
+          "text": "openat(AT_FDCWD, \"cJSON.h\", O_RDONLY|O_NOCTTY) = 4",
+          "make_database_line": 968,
+          "declaration": "cJSON_Utils.o: cJSON_Utils.c cJSON_Utils.c cJSON_Utils.h"
+        }
+      }
+    },
+    "failed_evidence_unchanged": true
+  },
+  "C8": {
+    "status": "PASS",
+    "http": [
+      202,
+      202,
+      409
+    ],
+    "job_id": "job-1e193935d62f4437863b3ae88a264243",
+    "trace_id": "trace-11821a6640be46b88825be3d8c3318ea",
+    "evidence": "/root/231880027/DevOps_A11-e13-e14/work/api-jobs/job-1e193935d62f4437863b3ae88a264243/evidence"
+  },
+  "E14_group_audit": {
+    "status": "PASS",
+    "source_run": "/root/241880439/DevOps_A11-e14-issue49-20261119/work/e14-issue49-cloud-20261119-mirror/success",
+    "run_operator": "241880439",
+    "check_operator": "231880027",
+    "job_id": "job-c4c2d0a813084df999f1e310bacf7dc1",
+    "trace_id": "trace-41d995e5af7d43f8b0793f62c7097a29",
+    "artifacts": 1659,
+    "report_sha256": "44f69ec354e5814b24b86186a5335b72fd868abede5d5796a737df37e4293645",
+    "patch_sha256": "a481b9a52f7e07d9369bc67cf80a1ff5f703b21781f2fb13791f78713c21dbf0",
+    "final_findings": [],
+    "scope": "Independent evidence association check; final merged RC still requires rerun",
+    "repair_request_recorded": false,
+    "repair_binding_limit": "Compose stores responses, not the MDFixer HTTP request. Public orchestrator passes this report URI/SHA; request bytes are not independently persisted."
+  },
+  "E14_personal_replay": {
+    "status": "SUCCEEDED",
+    "evidence": "/root/231880027/DevOps_A11-e13-e14/work/e14-45-231880027-20261119-recovery",
+    "association": {
+      "status": "PASS",
+      "source_run": "/root/231880027/DevOps_A11-e13-e14/work/e14-45-231880027-20261119-recovery/run",
+      "run_operator": "231880027",
+      "check_operator": "231880027",
+      "job_id": "job-0e61317ef48548a8b27c807dcd732e03",
+      "trace_id": "trace-3fb39c2d0e0049fc8a008c07d0a5d1a1",
+      "artifacts": 1665,
+      "report_sha256": "12b1245b23ca52a9720b6557d2460227a38423f99b66a4ebf144c0029c79ddb1",
+      "patch_sha256": "a481b9a52f7e07d9369bc67cf80a1ff5f703b21781f2fb13791f78713c21dbf0",
+      "final_findings": [],
+      "scope": "Independent evidence association check; final merged RC still requires rerun",
+      "repair_request_recorded": true,
+      "repair_binding_limit": null
+    },
+    "same_input_recovery": true,
+    "build_timeout": 600
+  },
+  "tests": {
+    "e11e12": 68,
+    "e13e14": 42,
+    "personal": 8
+  },
+  "contracts": "both passed",
+  "pending": [
+    "leader deliver personal current report / B consumption record",
+    "public merge then final rerun",
+    "PR CI and non-author review"
+  ],
+  "prepared_handoff": {
+    "path": "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/fixed-md-for-leader.json",
+    "argv": [
+      "python3",
+      "labs/e13e14/handoff_a_to_b.py",
+      "--a-result",
+      "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/C1/result.json",
+      "--target-sha",
+      "f0c8fa4f812abe50964956cd0580ab963430ba35",
+      "--out",
+      "/root/231880027/DevOps_A11-e13-e14/work/e13-45-231880027-20261119-validation/fixed-md-for-leader.json"
+    ],
+    "exit_code": 0,
+    "sent_to_peer": false,
+    "sha256": "752c18369338289b4f64316445859ae5e9d316cef9127bf8a0b66672e7041947"
+  },
+  "E14_previous_failure": {
+    "status": "FAILED",
+    "phase": "DRAFT",
+    "inner": "TIMED_OUT",
+    "reason": "dependency download exceeded 600 seconds",
+    "evidence": "/root/231880027/DevOps_A11-e13-e14/work/e14-45-231880027-20261119"
+  }
+}
