@@ -10,15 +10,17 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).resolve()
-sys.path[:0] = [str(HERE.parents[1] / 'e11e12'), '/course/labs/e8e10',
+sys.path[:0] = [str(HERE.parent), str(HERE.parents[1] / 'e11e12'), '/course/labs/e8e10',
                 '/course/labs/e11e12/vendor', '/app']
 from lab import scan, patch, validate
 from draft.autobuild import auto_build
 from buildchecker.fullcheck import full_check
 import cjson_profile
+from telemetry import Metrics
 
 ROOT = Path('/course').resolve()
 ROLE = os.environ['E14_ROLE']
+METRICS = Metrics('a11_stage_requests', f'service="{ROLE}"')
 
 
 def local(value, area='work'):
@@ -139,6 +141,13 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/health':
             self.reply(200, {'status': 'ok', 'role': ROLE})
+        elif self.path == '/metrics':
+            body = METRICS.render().encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/plain; version=0.0.4; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
         else:
             self.reply(404, {'error': 'NOT_FOUND'})
 
@@ -157,17 +166,20 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError('Request must be a JSON object')
             data = value
             result = run(data)
+            METRICS.observe('succeeded', time.monotonic() - start)
             print(json.dumps({'role': ROLE, 'job_id': data.get('job_id'),
                               'trace_id': data.get('trace_id'), 'status': 'SUCCEEDED',
                               'elapsed_ms': round((time.monotonic()-start)*1000)}), flush=True)
-            self.reply(200, result)
         except Exception as exc:
             traceback.print_exc()
             code = 'TIMEOUT' if 'TIMED_OUT' in str(exc) else type(exc).__name__.upper()
+            METRICS.observe('timed_out' if code == 'TIMEOUT' else 'failed', time.monotonic() - start)
             print(json.dumps({'role': ROLE, 'job_id': data.get('job_id'),
                               'trace_id': data.get('trace_id'), 'status': 'FAILED',
                               'error_code': code, 'elapsed_ms': round((time.monotonic()-start)*1000)}), flush=True)
             self.reply(422, {'status': 'FAILED', 'role': ROLE, 'error_code': code, 'error': str(exc)})
+        else:
+            self.reply(200, result)
 
 
 if __name__ == '__main__':

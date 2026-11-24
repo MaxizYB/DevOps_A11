@@ -1,0 +1,44 @@
+# Apply after labs/e13e14/compose.yaml. Only the task API binds a host port.
+services:
+  api:
+    image: ${E14_IMAGE:?set E14_IMAGE}
+    pull_policy: never
+    user: "0:0"
+    working_dir: /course
+    command: ["python3", "labs/microservice/gateway.py"]
+    environment:
+      A11_RUNTIME_IMAGE: ${E14_IMAGE:?set E14_IMAGE}
+      PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - ${E14_ROOT:?set E14_ROOT}:/course
+    ports:
+      - "127.0.0.1:${A11_API_PORT:-18280}:8080"
+    cpus: 0.5
+    mem_limit: 256m
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+    depends_on:
+      draft:
+        condition: service_healthy
+      buildchecker:
+        condition: service_healthy
+      echecker:
+        condition: service_healthy
+      mdfixer:
+        condition: service_healthy
+
+  draft:
+    ports: !reset []
+    environment:
+      EXPERIMENTAL_BUILDKIT_SOURCE_POLICY:
+  buildchecker:
+    ports: !reset []
+  echecker:
+    ports: !reset []
+  mdfixer:
+    ports: !reset []
