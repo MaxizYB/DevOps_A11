@@ -1,0 +1,30 @@
+# Apply after the public four-role and microservice Compose files.
+services:
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:?set PROMETHEUS_IMAGE}
+    pull_policy: never
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.path=/prometheus, --storage.tsdb.retention.time=14d]
+    ports:
+      - "127.0.0.1:${A11_PROM_PORT:-19392}:9090"
+    volumes:
+      - ${OBSERVABILITY_ROOT:?set OBSERVABILITY_ROOT}/a11/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    cpus: 0.5
+    mem_limit: 256m
+  grafana:
+    image: ${GRAFANA_IMAGE:?set GRAFANA_IMAGE}
+    pull_policy: never
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set private password}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    ports:
+      - "127.0.0.1:${A11_GRAFANA_PORT:-13302}:3000"
+    volumes:
+      - ${OBSERVABILITY_ROOT:?set OBSERVABILITY_ROOT}/a11/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ${OBSERVABILITY_ROOT:?set OBSERVABILITY_ROOT}/independent/a11-independent.json:/var/lib/grafana/dashboards/a11-independent.json:ro
+      - grafana-data:/var/lib/grafana
+    cpus: 0.5
+    mem_limit: 384m
+volumes:
+  prometheus-data:
+  grafana-data:

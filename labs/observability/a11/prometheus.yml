@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 4s
+  scrape_timeout: 2s
+scrape_configs:
+  - job_name: a11-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['api:8080']
+  - job_name: a11-echecker
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['echecker:8080']

@@ -1,0 +1,5 @@
+{
+  "target": "main.o",
+  "actual": ["main.c", "config.h"],
+  "declared": ["main.c", "unused.h"]
+}
