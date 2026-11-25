@@ -1,0 +1,49 @@
+name: microservice-lab
+x-app: &app
+  image: ${PYTHON_IMAGE:-python:3.13-slim}
+  working_dir: /app
+  init: true
+  volumes:
+    - ./app:/app:ro
+  healthcheck:
+    test: [CMD, python, -c, "from urllib.request import urlopen; urlopen('http://127.0.0.1:8080/health', timeout=2).close()"]
+    interval: 3s
+    timeout: 3s
+    retries: 10
+services:
+  api:
+    <<: *app
+    command: [python, -u, service.py, api]
+    dns_opt: [timeout:1, attempts:1]
+    environment:
+      WORKER_URL: http://worker:8080/check
+    depends_on:
+      worker:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${LAB_API_PORT:-18080}:8080"
+  worker:
+    <<: *app
+    command: [python, -u, service.py, worker]
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:-prom/prometheus:v3.5.1}
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.path=/prometheus, --storage.tsdb.retention.time=2d]
+    ports:
+      - "127.0.0.1:${LAB_PROM_PORT:-19090}:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+  grafana:
+    image: ${GRAFANA_IMAGE:-grafana/grafana:13.3.0}
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?run python3 scripts/lab.py init}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    ports:
+      - "127.0.0.1:${LAB_GRAFANA_PORT:-13000}:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+volumes:
+  prometheus-data:
+  grafana-data:

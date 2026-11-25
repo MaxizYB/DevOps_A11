@@ -244,3 +244,21 @@
 - 人工采纳与限制：复用公共代码，个人只新增测试/脚本/记录；未联系 B11、修改公共编排、提交或推送，人工审阅待完成。
 - 关联文件：`scripts/e13e14/`、`labs/e13e14/tests/test_peer.py`、[个人记录](docs/evidence/e13-e14/231880027/peer-consistency.md)。
 - 验证：68 项 E11/E12、42 项 E13/E14（含个人 8 项）和两套契约通过；C1 A端/C2/C3/C7/C8 实测通过；独立核查组长 E14 的 1659 项产物。五阶段、1665 项产物和实际修复请求关联核查通过，失败原件保留；B11 新报告消费、合并后复验、CI/评审待完成。
+
+## 2026-11-24：微服务样例观测（231880027，Refs #53）
+
+- 工具：Codex。
+- 任务：辅助独立部署教师 API/Worker 样例，采集 Prometheus、Grafana 和同任务日志。
+- AI 建议：隔离 Compose 与回环端口，保留正常/停机/恢复及受控超时的真实采样和任务证据。
+- 人工采纳与限制：沿用教师业务代码与面板；修复上传目录权限；未修改公共业务或操作组员服务，未提交或推送；人工审阅待完成。
+- 关联文件：`labs/observability/sample/`、[个人阶段 1 记录](docs/evidence/microservice/231880027/sample-validation.md)。
+- 验证：四场景符合预期、同键重复无新任务、正常与恢复跨服务日志一致，UP/DOWN/UP 与实际业务指标可核对；本轮仅教师样例，A11 正式采样待后续完成。
+
+## 2026-11-24：A11 业务监控接入、独立业务三阶段观测（231880027，Refs #53）
+
+- 工具：Codex。
+- 任务：辅助配置个人 Prometheus/Grafana，抓取公共 API/EChecker 的真实指标并关联正常任务日志；辅助部署隔离的个人业务与监控栈，执行正常、EChecker 停机和恢复观测。
+- AI 建议：以 external 网络独立接入，区分历史计数与本轮增量，耗时按 sum/count 的 rate 计算；以源码快照和输入副本隔离 data/work，记录 counter 重置、真实错误及同任务日志，保留统一时间窗截图。
+- 人工采纳与限制：未改公共业务代码、未停止或重启公共服务，未执行 #54 故障窗口；未改公共业务、未操作组员服务或执行 #54 回滚；仅停止并恢复个人 EChecker。
+- 关联文件：`labs/observability/a11/`、[sample](docs/evidence/microservice/231880027/a11-observability.md)；`labs/observability/independent/`、[独立观测记录](docs/evidence/microservice/231880027/independent-validation.md)。
+- 验证：两个抓取目标 UP、数据源 OK、5 个面板有真实数据；正常任务成功且 7 个公开产物通过校验，API/EChecker 成功计数各增 1，同 job/trace 日志一致；正式故障/恢复采样待协调；正常/恢复成功，各校验 7 项公开产物；停机任务按预期 FAILED/3 次尝试；实际 UP/DOWN/UP、API 成功 2/失败 1、EChecker 计数重置及日志关联通过，输入和公共容器前后不变；#54 后续复测与协作确认另行记录。

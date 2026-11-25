@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 4s
+  scrape_timeout: 2s
+scrape_configs:
+  - job_name: lab-api
+    static_configs:
+      - targets: ['api:8080']
+  - job_name: lab-worker
+    static_configs:
+      - targets: ['worker:8080']
