@@ -1,0 +1,239 @@
+{
+  "uid": "a11-independent-231880027",
+  "title": "A11 independent business - 231880027",
+  "description": "Issue #53: isolated normal/down/recovered window. EChecker counters reset after restart; API counters track all three jobs.",
+  "tags": [
+    "A11",
+    "issue53"
+  ],
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timezone": "Asia/Shanghai",
+  "panels": [
+    {
+      "id": 1,
+      "title": "业务目标采集状态（UP/DOWN）",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "a11-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "showPoints": "always",
+            "pointSize": 4
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up{job=~\"a11-api|a11-echecker\"}",
+          "legendFormat": "{{job}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "API 任务累计终态（含历史任务）",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "a11-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "showPoints": "always",
+            "pointSize": 4
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "a11_jobs_total{job=\"a11-api\"}",
+          "legendFormat": "API {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "EChecker 请求累计终态（含历史请求）",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "a11-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "showPoints": "always",
+            "pointSize": 4
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "a11_stage_requests_total{job=\"a11-echecker\"}",
+          "legendFormat": "EChecker {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "API 最近 1 分钟平均任务耗时",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "a11-prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "showPoints": "always",
+            "pointSize": 4
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (status) (rate(a11_jobs_duration_seconds_sum{job=\"a11-api\"}[1m])) / (sum by (status) (rate(a11_jobs_duration_seconds_count{job=\"a11-api\"}[1m])) > 0)",
+          "legendFormat": "API {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "EChecker 最近 1 分钟平均请求耗时",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "a11-prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "showPoints": "always",
+            "pointSize": 4
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (status) (rate(a11_stage_requests_duration_seconds_sum{job=\"a11-echecker\"}[1m])) / (sum by (status) (rate(a11_stage_requests_duration_seconds_count{job=\"a11-echecker\"}[1m])) > 0)",
+          "legendFormat": "EChecker {{status}}"
+        }
+      ]
+    }
+  ]
+}

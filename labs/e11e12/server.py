@@ -14,8 +14,9 @@ from pipeline import ROOT, execute, save, validate_request
 from deployment import metadata
 
 class Store:
-    def __init__(self, root):
+    def __init__(self, root, *, executor=None, validator=None, finished=None):
         self.root=root;root.mkdir(parents=True,exist_ok=True)
+        self.executor=executor;self.validator=validator;self.finished=finished
         self.lock=threading.Lock();self.pool=ThreadPoolExecutor(max_workers=1)
         self.jobs={};self.keys={}
         for p in root.glob('job-*/state.json'):
@@ -28,7 +29,7 @@ class Store:
             self.keys[state['idempotency_key']]=(state['request_hash'],state['job_id'])
     def submit(self, request, key):
         if not isinstance(key,str) or not key or len(key)>128:raise ValueError('idempotency_key required, max 128 characters')
-        validate_request(request)
+        (self.validator or validate_request)(request)
         digest=hashlib.sha256(json.dumps(request,sort_keys=True).encode()).hexdigest()
         with self.lock:
             if key in self.keys:
@@ -52,16 +53,16 @@ class Store:
         with self.lock:
             state['status']='RUNNING';state['started_at']=datetime.now(timezone.utc).isoformat()
             save(self.root/jid/'state.json',state)
-        try:r=execute(request,self.root/jid/'evidence',jid,trace_id)
+        try:r=(self.executor or execute)(request,self.root/jid/'evidence',jid,trace_id)
         except Exception as ex:r={'status':'FAILED','error':{'code':'WORKER_FAILED','message':str(ex)}}
         with self.lock:
             state.update({k:r[k] for k in ('status','error') if k in r})
             state['finished_at']=datetime.now(timezone.utc).isoformat()
             save(self.root/jid/'state.json',state)
+        if self.finished:
+            self.finished(dict(state))
 
-def serve(host='127.0.0.1',port=8080):
-    store=Store(ROOT/'work/api-jobs')
-    deployed = metadata()
+def make_server(host, port, store, deployed, *, metrics=None):
     class Handler(BaseHTTPRequestHandler):
         def reply(self,code,obj):
             data=json.dumps(obj,ensure_ascii=False).encode();self.send_response(code);self.send_header('Content-Type','application/json; charset=utf-8');self.end_headers();self.wfile.write(data)
@@ -80,6 +81,14 @@ def serve(host='127.0.0.1',port=8080):
                            {'error': message, 'code': 'IDEMPOTENCY_CONFLICT' if message == 'IDEMPOTENCY_CONFLICT' else 'REQUEST_1001'})
         def do_GET(self):
             if self.path=='/health':return self.reply(200,{'status':'ok','schema_version':'e11e12-1', 'deployment':deployed})
+            if self.path=='/metrics' and metrics is not None:
+                data=metrics().encode()
+                self.send_response(200)
+                self.send_header('Content-Type','text/plain; version=0.0.4; charset=utf-8')
+                self.send_header('Content-Length',str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+                return
             parts=self.path.split('?')[0].strip('/').split('/')
             if len(parts)<3 or parts[:2]!=['v1','jobs'] or parts[2] not in store.jobs:return self.reply(404,{'error':'NOT_FOUND'})
             jid=parts[2];state=store.get(jid);out=store.root/jid/'evidence'
@@ -95,7 +104,11 @@ def serve(host='127.0.0.1',port=8080):
                 if name not in allowed or not path.is_relative_to(out.resolve()) or '.git' in path.parts or not path.is_file():return self.reply(404,{'error':'NOT_FOUND'})
                 data=path.read_bytes();self.send_response(200);self.send_header('Content-Type','application/octet-stream');self.send_header('X-Content-SHA256',hashlib.sha256(data).hexdigest());self.end_headers();self.wfile.write(data);return
             self.reply(404,{'error':'NOT_FOUND'})
-    ThreadingHTTPServer((host,port),Handler).serve_forever()
+    return ThreadingHTTPServer((host,port),Handler)
+
+def serve(host='127.0.0.1',port=8080):
+    with make_server(host,port,Store(ROOT/'work/api-jobs'),metadata()) as http:
+        http.serve_forever()
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--host',default='127.0.0.1');p.add_argument('--port',type=int,default=8080);a=p.parse_args();serve(a.host,a.port)

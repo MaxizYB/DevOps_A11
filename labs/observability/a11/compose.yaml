@@ -1,0 +1,37 @@
+name: issue53-observability-231880027
+services:
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:?set PROMETHEUS_IMAGE}
+    pull_policy: never
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.path=/prometheus, --storage.tsdb.retention.time=14d]
+    ports:
+      - "127.0.0.1:${A11_PROM_PORT:-19391}:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - default
+      - a11
+    cpus: 0.5
+    mem_limit: 256m
+  grafana:
+    image: ${GRAFANA_IMAGE:?set GRAFANA_IMAGE}
+    pull_policy: never
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set private password}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    ports:
+      - "127.0.0.1:${A11_GRAFANA_PORT:-13301}:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    cpus: 0.5
+    mem_limit: 384m
+networks:
+  a11:
+    external: true
+    name: ${A11_NETWORK:?set public Compose network}
+volumes:
+  prometheus-data:
+  grafana-data:

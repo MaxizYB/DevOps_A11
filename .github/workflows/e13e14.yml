@@ -20,10 +20,12 @@ jobs:
           python3 -m py_compile labs/e11e12/pipeline.py labs/e13e14/*.py
           python3 -m unittest discover -s labs/e11e12 -p 'test_contract.py' -v
           python3 -m unittest discover -s labs/e13e14/tests -p 'test_*.py' -v
+          python3 -m unittest discover -s labs/microservice/tests -v
       - name: Compose and source scan
         run: |
           set -euo pipefail
           E14_ROOT="$PWD" E14_IMAGE=course-e11e12:999999999 docker compose -f labs/e13e14/compose.yaml config --quiet
+          E14_ROOT="$PWD" E14_IMAGE=course-e11e12:999999999 docker compose -f labs/e13e14/compose.yaml -f labs/microservice/compose.yaml config --quiet
           python3 scripts/secret_scan.py . --history
 
   four-services:

@@ -14,6 +14,12 @@ PORTS = {'buildchecker': 18081, 'echecker': 18082, 'draft': 18083, 'mdfixer': 18
 ROOT = Path(__file__).resolve().parents[2]
 
 
+class DownstreamFailure(ValueError):
+    def __init__(self, details):
+        self.details = details
+        super().__init__(details['message'])
+
+
 def save(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
@@ -105,7 +111,7 @@ def call(role, payload, evidence):
     return data
 
 
-def execute(request, out):
+def execute(request, out, *, job_id=None, trace_id=None, role_call=None):
     if out.exists():
         raise ValueError('Use a new output directory')
     if not out.resolve().is_relative_to((ROOT / 'work').resolve()):
@@ -118,8 +124,9 @@ def execute(request, out):
     if not repo.resolve().is_relative_to((ROOT / 'data').resolve()) or not candidate.resolve().is_relative_to((ROOT / 'data').resolve()):
         raise ValueError('Input project and candidate must be in data/')
     out.mkdir(parents=True)
-    job = 'job-' + uuid.uuid4().hex
-    trace = 'trace-' + uuid.uuid4().hex
+    job = job_id or 'job-' + uuid.uuid4().hex
+    trace = trace_id or 'trace-' + uuid.uuid4().hex
+    invoke = role_call or call
     result = {'schema_version': 'e14-compose-1', 'job_id': job, 'trace_id': trace,
               'project_profile': profile, 'status': 'RUNNING', 'stages': []}
     save(out / 'request.json', request)
@@ -143,34 +150,37 @@ def execute(request, out):
         result.update(base_commit=base_sha, target_commit=target_sha)
         prepare_harness(request, target, candidate, out)
 
-        drafted = call('draft', payload(target, out / 'draft-build',
+        drafted = invoke('draft', payload(target, out / 'draft-build',
                                         candidate=container_path(candidate),
                                         expected_output=request.get('expected_output', '1'),
                                         build_timeout=request.get('build_timeout', 600)),
                        out / 'draft-response.json')
         stage('draft', target_sha, drafted)
 
-        base_full = call('buildchecker', payload(base, out / 'baseline-full'), out / 'baseline-response.json')
-        target_full = call('buildchecker', payload(target, out / 'target-full'), out / 'target-response.json')
+        base_full = invoke('buildchecker', payload(base, out / 'baseline-full'), out / 'baseline-response.json')
+        target_full = invoke('buildchecker', payload(target, out / 'target-full'), out / 'target-response.json')
         stage('full-check', base_sha, {'base': base_full, 'target': target_full})
 
-        increment = call('echecker', payload(target, out / 'incremental', base=container_path(base),
+        increment = invoke('echecker', payload(target, out / 'incremental', base=container_path(base),
                                             baseline_graph=container_path(out / 'baseline-full/actual-graph.json'),
                                             target_findings=container_path(out / 'target-full/findings.json'),
                                             target_commit=target_sha), out / 'incremental-response.json')
         stage('incremental-check', target_sha, increment)
 
-        repair = call('mdfixer', payload(target, out / 'repair-work',
+        repair = invoke('mdfixer', payload(target, out / 'repair-work',
                                         report=increment['report'], report_sha256=increment['sha256'],
                                         target_commit=target_sha), out / 'repair-response.json')
         stage('repair', target_sha, repair)
 
-        final = call('buildchecker', payload(target, out / 'final-full'), out / 'recheck-response.json')
+        final = invoke('buildchecker', payload(target, out / 'final-full'), out / 'recheck-response.json')
         missing = [x for x in final['result']['findings'] if x['type'] == 'MISSING']
         if missing:
             raise ValueError(f'Recheck has {len(missing)} missing dependencies')
         stage('recheck', target_sha, {'result': final, 'remaining_missing': 0})
         result['status'] = 'SUCCEEDED'
+    except DownstreamFailure as exc:
+        result.update(status='TIMED_OUT' if exc.details['code'] == 'DOWNSTREAM_TIMEOUT' else 'FAILED',
+                      error=exc.details)
     except Exception as exc:
         result.update(status='FAILED', error=str(exc))
     result['artifacts'] = [{'uri': path.relative_to(out).as_posix(), 'sha256': digest(path),
