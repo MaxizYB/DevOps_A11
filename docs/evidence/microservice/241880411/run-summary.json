@@ -1,0 +1,335 @@
+{
+  "issue": 54,
+  "owner": "241880411 / andelutixia",
+  "branch": "test/54-microservice-resilience",
+  "system_commit": "52877e89c0221396109a195dd9b1619babaa2715",
+  "timezone": "UTC+08:00",
+  "environment": "Docker Desktop Linux/arm64, Docker 29.6.2, Compose 5.3.1",
+  "teacher_sample": {
+    "zip_sha256": "8daf3fcc9031d62d881efcf46a8e75e350c46e1eccfe3bdd0ac7afd557b03bd6",
+    "compose_project": "a11-teacher-241880411-20261124-142753",
+    "summary": "work/teacher-241880411/evidence/20261124-142753/summary.json",
+    "images": "work/teacher-241880411/evidence/20261124-142753/images.log",
+    "prometheus_range": "work/teacher-241880411/evidence/20261124-142753/worker-up-range.json",
+    "cases": {
+      "normal": {
+        "job_id": "job-fdedbfa478df4171a44212c645c54d6e",
+        "trace_id": "trace-78a87b3954eb4a729b02a861f932cc0c",
+        "status": "SUCCEEDED",
+        "error_code": null,
+        "attempts": 1,
+        "duration_ms": 8,
+        "window_start": "2026-11-24T14:28:01.235+08:00",
+        "window_end": "2026-11-24T14:28:02.854+08:00",
+        "report_sha256": "f977fd00c840276f44eef7027a10ebef5ddeca60d4ba5bdd191ecdb89e148dc2",
+        "sampled_at": "2026-11-24T14:28:01.974+08:00",
+        "up": 1,
+        "evidence": "work/teacher-241880411/Microservice_Lab/work/normal-20261124T062802Z-003188",
+        "task_log": "work/teacher-241880411/evidence/20261124-142753/normal-task-events.ndjson"
+      },
+      "down": {
+        "job_id": "job-5b9170b4fb9044cfa071629f9d5b94d7",
+        "trace_id": "trace-4a26ba9152e14e56a36384401bda1c25",
+        "status": "FAILED",
+        "error_code": "DOWNSTREAM_UNAVAILABLE",
+        "attempts": 3,
+        "duration_ms": 1872,
+        "window_start": "2026-11-24T14:28:03.067+08:00",
+        "window_end": "2026-11-24T14:28:09.473+08:00",
+        "report_sha256": null,
+        "sampled_at": "2026-11-24T14:28:05.976+08:00",
+        "up": 0,
+        "evidence": "work/teacher-241880411/Microservice_Lab/work/down-20261124T062807Z-f83846",
+        "task_log": "work/teacher-241880411/evidence/20261124-142753/down-task-events.ndjson"
+      },
+      "recovered": {
+        "job_id": "job-7f048d87fbd549a2aa5ff1affe8dcae2",
+        "trace_id": "trace-8ca6222333034829a3bd8582def3caa6",
+        "status": "SUCCEEDED",
+        "error_code": null,
+        "attempts": 1,
+        "duration_ms": 2,
+        "window_start": "2026-11-24T14:28:09.778+08:00",
+        "window_end": "2026-11-24T14:28:10.995+08:00",
+        "report_sha256": "f977fd00c840276f44eef7027a10ebef5ddeca60d4ba5bdd191ecdb89e148dc2",
+        "sampled_at": "2026-11-24T14:28:09.972+08:00",
+        "up": 1,
+        "evidence": "work/teacher-241880411/Microservice_Lab/work/recovered-20261124T062810Z-904bf7",
+        "task_log": "work/teacher-241880411/evidence/20261124-142753/recovered-task-events.ndjson"
+      },
+      "timeout": {
+        "job_id": "job-04bac123ce5946ad9be60191e03bc5cb",
+        "trace_id": "trace-3656dab5e8f546398ea6995393a4ec2c",
+        "status": "TIMED_OUT",
+        "error_code": "DOWNSTREAM_TIMEOUT",
+        "attempts": 3,
+        "duration_ms": 7016,
+        "window_start": "2026-11-24T14:28:10.995+08:00",
+        "window_end": "2026-11-24T14:28:18.287+08:00",
+        "report_sha256": null,
+        "sampled_at": "2026-11-24T14:28:09.972+08:00",
+        "up": 1,
+        "evidence": "work/teacher-241880411/Microservice_Lab/work/timeout-20261124T062811Z-06bd0c",
+        "task_log": "work/teacher-241880411/evidence/20261124-142753/timeout-task-events.ndjson"
+      }
+    }
+  },
+  "a11_project": {
+    "request": "data/e13-a11-project-20261117-v2/e12.json",
+    "base": "5b431fcc656804434db59f4452f046ef284e6eb4",
+    "target": "c2301112968b4cf185a94449e5dbc85764f4a2df",
+    "candidate_sha256": "621c2d44a7f7b05a796f03ed6301b9df8d28e3aba9e7cac2520b2cd8f1def6a7",
+    "compose_project": "a11-microservice-241880411",
+    "runtime_image": "sha256:e3fb933422631485805af448dcd37cba1d061b481627c97420cd8cfba601c427",
+    "draft_image_used_by_downstream": false,
+    "images_and_health": "work/issue54-monitor/container-images-and-health.txt",
+    "prometheus": {
+      "api_up": 1,
+      "echecker_up": [
+        1,
+        0,
+        1
+      ],
+      "job_counts": {
+        "succeeded": 2,
+        "failed": 1,
+        "timed_out": 0
+      },
+      "durations_seconds": {
+        "failed": 2.767429,
+        "succeeded": 7.202814999999999,
+        "timed_out": 0.0
+      },
+      "scrape_interval_seconds": 2
+    },
+    "prometheus_up_range": "work/a11-241880411-verified/prometheus-range-up.json",
+    "prometheus_jobs_range": "work/a11-241880411-verified/prometheus-range-a11_jobs_total.json",
+    "prometheus_duration_range": "work/a11-241880411-verified/prometheus-range-a11_jobs_duration_seconds_sum.json",
+    "verified_summary": "work/a11-241880411-verified/summary.json",
+    "cases": {
+      "normal": {
+        "job_id": "job-4e0a601d142849b4badc5971946091c4",
+        "trace_id": "trace-c3978492d65b440b942b4aabe0bd8dc8",
+        "status": "SUCCEEDED",
+        "duration_ms": 3665,
+        "started_at": "2026-11-24T14:30:55.271+08:00",
+        "finished_at": "2026-11-24T14:30:58.936+08:00",
+        "idempotency_key": "issue54-241880411-dns-isolated-normal",
+        "same_key_reused": true,
+        "job_started_log_count": 1,
+        "role_calls": {
+          "draft": 1,
+          "buildchecker": 3,
+          "echecker": 1,
+          "mdfixer": 1
+        },
+        "prometheus_up": 1,
+        "sampled_at": "2026-11-24T14:30:57.855+08:00",
+        "http_evidence": "work/a11-241880411-verified/normal",
+        "runtime_evidence": "work/microservice-jobs/job-4e0a601d142849b4badc5971946091c4/evidence/runtime",
+        "api_artifacts": 7,
+        "runtime_artifacts": 174,
+        "draft_image_id": "sha256:7a6c16f27134543fac4321f9ce53c9acf50886c0e638fe69060e716c5dfa6f33",
+        "task_log": "work/a11-241880411-verified/normal-task-events.ndjson",
+        "prometheus_target": "work/a11-241880411-verified/normal-targets.json"
+      },
+      "down": {
+        "job_id": "job-63a85d2833ed4c33910dcb69351b63e0",
+        "trace_id": "trace-f5293fc5b81d419380d3aca8069c5658",
+        "status": "FAILED",
+        "duration_ms": 2767,
+        "started_at": "2026-11-24T14:31:10.891+08:00",
+        "finished_at": "2026-11-24T14:31:13.658+08:00",
+        "idempotency_key": "issue54-241880411-dns-isolated-down",
+        "same_key_reused": true,
+        "job_started_log_count": 1,
+        "role_calls": {
+          "draft": 1,
+          "buildchecker": 2,
+          "echecker": 0,
+          "mdfixer": 0
+        },
+        "prometheus_up": 0,
+        "sampled_at": "2026-11-24T14:31:09.854+08:00",
+        "http_evidence": "work/a11-241880411-verified/down",
+        "runtime_evidence": "work/microservice-jobs/job-63a85d2833ed4c33910dcb69351b63e0/evidence/runtime",
+        "error_code": "DOWNSTREAM_UNAVAILABLE",
+        "failed_stage": "incremental-check",
+        "attempts": 3,
+        "task_log": "work/a11-241880411-verified/down-task-events.ndjson",
+        "prometheus_target": "work/a11-241880411-verified/down-targets.json"
+      },
+      "recovered": {
+        "job_id": "job-d9b098d119bf4a07abf035d39c73cdcb",
+        "trace_id": "trace-836ccdf5f6d943989baa7e0654c25dea",
+        "status": "SUCCEEDED",
+        "duration_ms": 3538,
+        "started_at": "2026-11-24T14:31:19.772+08:00",
+        "finished_at": "2026-11-24T14:31:23.311+08:00",
+        "idempotency_key": "issue54-241880411-dns-isolated-recovered",
+        "same_key_reused": true,
+        "job_started_log_count": 1,
+        "role_calls": {
+          "draft": 1,
+          "buildchecker": 3,
+          "echecker": 1,
+          "mdfixer": 1
+        },
+        "prometheus_up": 1,
+        "sampled_at": "2026-11-24T14:31:17.854+08:00",
+        "http_evidence": "work/a11-241880411-verified/recovered",
+        "runtime_evidence": "work/microservice-jobs/job-d9b098d119bf4a07abf035d39c73cdcb/evidence/runtime",
+        "api_artifacts": 7,
+        "runtime_artifacts": 174,
+        "draft_image_id": "sha256:2490eea39a3e7d5e8c413a863cbbc46b5f41e98db41433a7dc4d7c82018185b7",
+        "task_log": "work/a11-241880411-verified/recovered-task-events.ndjson",
+        "prometheus_target": "work/a11-241880411-verified/recovered-targets.json"
+      }
+    },
+    "first_fault_response": "work/a11-241880411/down/status.json",
+    "dns_probe_before": "work/a11-241880411/unknown-dns-before.txt",
+    "dns_probe_after": "work/issue54-monitor/unknown-dns-after.txt",
+    "local_dns_override": "work/issue54-monitor/isolated-api-dns.yaml"
+  },
+  "rollback": {
+    "source_commit": "c2301112968b4cf185a94449e5dbc85764f4a2df",
+    "source_unchanged": true,
+    "tracked_files_checked": 10,
+    "patch_applied_to_sandbox": true,
+    "accepted": false,
+    "rollback": true,
+    "summary": "work/rollback-241880411/summary.json",
+    "patch": "work/rollback-241880411/run/applicable-wrong.patch",
+    "verdict": "work/rollback-241880411/run/validation/validation.json",
+    "log": "work/rollback-241880411/run.log"
+  },
+  "validation": {
+    "e11_e12": {
+      "tests": 68,
+      "log": "work/issue54-validation/e11-e12.log"
+    },
+    "e13_e14": {
+      "tests": 42,
+      "log": "work/issue54-validation/e13-e14-linux.log"
+    },
+    "gateway": {
+      "tests": 4,
+      "log": "work/issue54-validation/gateway-linux.log"
+    },
+    "e11_e12_contract": "work/issue54-validation/contracts.log"
+  },
+  "shared_cloud_monitoring_window": "PENDING",
+  "cloud_independent": {
+    "status": "PASS",
+    "system_commit": "52877e89c0221396109a195dd9b1619babaa2715",
+    "monitor_commit": "3fd4e70e056b3022fd57bb1ce5f6fde523d96a7f",
+    "environment": "linux/amd64, Docker 29.8.1, Docker Compose version v5.5.1",
+    "remote_root": "/root/241880411/DevOps_A11-microservice-20261124T124123Z",
+    "summary": "work/issue54-cloud-evidence/20261124T124123Z/summary.json",
+    "a11_cases": {
+      "normal": {
+        "job_id": "job-6a528810bf9c4a06affe1c9562b19bd5",
+        "trace_id": "trace-a726e23777124837b4bb39d1bf5b3315",
+        "status": "SUCCEEDED",
+        "started_at": "2026-11-24T20:44:46.542+08:00",
+        "finished_at": "2026-11-24T20:44:50.761+08:00",
+        "duration_ms": 4219,
+        "prometheus_up": 1,
+        "sampled_at": "2026-11-24T20:44:46.169+08:00",
+        "runtime_artifacts": 174,
+        "api_artifacts": 7,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-241880411-20261124T124446Z-2620249/normal"
+      },
+      "down": {
+        "job_id": "job-b894ff6cdeca454cb151b7f24be63f1c",
+        "trace_id": "trace-13a3c5f1ea8a4345a875389e4985a1c6",
+        "status": "FAILED",
+        "error_code": "DOWNSTREAM_UNAVAILABLE",
+        "failed_stage": "incremental-check",
+        "attempts": 3,
+        "started_at": "2026-11-24T20:45:31.182+08:00",
+        "finished_at": "2026-11-24T20:45:33.637+08:00",
+        "duration_ms": 2455,
+        "prometheus_up": 0,
+        "sampled_at": "2026-11-24T20:45:30.169+08:00",
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-241880411-20261124T124446Z-2620249/down"
+      },
+      "recovered": {
+        "job_id": "job-c4efb5af6985498694d63372b2ab7a26",
+        "trace_id": "trace-77918d0db64e4bd3a0001e2090dca04b",
+        "status": "SUCCEEDED",
+        "started_at": "2026-11-24T20:46:10.720+08:00",
+        "finished_at": "2026-11-24T20:46:14.003+08:00",
+        "duration_ms": 3283,
+        "prometheus_up": 1,
+        "sampled_at": "2026-11-24T20:46:06.169+08:00",
+        "runtime_artifacts": 174,
+        "api_artifacts": 7,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-241880411-20261124T124446Z-2620249/recovered"
+      }
+    },
+    "a11_prometheus_up_range": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-241880411-20261124T124446Z-2620249/range-up.json",
+    "a11_prometheus_job_counts": {
+      "failed": 1,
+      "succeeded": 2,
+      "timed_out": 0
+    },
+    "a11_public_service_snapshot_unchanged": true,
+    "teacher_cases": {
+      "normal": {
+        "job_id": "job-81f6d65671a4415a8420bfc23b56a66f",
+        "trace_id": "trace-46e598be05884dcbb84013fcd30a7c41",
+        "status": "SUCCEEDED",
+        "error_code": null,
+        "attempts": 1,
+        "window_start": "2026-11-24T20:48:17.749+08:00",
+        "window_end": "2026-11-24T20:48:18.345+08:00",
+        "duration_ms": 10,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-teacher/Microservice_Lab/work/normal-20261124T124818Z-b834bd"
+      },
+      "down": {
+        "job_id": "job-8fd86082db0b44bc967915dbc8ce3e5a",
+        "trace_id": "trace-2009e059684c4569a89e29c5cf87886b",
+        "status": "FAILED",
+        "error_code": "DOWNSTREAM_UNAVAILABLE",
+        "attempts": 3,
+        "window_start": "2026-11-24T20:48:18.593+08:00",
+        "window_end": "2026-11-24T20:48:22.039+08:00",
+        "duration_ms": 1002,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-teacher/Microservice_Lab/work/down-20261124T124820Z-c7ee0c"
+      },
+      "recovered": {
+        "job_id": "job-76588e03760f48db8ad207b1878c57e5",
+        "trace_id": "trace-ab6c5d3d68b1499caf8b86e7374adcf5",
+        "status": "SUCCEEDED",
+        "error_code": null,
+        "attempts": 1,
+        "window_start": "2026-11-24T20:48:22.266+08:00",
+        "window_end": "2026-11-24T20:48:23.440+08:00",
+        "duration_ms": 2,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-teacher/Microservice_Lab/work/recovered-20261124T124823Z-b19fbf"
+      },
+      "timeout": {
+        "job_id": "job-69ca931703e2490b9b08c640f2cb5f50",
+        "trace_id": "trace-f80a4f1fbf144f5cbcf5d3437c495c75",
+        "status": "TIMED_OUT",
+        "error_code": "DOWNSTREAM_TIMEOUT",
+        "attempts": 3,
+        "window_start": "2026-11-24T20:48:23.440+08:00",
+        "window_end": "2026-11-24T20:48:30.816+08:00",
+        "duration_ms": 7006,
+        "evidence": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-teacher/Microservice_Lab/work/timeout-20261124T124823Z-76b9a6"
+      }
+    },
+    "teacher_summary": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-teacher/evidence/20261124-204805/summary.json",
+    "rollback": {
+      "summary": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-rollback/run/result.json",
+      "patch": "work/issue54-cloud-evidence/20261124T124123Z/work/issue54-cloud-rollback/run/applicable-wrong.patch",
+      "patch_sha256": "e5f9c5cf4c5dab88d9f095866f9582816a651bb955acb1602928c38816e4c7e4",
+      "tracked_files": 10,
+      "source_unchanged": true,
+      "accepted": false,
+      "rollback": true
+    }
+  }
+}
